@@ -1,6 +1,6 @@
 ' Project "Infiniverse" - A Procedural Exploration Game
 
-Const VERSION = "0.4.4"
+#Define INF_VERSION "0.4.4"
 
 #Define NETWORK_enabled
 #Define CLIPBOARD_enabled
@@ -16,6 +16,12 @@ Using fb_clipboard
 #Include Once "miscfb/libNoise.bas"
 #Include Once "miscfb/words.bi"
 '#Include "fbgfx.bi"
+
+Dim Shared EXENAME As String: EXENAME = Command(0)
+Dim Shared LOGFILE As String: LOGFILE = ""
+Dim Shared CONFIGFILE As String: CONFIGFILE = "data/server.ini"
+Declare Sub ParseCommandLine()
+ParseCommandline
 
 Const scrW = 1024
 Const scrH = 768
@@ -234,7 +240,11 @@ Dim As Integer i,j, tempx,tempy, tempz, count
         EndIf 
 		
         k = InKey
-		If k = Chr(255,68) Then SavePNG("shots/shot"+Str(Int(Rnd*9000)+1000)+".png")': Sleep 1000
+		If k = Chr(255,68) Then
+			Var shotname = "shots/shot"+Str(Int(Rnd*90000)+10000)+".png"
+			SavePNG(shotname)': Sleep 1000
+			AddMsg("Screenshot saved to "+shotname)
+		EndIf
         If consoleOpen Then
         	msg = GameInput("> ", viewStartX, scrH-16, msg, k)
         	'#Ifdef CLIPBOARD_enabled
@@ -707,5 +717,51 @@ End Sub
 Function GetTime() As ULongInt
 	Return gametime
 End Function
+
+Sub ParseCommandline()
+	Dim i As Integer = 1
+	Var arg = Command(i)
+	Do While arg <> ""
+		Select Case arg
+			Case "-h", "--help"
+				#IfDef NETWORK_enabled
+					Print "Infiniverse-client ("+EXENAME+")"
+				#Else
+					Print "Infiniverse Lone Explorer Edition ("+EXENAME+")"
+				#EndIf
+				Print "Version " + INF_VERSION
+				Print "Arguments:"
+				Print !"\t-h, --help"
+				Print !"\t\tDisplay this text and exit"
+				Print !"\t-v, --version"
+				Print !"\t\tDisplay version and exit"
+				Print !"\t-c <ini-file>, --config <ini-file>"
+				Print !"\t\tRead configuration from specified file, default: " + CONFIGFILE
+				Print !"\t-l <logfile>, --logfile <logfile>"
+				Print !"\t\tLog output to specified file"
+				End
+			Case "-v", "--version"
+				Print EXENAME + " " + INF_VERSION
+				End
+			Case "-c", "--config"
+				If Command(i+1) <> "" Then CONFIGFILE = Command(i+1)
+				i += 1
+			Case "-l", "--logfile"
+				LOGFILE = Command(i+1)
+				i += 1
+			Case "-s", "--stars"
+				Print ".  . .   .    .       .    . . \|/ ."
+				Print " .       +     ..    .   *     -o-  "
+				Print "   * .     . .  . .     .  . . /|\ ."
+				Print ". .     .    . * .   +     *    .   "
+				End
+			Case Else
+				Print "Unknown command line argument: " + arg
+				End
+		End Select
+		i += 1
+		arg = Command(i)
+	Loop
+End Sub
 
 #Include "world.bas"
