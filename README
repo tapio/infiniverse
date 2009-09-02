@@ -1,0 +1,28 @@
+Infiniverse
+.  . .   .    .       .    . . \|/ .
+ .       +     ..    .   *     -o- 
+   * .     . .  . .     .  . . /|\ .
+. .     .    . * .   +     *    .
+Development Release, Version 0.4.4
+
+
+Please REPORT BUGS and GIVE COMMENTS
+@ http://aave.phatcode.net/ascii/forum
+
+
+This is the client program of Infiniverse, a "massively"
+multiplayer online space game that features a huge
+procedurally generated universe presented in ASCII graphics.
+
+This is a DEVELOPMENT RELEASE, meaning it is incomplete and
+contains lots of bugs. For Credits, see AUTHORS and THANKS files.
+License information can be found in the COPYING file.
+
+The game should automatically update itself, whenever a new
+version is available.
+
+HELP
+	Use F1 key inside the game to get (context sensitive)
+	listing of available controls.
+
+
