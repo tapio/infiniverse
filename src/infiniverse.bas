@@ -337,6 +337,7 @@ Function GoToCoords(stamp As String, ByRef pl As SpaceShip, ByRef tileBuf As Til
                 Next j
                 If nounder Then pl.x = oldx: pl.y = oldy: Return 0
                 game.curPlanet.Enter
+				game.curPlanet.BuildMap
                 tileBuf = TileCache(pl.x, pl.y, @GetOrbitTile)
                 If pl.x = -1 OrElse pl.y = -1 Then pl.x = ORBITSIZE/2: pl.y = ORBITSIZE/2
         	Case zPlanet
@@ -529,7 +530,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
 					Dim As Integer radius = CInt(game.curPlanet.h * .5 / ORBITFACTOR)
             		If Distance(pl.x,pl.y,ORBITSIZE/2,ORBITSIZE/2) <= radius Then
 		                'TODO: laitas oikeaks tuo koordinaatti juttu
-						pl.y = CInt( (pl.x - ORBITSIZE*.5 + radius + (GetTime() Mod radius)) * ORBITFACTOR + ORBITFACTOR*.5 )
+						pl.x = CInt( (pl.x - ORBITSIZE*.5 + radius + (GetTime() Mod radius)) * ORBITFACTOR + ORBITFACTOR*.5 )
 						pl.y = CInt( (pl.y - ORBITSIZE*.5 + radius) * ORBITFACTOR + ORBITFACTOR*.5 )
 		                'pl.x = CInt(game.curPlanet.w / 2)
 	                    'pl.y = CInt(game.curPlanet.h / 2)
@@ -537,7 +538,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
 	                    pl.curIcon = char_lander
 						dostuff(1)
 						AddMsg("Landing shuttle launched")
-						If game.curPlanet.objType = pGaia Then AddMsg("Entering planet atmosphere") Else AddMsg("Decending from high orbit")
+						If game.curPlanet.objType = pGaia Then AddMsg("Entering planet atmosphere") Else AddMsg("Descending from high orbit")
             		EndIf
             	Case zPlanet
             		If game.curPlanet.objType <> pGas Then
@@ -589,7 +590,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
 					'x = (x + (GetTime() Mod (radius*2))) Mod (radius*2)
                     'pl.x = CInt(ORBITSIZE*.5 + (pl.x - game.curPlanet.w*.5) / ORBITFACTOR)
                     'pl.y = CInt(ORBITSIZE*.5 + (pl.y - game.curPlanet.h*.5) / ORBITFACTOR)
-					Dim As Double tempang = GetAngle(pl.x,pl.y,game.curPlanet.w*.5,game.curPlanet.h*.5)
+					Dim As Double tempang = GetAngle(game.curPlanet.w*.5,game.curPlanet.h*.5,pl.x,pl.y)
 					Dim As Double radius = game.curPlanet.h*.5 / ORBITFACTOR
 					pl.x = CInt(ORBITSIZE*.5 + Cos(tempang) * radius * 1.2)
 					pl.y = CInt(ORBITSIZE*.5 - Sin(tempang) * radius * 1.2)
