@@ -32,10 +32,14 @@ Sub DrawHelp(vl As Byte)
 	EndIf
 	Color RGB(0,64,0)
 	?:Print " GENERAL":?
-	kc: Print !"\tt\t\t";  : dc: Print "Open communication console (chat)":?
 	kc: Print !"\tF10\t\t";: dc: Print !"Save screenshot to ""shots/"" -folder":?
 	kc: Print !"\tp\t\t";  : dc: Print "Get ping info":?
 	kc: Print !"\tF1\t\t"; : dc: Print "Show this help screen (content depends on context)":?
+	Color RGB(100,50,0): ?:Print !"\tConsole":?
+	kc: Print !"\tt\t\t";  : dc: Print "Open communication console (chat)":?
+	kc: Print !"\tEnter\t\t";  : dc: Print "Send message":?
+	kc: Print !"\tCtrl+C\t\t";  : dc: Print "Copy text to clipboard":?
+	kc: Print !"\tCtrl+V\t\t";  : dc: Print "Paste text from clipboard":?
 	
 	Print
 	Print
@@ -71,6 +75,12 @@ Sub DrawHelp(vl As Byte)
 		dc: Print "Triangles on the edge of view point to suns and planets."
 	ElseIf vl = zStarmap Then
 		Color RGB(255,255,255): Print !"\t"+Chr(249)+"*"+Chr(15)+!"\t\t";: dc: Print "Stars (solar systems)":?
+		Print !"\t";
+		Randomize 4 			'' Potential BUG CAUSE!!!!
+		For i As Integer = 1 To 8
+			Color CUInt(Rand(1,&hffffff)): Print Chr(219);
+		Next i
+		dc: Print !"\tNebulae":?
 	ElseIf vl = zGalaxy Then
 		Color RGB(255,255,255): Print !"\t"+Chr(249)+"*"+!"\t\t";: dc: Print "The Galaxy":?
 	EndIf
