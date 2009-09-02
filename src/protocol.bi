@@ -1,5 +1,7 @@
 '' FILE: protocol.bi
 
+Const ticksecs = 1.0
+
 Enum actions
 	message     = &b00100000
 	updatePos   = &b01000000
@@ -49,12 +51,23 @@ End Enum
 #Define detCoordOffSet 32
 
 
+Type RGBA_Color
+    bb As UByte
+    gg As UByte
+    rr As UByte
+	aa As UByte
+End Type
+
 Type ASCIITexture
+	'Union
     r As UByte = 0
     g As UByte = 0
     b As UByte = 0
+	'	col As UInteger
+	'	chan As RGBA_Color
+	'End Union
     char As UByte = 0
-    desc As String = ""
+    desc As ZString * 2'= ""
     Declare Constructor()
     Declare Constructor(char As UByte=0, r As UByte=0, g As UByte=0, b As UByte=0, desc As String = "")
     Declare Operator Cast () As String
@@ -62,10 +75,10 @@ Type ASCIITexture
 End Type
     Constructor ASCIITexture()
     End Constructor
-    Constructor ASCIITexture(char As UByte=0, r As UByte=0, g As UByte=0, b As UByte=0, desc As String = "")
-        this.r = r
-        this.g = g
-        this.b = b
+    Constructor ASCIITexture(char As UByte=0, _r As UByte=0, _g As UByte=0, _b As UByte=0, desc As String = "")
+        this.r = _r
+        this.g = _g
+        this.b = _b
         this.char = char
         this.desc = desc
     End Constructor

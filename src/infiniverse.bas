@@ -1,6 +1,6 @@
 ' Project "Infiniverse" - A Procedural Exploration Game
 
-#Define INF_VERSION "0.4.4"
+#Define INF_VERSION "0.4.5"
 
 #Define NETWORK_enabled
 #Define CLIPBOARD_enabled
@@ -17,11 +17,23 @@ Using fb_clipboard
 #Include Once "miscfb/words.bi"
 '#Include "fbgfx.bi"
 
+
 Dim Shared EXENAME As String: EXENAME = Command(0)
 Dim Shared LOGFILE As String: LOGFILE = ""
 Dim Shared CONFIGFILE As String: CONFIGFILE = "data/server.ini"
 Declare Sub ParseCommandLine()
 ParseCommandline
+
+#IfDef NETWORK_enabled
+	Print "Infiniverse-client "+INF_VERSION
+#Else
+	Print "Infiniverse Lone Explorer Edition "+INF_VERSION
+#EndIf
+Print ".  . .   .    .       .    . . \|/ ."
+Print " .       +     ..    .   *     -o-  "
+Print "   * .     . .  . .     .  . . /|\ ."
+Print ". .     .    . * .   +     *    .   "
+If LOGFILE = "" Then Print "Logging disabled (no log file specified)"
 
 Const scrW = 1024
 Const scrH = 768
@@ -41,6 +53,10 @@ Const BOOKMARKFILE = "data/bookmarks.ini"
 
 #Include Once "protocol.bi"
 #Include Once "tileengine.bas"
+
+'Print SizeOf(ASCIITexture)
+'Print SizeOf(ASCIITile)
+'Sleep
 
 Declare Function Anim_RotatePlanet(tile As ASCIITile, x As Integer, y As Integer) As ASCIITile
 Declare Function GetAreaTile(x As Integer, y As Integer) As ASCIITile
@@ -66,9 +82,10 @@ Declare Sub DrawASCIIFrame(x1 As Integer, y1 As Integer, x2 As Integer, y2 As In
 Declare Sub SaveBookmarks(filename As String = BOOKMARKFILE)
 Declare Sub LoadBookmarks(filename As String = BOOKMARKFILE)
 
-Const TimeSyncInterval = 5.000
+Const TimeSyncInterval = 3.000
 Declare Sub TimeManager()
 Declare Function GetTime() As ULongInt
+Declare Function GetTimeString() As String
 Dim Shared As ULongInt gametime = 0
 
 
@@ -91,7 +108,8 @@ Type SpaceShip
     oldy As Integer = 0
     upX  As Integer = -100
     upY  As Integer = -100
-    fuel As Double  = 100
+    fuel As Single  = 100
+	energy As Single = 100
     curIcon As String = char_starship
     Declare Constructor(x As Double = 0, y As Double = 0, ang As Single = 0)
 End Type
@@ -134,16 +152,15 @@ Dim As Integer i,j, tempx,tempy, tempz, count
         game.curGalaxy = Galaxy(42)
         game.updateBounds
         game.curStarmap.seed = game.curGalaxy.seed
-        BuildNoiseTables game.curStarmap.seed, 8
+		BuildNoiseTables game.curStarmap.seed, 8
     'Dim pl As SpaceShip = SpaceShip(GALAXYSIZE/2,GALAXYSIZE/2,90)
     Dim pl As SpaceShip = SpaceShip(game.curStarmap.size/2,game.curStarmap.size/2,90)
     Dim tileBuf As TileCache = TileCache(pl.x, pl.y, @GetStarmapTile)
     GoToCoords("4194312,4194292", pl, tileBuf)
     Dim gameTimer As FrameTimer
-
     Dim trafficTimer As DelayTimer = DelayTimer(0.05)
 	Dim Shared As Byte moveStyle = 0, hasMoved = 0, hasMovedOnline = 0
-	Dim Shared As UByte serverQueries = 0, gotoBookmarkSlot = 0
+	Dim Shared As UByte serverQueries = queries.timeSync, gotoBookmarkSlot = 0
 	Dim Shared As Byte consoleOpen = 0, auto_slow = 0
 	Dim Shared As String bookmarks(1 To 9)
 	Dim As Byte helpscreen = 0
@@ -210,6 +227,7 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 		Draw String (tempx+16, tempy+8 ), "Hull cond: "+Str(100)+"%"
 		'Draw String (tempx+16, tempy+16), "Shields  : "+Str(100)+"%"
 		Draw String (tempx+16, tempy+16), "A-M Fuel : "+Str(pl.fuel)+"kg"
+		Draw String (tempx+16, tempy+24), "Energy   : "+Str(pl.energy)+"kg"
 	    '' Scanners ''
         tempx = 0 : tempy = viewStartY-8 + 10*8
 		DrawASCIIFrame tempx, tempy, viewStartX-16, tempy+8*8, UIframe1, "Scanners"
@@ -218,26 +236,32 @@ Dim As Integer i,j, tempx,tempy, tempz, count
         Select Case game.viewLevel
         	Case zSystem
         		Draw String (tempx+16, tempy+24 ), "Suns   : "+Str(game.curSystem.starCount)
-        		Draw String (tempx+16, tempy+32), "Planets: "+Str(game.curSystem.planetCount)
+        		Draw String (tempx+16, tempy+32) , "Planets: "+Str(game.curSystem.planetCount)
         	Case zOrbit
         		Draw String (tempx+16, tempy+24 ), UpFirst(table_SystemObjectNames(game.curPlanet.objType))
         		'TODO: add starship count
         		Draw String (tempx+16, tempy+32), "Starships: "+"0"
 		End Select
         '' Cargo ''
-		DrawASCIIFrame viewStartX+16*viewX+16, viewStartY-8, scrW-8, viewStartY+8*8, RGB(0,96,24), "Cargo"
+		DrawASCIIFrame viewStartX+16*viewX+16, viewStartY-8, scrW-8, viewStartY+8*8, RGB(0,96,24), "Cargo Stats"
 		Color UItext1
-		Draw String (viewStartX+16*viewX+16+16, viewStartY), "Nothing"
+		Draw String (viewStartX+16*viewX+16+16, viewStartY   ), !"Total Space:     100 m3"
+		Draw String (viewStartX+16*viewX+16+16, viewStartY+8 ), !"Used Space :       0 m3"
+		Draw String (viewStartX+16*viewX+16+16, viewStartY+16), !"Used %     :       0 %"
+		tempy = viewStartY + 11*8
+		DrawASCIIFrame viewStartX+16*viewX+16, tempy-8, scrW-8, tempy+16*8, RGB(100,50,0), "Cargo Inventory"
+		Color UItext1
+		Draw String (viewStartX+16*viewX+16+16, tempy+8), "Nothing"
         '' Info ''
         DrawASCIIFrame viewStartX-8, 8, scrW-viewStartX+8, 5*8, RGB(0,0,96), "Information"
-        Draw String (viewStartX+8, 16), "Coords: "+Str(pl.x)+" - "+Str(pl.y)
-		Draw String (viewStartX+8, 24), "Time: "+Str(GetTime())
+        Draw String (viewStartX+8, 16), "Coords: "+Str(CLngInt(pl.x))+" - "+Str(CLngInt(pl.y))
+		Draw String (viewStartX+8, 24), "Time: "+GetTimeString()
         '' Messages ''
         DrawASCIIFrame viewStartX-8, 9*8+16*viewY, scrW-viewStartX+8, scrH-4*8, RGB(64,0,24), "Messages"
         PrintMessages viewStartX, 10*8+16*viewY, 10
         Else
         	DrawHelp(game.viewLevel)
-        EndIf 
+        EndIf
 		
         k = InKey
 		If k = Chr(255,68) Then
@@ -702,20 +726,31 @@ End Sub
 
 
 Sub TimeManager()
-	Static timeGame As DelayTimer = DelayTimer(1.0)
+	Static timeGame As DelayTimer = DelayTimer(ticksecs)
 	Static timeSyncTimer As DelayTimer = DelayTimer(TimeSyncInterval)
 	If timeGame.hasExpired Then
 		gametime+=1
 		timeGame.start
-	EndIf	
+	EndIf
+	#Ifdef NETWORK_enabled
 	If timeSyncTimer.hasExpired Then
 		''''' Send time update request
+		serverQueries = queries.timeSync
 		timeSyncTimer.start
 	EndIf
+	#EndIf
 End Sub
 
 Function GetTime() As ULongInt
 	Return gametime
+End Function
+
+Function GetTimeString() As String
+	Var timeString = "Epoch "+Str(Int(gametime / 50000000)+1001) + ", "
+	timeString += "Span "+Str(Int((gametime / 2500000)) Mod 20) + ", "
+	timeString += "Unit "+Str(Int((gametime / 100000)) Mod 25) + ", "
+	timeString += "Beat "+Str(gametime Mod 100000)
+	Return timeString
 End Function
 
 Sub ParseCommandline()
