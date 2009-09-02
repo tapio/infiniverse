@@ -21,6 +21,17 @@ Using fb_clipboard
 Dim Shared EXENAME As String: EXENAME = Command(0)
 Dim Shared LOGFILE As String: LOGFILE = ""
 Dim Shared CONFIGFILE As String: CONFIGFILE = "data/server.ini"
+Dim Shared As String my_name, passwd
+
+Dim Shared As String serveraddress
+Dim Shared As Integer port = 11000
+Var f = FreeFile
+If Not Open(CONFIGFILE, For Input,, As #f) Then
+	Line Input #f, serveraddress
+	Input #f, port
+	Close #f
+EndIf
+
 Declare Sub ParseCommandLine()
 ParseCommandline
 
@@ -771,16 +782,37 @@ Sub ParseCommandline()
 				Print !"\t\tDisplay this text and exit"
 				Print !"\t-v, --version"
 				Print !"\t\tDisplay version and exit"
+				Print !"\t-s <server_address>, --server <server_address>"
+				Print !"\t\tConnect to specified server"
+				Print !"\t-p <port>, --port <port>"
+				Print !"\t\tUse the specified port"
+				Print !"\t-u <name>, --user <name>"
+				Print !"\t\tAuto-login with given user name"
+				Print !"\t-w <password>, --password <password>"
+				Print !"\t\tAuto-login password, -u required"
 				Print !"\t-c <ini-file>, --config <ini-file>"
-				Print !"\t\tRead configuration from specified file, default: " + CONFIGFILE
+				Print !"\t\tRead configuration from specified file"
+				Print !"\t\tdefault: " + CONFIGFILE
 				Print !"\t-l <logfile>, --logfile <logfile>"
 				Print !"\t\tLog output to specified file"
 				End
 			Case "-v", "--version"
 				Print EXENAME + " " + INF_VERSION
 				End
+			Case "-p", "--port"
+				If CInt(Command(i+1)) > 0 Then port = CInt(Command(i+1))
+				i += 1				
+			Case "-s", "--server"
+				serveraddress = Command(i+1)
+				i += 1
 			Case "-c", "--config"
 				If Command(i+1) <> "" Then CONFIGFILE = Command(i+1)
+				i += 1
+			Case "-u", "--user"
+				my_name = Command(i+1)
+				i += 1
+			Case "-w", "--password"
+				passwd = Command(i+1)
 				i += 1
 			Case "-l", "--logfile"
 				LOGFILE = Command(i+1)
@@ -793,6 +825,7 @@ Sub ParseCommandline()
 				End
 			Case Else
 				Print "Unknown command line argument: " + arg
+				Print "Try --help"
 				End
 		End Select
 		i += 1
