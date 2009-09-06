@@ -40,7 +40,7 @@ Type ASCIITile
     tex1 As ASCIITexture
     tex2 As ASCIITexture
     flags As UByte
-    anim As Any Ptr'Function(x As Integer, y As Integer) As ASCIITileFwd Ptr' = 0
+    anim As Any Ptr = 0 'Function(x As Integer, y As Integer) As ASCIITileFwd Ptr' = 0
     Declare Constructor()
     Declare Constructor(tex1 As ASCIITexture = ASCIITexture(), tex2 As ASCIITexture = ASCIITexture(), flags As UByte = 0, anim As Any Ptr = 0)
     Declare Sub DrawTexture(x As Integer, y As Integer)

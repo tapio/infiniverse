@@ -43,10 +43,10 @@ Function Anim_Flicker(tile As ASCIITile, x As Integer, y As Integer) As ASCIITil
 End Function
 
 Function Anim_Water(tile As ASCIITile, x As Integer, y As Integer) As ASCIITile
-	Static water_frame As Integer = 0
+	Static water_frame As Short = 0
 	Static water_timer As Double = 0
 	#Define repsize 64
-	If Timer > water_timer+0.100 Then water_frame = (water_frame + 1) Mod 32: water_timer = Timer' Else Return tile
+	If Timer > water_timer+0.100 Then water_frame = (water_frame + 1) Mod repsize: water_timer = Timer' Else Return tile
 	'tile.tex1.b = rgb_limit(16 * Sin( DegToRad*(Perlin(x,y,repsize,repsize,16,5)+water_frame) ) + 128)
 	'tile.tex1.b = wrap(Perlin(x,y,repsize,repsize,16,5) + water_frame - 16, 255)
 	tile.tex1.b = Perlin(x+water_frame,y+water_frame,repsize,repsize,16,5)
@@ -200,7 +200,7 @@ Function GetGroundTexture(height As UByte, temperature As UByte, rainfall As UBy
     'If height + Clip(255-Int(temperature)-100,0,255)/5.0 > 200 Then Return ASCIITile(textures(mountain_high),bgt)
     'If height > 180 Then Return ASCIITile(textures(mountain_low),bgt)
     'If height > 160 Then Return ASCIITile(textures(hill),bgt)
-    If height < 120 And between(temperature,40,180) And rainfall > 50 Then Return ASCIITile(textures(water), ASCIITexture(0,0,0,150)       ) ',, @Anim_water)
+    If height < 120 And between(temperature,40,180) And rainfall > 50 Then Return ASCIITile(textures(water), ASCIITexture(0,0,0,150)       ,, @Anim_water)
     If temperature > 180 And rainfall < 100 Then Return ASCIITile(textures(ground_warm + turb),bgt)
     
     If vegetation > 128 Then
