@@ -253,6 +253,18 @@ Dim As Integer i,j, tempx,tempy, tempz, count
         		'TODO: add starship count
         		Draw String (tempx+16, tempy+32), "Starships: "+"0"
 		End Select
+		'' Devices ''
+		tempy = viewStartY-8 + 20*8
+		DrawASCIIFrame tempx, tempy, viewStartX-16, tempy+8*8, RGB(32,32,64), "Devices"
+		Draw String (tempx+16, tempy+16), "No Devices"
+		'' Beacons ''
+		tempy = viewStartY-8 + 30*8
+		DrawASCIIFrame tempx, tempy, viewStartX-16, tempy+12*8, RGB(64,0,64), "Nav Beacons"
+		Color RGB(96,0,96)
+		For i = 1 to 9
+			Draw String (tempx+16, tempy+16+(i-1)*8), Str(i)+": N/A"
+		Next i
+		'Draw String (tempx+16, tempy+8)
         '' Cargo ''
 		DrawASCIIFrame viewStartX+16*viewX+16, viewStartY-8, scrW-8, viewStartY+8*8, RGB(0,96,24), "Cargo Stats"
 		Color UItext1
@@ -260,7 +272,7 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 		Draw String (viewStartX+16*viewX+16+16, viewStartY+8 ), !"Used Space :       0 m3"
 		Draw String (viewStartX+16*viewX+16+16, viewStartY+16), !"Used %     :       0 %"
 		tempy = viewStartY + 11*8
-		DrawASCIIFrame viewStartX+16*viewX+16, tempy-8, scrW-8, tempy+16*8, RGB(100,50,0), "Cargo Inventory"
+		DrawASCIIFrame viewStartX+16*viewX+16, tempy-8, scrW-8, viewStartY+8+16*viewY, RGB(100,50,0), "Cargo Inventory"
 		Color UItext1
 		Draw String (viewStartX+16*viewX+16+16, tempy+8), "Nothing"
         '' Info ''
