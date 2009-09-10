@@ -1,43 +1,43 @@
 
 
 Sub AddVariance(ByRef tile As ASCIITile, variance As Short)
-	Dim As Short r,g,b, rndvar
+	Dim As Integer r,g,b, rndvar
 	If tile.tex1.char <> 0 Then
 		rndvar = Rand(-variance,variance)
 		r = tile.tex1.r + rndvar
 		g = tile.tex1.g + rndvar
 		b = tile.tex1.b + rndvar
-		tile.tex1.r = rgb_limit(r)
-		tile.tex1.g = rgb_limit(g)
-		tile.tex1.b = rgb_limit(b)
+		tile.tex1.r = rgb_clamp(r)
+		tile.tex1.g = rgb_clamp(g)
+		tile.tex1.b = rgb_clamp(b)
 	EndIf
 	If tile.tex2.char <> 0 Then
 		rndvar = Rand(-variance,variance)
 		r = tile.tex2.r + rndvar
 		g = tile.tex2.g + rndvar
 		b = tile.tex2.b + rndvar
-		tile.tex2.r = rgb_limit(r)
-		tile.tex2.g = rgb_limit(g)
-		tile.tex2.b = rgb_limit(b)
+		tile.tex2.r = rgb_clamp(r)
+		tile.tex2.g = rgb_clamp(g)
+		tile.tex2.b = rgb_clamp(b)
 	Endif
 End Sub
 
 Function AddVarianceToColor(col As UInteger, variance As Short) As UInteger
-	Dim As Short r = rgb_r(col), g = rgb_g(col), b = rgb_b(col), rndvar = Rand(-variance,variance)
+	Dim As Integer r = rgb_r(col), g = rgb_g(col), b = rgb_b(col), rndvar = Rand(-variance,variance)
 	r += rndvar : g += rndvar : b += rndvar
-	Return RGB(rgb_limit(r),rgb_limit(g),rgb_limit(b))
+	Return RGB(rgb_clamp(r),rgb_clamp(g),rgb_clamp(b))
 End Function
 
 Function Anim_Flicker(tile As ASCIITile, x As Integer, y As Integer) As ASCIITile
-	Dim As Short r,g,b, rndvar
+	Dim As Integer r,g,b, rndvar
 	If tile.tex2.char <> 0 Then
 		rndvar = Rand(-15,15)
 		r = tile.tex2.r + rndvar
 		g = tile.tex2.g + rndvar
 		b = tile.tex2.b + rndvar
-		tile.tex2.r = rgb_limit(r)
-		tile.tex2.g = rgb_limit(g)
-		tile.tex2.b = rgb_limit(b)
+		tile.tex2.r = rgb_clamp(r)
+		tile.tex2.g = rgb_clamp(g)
+		tile.tex2.b = rgb_clamp(b)
 	EndIf
 	Return tile
 End Function
@@ -47,7 +47,7 @@ Function Anim_Water(tile As ASCIITile, x As Integer, y As Integer) As ASCIITile
 	Static water_timer As Double = 0
 	#Define repsize 64
 	If Timer > water_timer+0.100 Then water_frame = (water_frame + 1) Mod repsize: water_timer = Timer' Else Return tile
-	'tile.tex1.b = rgb_limit(16 * Sin( DegToRad*(Perlin(x,y,repsize,repsize,16,5)+water_frame) ) + 128)
+	'tile.tex1.b = rgb_clamp(16 * Sin( DegToRad*(Perlin(x,y,repsize,repsize,16,5)+water_frame) ) + 128)
 	'tile.tex1.b = wrap(Perlin(x,y,repsize,repsize,16,5) + water_frame - 16, 255)
 	tile.tex1.b = Perlin(x+water_frame,y+water_frame,repsize,repsize,16,5)
 	Return tile
@@ -100,7 +100,7 @@ Sub GenerateDistantStarBG(array() As UByte)
 End Sub
 
 Function GetAreaTile(x As Integer, y As Integer) As ASCIITile
-	If in2DArray(game.curArea.areaArray,x,y) Then Return game.curArea.areaArray(x,y) Else Return 0
+	If in2DArray(game.curArea.areaArray,x,y) Then Return game.curArea.areaArray(x,y) Else Return 0 'ASCIITile(ASCIITexture(), ASCIITexture())
 	/'
 	Dim As Integer worldW = game.curArea.w, worldH = game.curArea.h
 	'Dim As ASCIITile texW, texN, texE, texS, texC
@@ -189,7 +189,7 @@ Function GetGroundTexture(height As UByte, temperature As UByte, rainfall As UBy
     If height > 160 Then 
 		Dim As UByte r1 = textures(hill).r, g1 = textures(hill).g, b1 = textures(hill).b
 		Dim As UByte r2 = textures(mountain_high).r, g2 = textures(mountain_high).g, b2 = textures(mountain_high).b
-		Dim As Single f = 1.0-((Clip(height+50.0,0,255)-160.0)/95.0) '((height-160.0)/95.0)
+		Dim As Single f = 1.0-((Clip(height+50,0,255)-160.0)/95.0) '((height-160.0)/95.0)
     	'Dim As ASCIITexture mountBG = textures(ground_base)
     	'If height > 200 Then mountBG = textures(ground_cold)
     	Dim desc As String = "hill"
@@ -310,7 +310,7 @@ Function GetSolarTile(x As Integer, y As Integer) As ASCIITile
     'If mask2 > 1.0 Then mask2 = 1.0
 
     'blending
-    mask = min(mask*2.0, 255)
+    mask = min(mask*2, 255)
     r = blend( sunR, r, mask/255.0)
     g = blend( sunG, g, mask/255.0)
     b = blend( sunB, b, mask/255.0)

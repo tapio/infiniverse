@@ -416,7 +416,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
 	        	If auto_slow Then pl.spd *= .95
 	        	If pl.spd < .2 Then pl.spd = 0: moveStyle = 0
 	        EndIf
-	        If MultiKey(KEY_S)  Then pl.spd = Max(0,pl.spd-.01)': moveTimer.start
+	        If MultiKey(KEY_S) Then pl.spd = Max(0.0, pl.spd-0.01)': moveTimer.start
         EndIf
         If MultiKey(KEY_A) Then pl.ang = wrap(pl.ang+5,360): moveTimer.start
         If MultiKey(KEY_D) Then pl.ang = wrap(pl.ang-5,360): moveTimer.start

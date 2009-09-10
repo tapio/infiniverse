@@ -205,7 +205,7 @@ End Type
         this.size = 1024
         Dim t As ASCIITexture = GetStarmapTile(x,y).tex2
         this.nebulaColor = RGB(t.r,t.g,t.b)
-        this.nebulaIntensity = max(t.r, max(t.g,t.b))
+        this.nebulaIntensity = max(t.r, t.g): this.nebulaIntensity = max(this.nebulaIntensity, t.b)
         this.seed = GetStarId(x,y)
         BuildNoiseTables this.seed, 3
         Randomize this.seed

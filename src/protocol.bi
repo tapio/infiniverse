@@ -51,36 +51,34 @@ End Enum
 #Define detCoordOffSet 32
 
 
-Type RGBA_Color
-    bb As UByte
-    gg As UByte
-    rr As UByte
-	aa As UByte
-End Type
-
 Type ASCIITexture
 	'Union
-    r As UByte = 0
-    g As UByte = 0
-    b As UByte = 0
+	r As UByte = 0
+	g As UByte = 0
+	b As UByte = 0
 	'	col As UInteger
 	'	chan As RGBA_Color
 	'End Union
-    char As UByte = 0
-    desc As ZString * 2'= ""
-    Declare Constructor()
-    Declare Constructor(char As UByte=0, r As UByte=0, g As UByte=0, b As UByte=0, desc As String = "")
-    Declare Operator Cast () As String
-    Declare Sub DrawTexture(x As Integer, y As Integer)
+	char As UByte = 0
+	descid As UByte = 0
+	desc As String 'ZString * 8
+	Declare Constructor()
+	Declare Constructor(_char As UByte=0, _r As UByte=0, _g As UByte=0, _b As UByte=0, _desc As String="")
+	Declare Operator Cast () As String
+	'Declare Property desc(_desc As String)
+	'Declare Property desc() As String
+	Declare Sub DrawTexture(x As Integer, y As Integer)
 End Type
-    Constructor ASCIITexture()
-    End Constructor
-    Constructor ASCIITexture(char As UByte=0, _r As UByte=0, _g As UByte=0, _b As UByte=0, desc As String = "")
+	Constructor ASCIITexture()
+	End Constructor
+    Constructor ASCIITexture(_char As UByte=0, _r As UByte=0, _g As UByte=0, _b As UByte=0, _desc As String="")
         this.r = _r
         this.g = _g
         this.b = _b
-        this.char = char
-        this.desc = desc
+        this.char = _char
+        'If _desc <> "" Then
+			'this.desc = CUByte(_desc)
+		'EndIf
     End Constructor
     Operator ASCIITexture.Cast() As String
     	Return char & r & g & b
@@ -88,6 +86,12 @@ End Type
     Sub ASCIITexture.DrawTexture(x As Integer, y As Integer)
         Draw String (x,y), Chr(this.char), RGB(this.r,this.g,this.b)
     End Sub
+'	Property ASCIITexture.desc(_desc As String)
+'	
+'	End Property
+'	Property ASCIITexture.desc() As String
+'		Return ""
+'	End Property
 
 
 Type Building
