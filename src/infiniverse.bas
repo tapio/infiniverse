@@ -167,6 +167,8 @@ Dim As Integer i,j, tempx,tempy, tempz, count
     'Dim pl As SpaceShip = SpaceShip(GALAXYSIZE/2,GALAXYSIZE/2,90)
     Dim pl As SpaceShip = SpaceShip(game.curStarmap.size/2,game.curStarmap.size/2,90)
     Dim tileBuf As TileCache = TileCache(pl.x, pl.y, @GetStarmapTile)
+	Dim Shared prevTileBuf As TileCache
+	Dim bufferBlendFactor As Single = 0
     GoToCoords("4194312,4194292", pl, tileBuf)
     Dim gameTimer As FrameTimer
     Dim trafficTimer As DelayTimer = DelayTimer(0.05)
@@ -196,7 +198,14 @@ Dim As Integer i,j, tempx,tempy, tempz, count
         If gotoBookmarkSlot <> 0 Then tempz = GoToCoords(bookmarks(gotoBookmarkSlot),pl,tileBuf): gotoBookmarkSlot = 0
         
         UpdateCache tileBuf, CInt(pl.x),CInt(pl.y), viewX,viewY
-        DrawView tileBuf, CInt(pl.x),CInt(pl.y), viewStartX,viewStartY, viewX,viewY
+		If game.viewLevelChanged Then bufferBlendFactor = 1.0
+		If bufferBlendFactor <= 0 Then
+			DrawView tileBuf, CInt(pl.x),CInt(pl.y), viewStartX,viewStartY, viewX,viewY
+		Else
+	        bufferBlendFactor -= .04
+			Var tempTileBuf = BlendTileCaches(prevTileBuf, tileBuf, bufferBlendFactor)
+			DrawView tempTileBuf, CInt(pl.x),CInt(pl.y), viewStartX,viewStartY, viewX,viewY
+		EndIf
         Draw String ( viewStartX + 8*viewX, viewStartY + 8*viewY ), pl.curIcon, RGB(150,250,150)
         Draw String ( viewStartX + 8*(viewX+CInt(Cos(pl.ang*DegToRad)*10)), viewStartY + 8*(viewY-CInt(Sin(pl.ang*DegToRad)*10)) ), "x", RGB(0,255,0)
         If pl.upX > 0 AndAlso Abs(pl.upX-pl.x) < viewX AndAlso Abs(pl.upY-pl.y) < viewY Then Draw String ( viewStartX + 8*(viewX + (pl.upX-CInt(pl.x))), viewStartY + 8*(viewY + (pl.upY-CInt(pl.y))) ), "X", RGB(200,0,200)
@@ -441,6 +450,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
 			    game.curArea = SurfaceArea(tempx, tempy, tempy * game.curPlanet.w + tempx)
 	            game.updateBounds
                 pl.x = arriveX : pl.y = arriveY
+				prevTileBuf = tileBuf
                 tileBuf = TileCache(pl.x, pl.y, @GetAreaTile)
         		game.viewLevelChanged = -1
 			EndIf
@@ -448,6 +458,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
 			If game.viewLevel = zSystem Then
                 pl.x = game.curSystem.x
                 pl.y = game.curSystem.y
+				prevTileBuf = tileBuf
                 tileBuf = TileCache(pl.x, pl.y, @GetStarmapTile)
                 BuildNoiseTables game.curStarmap.seed, 8
 				dostuff(-1)
@@ -520,6 +531,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
                         Dim As Double temp = CDbl(game.curStarmap.size) / GALAXYSIZE
                         pl.x = CInt(temp * CInt(pl.x))
                         pl.y = CInt(temp * CInt(pl.y))
+						prevTileBuf = tileBuf
                         tileBuf = TileCache(pl.x, pl.y, @GetStarmapTile)
                         BuildNoiseTables game.curStarmap.seed, 8
 						dostuff(1)
@@ -530,6 +542,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
                         game.curSystem = SolarSystem(CInt(pl.x), CInt(pl.y))
                         pl.x = CInt(game.curSystem.size / 2)
                         pl.y = CInt(game.curSystem.size / 2)
+						prevTileBuf = tileBuf
                         tileBuf = TileCache(pl.x, pl.y, @GetSolarTile)
 						dostuff(1)
 						AddMsg("Entering solar system")
@@ -542,6 +555,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
 							game.curPlanet.BuildMap
                             pl.x = CInt(ORBITSIZE/2 - Cos(pl.ang*DegToRad) * game.curPlanet.h/ORBITFACTOR)
                             pl.y = CInt(ORBITSIZE/2 + Sin(pl.ang*DegToRad) * game.curPlanet.h/ORBITFACTOR)
+							prevTileBuf = tileBuf
                             tileBuf = TileCache(pl.x, pl.y, @GetOrbitTile)
                             'pl.curIcon = char_lander
 							dostuff(1)
@@ -557,6 +571,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
 						pl.y = CInt( (pl.y - ORBITSIZE*.5 + radius) * ORBITFACTOR + ORBITFACTOR*.5 )
 		                'pl.x = CInt(game.curPlanet.w / 2)
 	                    'pl.y = CInt(game.curPlanet.h / 2)
+						prevTileBuf = tileBuf
 	                    tileBuf = TileCache(pl.x, pl.y, @GetGroundTile)
 	                    pl.curIcon = char_lander
 						dostuff(1)
@@ -570,6 +585,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
 		                    game.curArea = SurfaceArea(tempx, tempy, tempy * game.curPlanet.w + tempx)
 		                    pl.x = CInt(game.curArea.w / 2)
 		                    pl.y = CInt(game.curArea.h / 2)
+							prevTileBuf = tileBuf
 		                    tileBuf = TileCache(pl.x, pl.y, @GetAreaTile)
 		                    pl.curIcon = char_walking
 							dostuff(1)
@@ -590,12 +606,14 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
                     'Dim As Double temp = CDbl(game.curStarmap.size) / GALAXYSIZE *.5
                     pl.x = CInt(clngint(pl.x) * GALAXYSIZE / game.curStarmap.size)
                     pl.y = CInt(clngint(pl.y) * GALAXYSIZE / game.curStarmap.size)
+					prevTileBuf = tileBuf
                     tileBuf = TileCache(pl.x, pl.y, @GetGalaxyTile)
 					dostuff(-1)
 					AddMsg("Entering trans-galactic navigation mode")
                 Case zSystem
                     pl.x = game.curSystem.x
                     pl.y = game.curSystem.y
+					prevTileBuf = tileBuf
                     tileBuf = TileCache(pl.x, pl.y, @GetStarmapTile)
                     BuildNoiseTables game.curStarmap.seed, 8
 					dostuff(-1)
@@ -603,6 +621,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
             	Case zOrbit
             		pl.x = game.curPlanet.x
                     pl.y = game.curPlanet.y
+					prevTileBuf = tileBuf
                     tileBuf = TileCache(pl.x, pl.y, @GetSolarTile)
                     BuildNoiseTables game.curSystem.seed, 8
                     pl.curIcon = char_starship
@@ -617,6 +636,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
 					Dim As Double radius = game.curPlanet.h*.5 / ORBITFACTOR
 					pl.x = CInt(ORBITSIZE*.5 + Cos(tempang) * radius * 1.2)
 					pl.y = CInt(ORBITSIZE*.5 - Sin(tempang) * radius * 1.2)
+					prevTileBuf = tileBuf
                     tileBuf = TileCache(pl.x, pl.y, @GetOrbitTile)
                     BuildNoiseTables game.curSystem.seed, 8
                     pl.curIcon = char_starship
@@ -626,6 +646,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
                 Case zDetail
                     pl.x = game.curArea.x
                     pl.y = game.curArea.y
+					prevTileBuf = tileBuf
                     tileBuf = TileCache(pl.x, pl.y, @GetGroundTile)
                     BuildNoiseTables game.curPlanet.seed, 8
                     pl.curIcon = char_lander

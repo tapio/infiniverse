@@ -82,14 +82,11 @@ Type TileCache
     'texBuffer2(-BUFFERXDIST To BUFFERXDIST, -BUFFERYDIST To BUFFERYDIST) As ASCIITexture
     Dim GetTexture As Function(x As Integer, y As Integer) As ASCIITile'ASCIITexture
     'Dim GetTexture2 As Function(x As Integer, y As Integer) As ASCIITexture
-    Declare Constructor()
-    Declare Constructor(originX As Integer, originY As Integer)
+    Declare Constructor(originX As Integer = 0, originY As Integer = 0)
     Declare Constructor(originX As Integer, originY As Integer, func As Function(x As Integer, y As Integer) As ASCIITile)', func2 As Function(x As Integer, y As Integer) As ASCIITexture = 0)
     Declare Sub setOrigin(originX As Integer, originY As Integer)
 End Type
-    Constructor TileCache()
-    End Constructor
-    Constructor TileCache(originX As Integer, originY As Integer)
+    Constructor TileCache(originX As Integer = 0, originY As Integer = 0)
         this.originX = originX
         this.originY = originY
         this.isEmpty = -1

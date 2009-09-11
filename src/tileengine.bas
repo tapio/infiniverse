@@ -37,7 +37,7 @@ End Sub
 
 
 
-Sub DrawView(cache As TileCache, x As Integer, y As Integer, viewScreenX As Integer, viewScreenY As Integer, viewXDist As Integer, viewYDist As Integer)
+Sub DrawView(ByRef cache As TileCache, x As Integer, y As Integer, viewScreenX As Integer, viewScreenY As Integer, viewXDist As Integer, viewYDist As Integer)
     Dim As Integer i,j
     Dim texId As UByte
     Dim As ASCIITexture tex1,tex2
@@ -63,3 +63,29 @@ Sub RefreshTile(ByRef cache As TileCache, x As Integer, y As Integer, i As Integ
 	If j = -1 Then j = y
 	cache.texBuffer(i,j) = cache.GetTexture(x,y)
 End Sub
+
+
+Function BlendTileCaches(ByRef cache1 As TileCache, ByRef cache2 As TileCache, factor As Single = 0.5) As TileCache
+	Dim As Integer i,j, r,g,b, char
+	Dim cache As TileCache
+	Dim As ASCIITexture tex1, tex2
+	factor = clip(factor, 0.0, 1.0)
+	'#Define threshold (.2 + Rnd*.6)
+	#Define threshold CSng(Perlin(i+BUFFERXDIST,j+BUFFERYDIST,BUFFERXDIST*2+1, BUFFERYDIST*2+1, 4, 1) / 255.0)
+	For j = -BUFFERYDIST To BUFFERYDIST
+		For i = -BUFFERXDIST To BUFFERXDIST
+			r = blend(cache1.texBuffer(i,j).tex1.r, cache2.texBuffer(i,j).tex1.r, factor)
+			g = blend(cache1.texBuffer(i,j).tex1.g, cache2.texBuffer(i,j).tex1.g, factor)
+			b = blend(cache1.texBuffer(i,j).tex1.b, cache2.texBuffer(i,j).tex1.b, factor)
+			If factor > threshold Then char = cache1.texBuffer(i,j).tex1.char Else char = cache2.texBuffer(i,j).tex1.char
+			tex1 = ASCIITexture(char,r,g,b)
+			r = blend(cache1.texBuffer(i,j).tex2.r, cache2.texBuffer(i,j).tex2.r, factor)
+			g = blend(cache1.texBuffer(i,j).tex2.g, cache2.texBuffer(i,j).tex2.g, factor)
+			b = blend(cache1.texBuffer(i,j).tex2.b, cache2.texBuffer(i,j).tex2.b, factor)
+			If factor > threshold Then char = cache1.texBuffer(i,j).tex2.char Else char = cache2.texBuffer(i,j).tex2.char
+			tex2 = ASCIITexture(char,r,g,b)
+			cache.texBuffer(i,j) = ASCIITile(tex1,tex2)
+		Next i
+	Next j
+	Return cache
+End Function
