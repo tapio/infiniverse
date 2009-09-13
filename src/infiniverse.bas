@@ -423,7 +423,10 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
 	        If pl.spd <> 0 Then pl.ang = table_dirAngles(tempang)
 	        If MultiKey(KEY_W) AndAlso game.viewLevel <> zDetail AndAlso game.viewLevel <> zGalaxy Then moveStyle = 1: pl.spd = 1.0
         Else
-        	'If MultiKey(KEY_SPACE) Then pl.spd = 0
+        	If MultiKey(KEY_SPACE) Then
+	       		If pl.spd < 0.01 Then pl.spd = 0: pl.x = CInt(pl.x): pl.y = CInt(pl.y)
+				pl.spd *= 0.85
+			EndIf
 	        If MultiKey(KEY_W) Then
 	        	pl.spd += .02
 	        Else
@@ -528,9 +531,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
         ' enter places
         If MultiKey(KEY_SPACE) Then
         	If pl.spd <> 0 Then
-        		pl.spd = 0
-        		pl.x = CInt(pl.x)
-        		pl.y = CInt(pl.y)
+				'nop
         	Else
             Select Case game.viewLevel
                 Case zGalaxy
