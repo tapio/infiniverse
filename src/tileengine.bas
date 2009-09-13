@@ -65,13 +65,27 @@ Sub RefreshTile(ByRef cache As TileCache, x As Integer, y As Integer, i As Integ
 End Sub
 
 
-Function BlendTileCaches(ByRef cache1 As TileCache, ByRef cache2 As TileCache, factor As Single = 0.5) As TileCache
+Function CacheBlend_CircleInwards(_x As Integer, _y As Integer) As Single
+	Return Sqr(_x*_x + _y*_y) / Sqr(BUFFERXDIST * BUFFERXDIST + BUFFERYDIST * BUFFERYDIST)
+End Function
+
+Function CacheBlend_CircleOutwards(_x As Integer, _y As Integer) As Single
+	Return 1.0 - (Sqr(_x*_x + _y*_y) / Sqr(BUFFERXDIST * BUFFERXDIST + BUFFERYDIST * BUFFERYDIST))
+End Function
+
+Function CacheBlend_Fractal(_x As Integer, _y As Integer) As Single
+	Return CSng(Perlin(_x+BUFFERXDIST,_y+BUFFERYDIST,BUFFERXDIST*2+1, BUFFERYDIST*2+1, 4, 8) / 255.0)
+End Function
+
+Function BlendTileCaches(ByRef cache1 As TileCache, ByRef cache2 As TileCache, factor As Single = 0.5, thres_func As Function(As Integer, As Integer) As Single = @CacheBlend_CircleInwards) As TileCache
 	Dim As Integer i,j, r,g,b, char
 	Dim cache As TileCache
 	Dim As ASCIITexture tex1, tex2
 	factor = clip(factor, 0.0, 1.0)
 	'#Define threshold (.2 + Rnd*.6)
-	#Define threshold CSng(Perlin(i+BUFFERXDIST,j+BUFFERYDIST,BUFFERXDIST*2+1, BUFFERYDIST*2+1, 4, 1) / 255.0)
+	'#Define threshold CSng(Perlin(i+BUFFERXDIST,j+BUFFERYDIST,BUFFERXDIST*2+1, BUFFERYDIST*2+1, 4, 1) / 255.0)
+	'#Define threshold Distance(0,0,i,j) / Distance(0,0,BUFFERXDIST,BUFFERYDIST)
+	#Define threshold thres_func(i,j)
 	For j = -BUFFERYDIST To BUFFERYDIST
 		For i = -BUFFERXDIST To BUFFERXDIST
 			r = blend(cache1.texBuffer(i,j).tex1.r, cache2.texBuffer(i,j).tex1.r, factor)
