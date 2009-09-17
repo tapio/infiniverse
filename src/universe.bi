@@ -403,7 +403,7 @@ Const GALAXYSIZE = 80
 Type Galaxy
     seed As Double
     size As Integer = GALAXYSIZE
-    gmap(GALAXYSIZE,GALAXYSIZE) As Byte
+    gmap(GALAXYSIZE,GALAXYSIZE) As UByte
     Declare Constructor()
     Declare Constructor(seed As Double)
 End Type

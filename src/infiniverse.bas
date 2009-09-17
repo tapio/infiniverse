@@ -213,6 +213,7 @@ Dim As Integer i,j, tempx,tempy, tempz, count
         Draw String ( viewStartX + 8*viewX, viewStartY + 8*viewY ), pl.curIcon, RGB(150,250,150)
         Draw String ( viewStartX + 8*(viewX+CInt(Cos(pl.ang*DegToRad)*10)), viewStartY + 8*(viewY-CInt(Sin(pl.ang*DegToRad)*10)) ), "x", RGB(0,255,0)
         If pl.upX > 0 AndAlso Abs(pl.upX-pl.x) < viewX AndAlso Abs(pl.upY-pl.y) < viewY Then Draw String ( viewStartX + 8*(viewX + (pl.upX-CInt(pl.x))), viewStartY + 8*(viewY + (pl.upY-CInt(pl.y))) ), "X", RGB(200,0,200)
+		'Guide arrows
 		If game.viewLevel = zSystem Then
 			For i = 0 To game.curSystem.starCount + game.curSystem.planetCount - 1
 				Dim As Integer xdiff = game.curSystem.objects(i).x - pl.x
@@ -232,6 +233,8 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 
 		#Ifdef NETWORK_enabled
 			#Include "networking.bas"
+		#Else
+			game.viewLevelChanged = 0
 		#EndIf
 
         Locate 1,1: Color RGB(80,40,40)

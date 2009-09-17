@@ -389,7 +389,7 @@ Function GetGalaxyTile(x As Integer, y As Integer) As ASCIITile
         ElseIf star < 200 Then
             char = Asc("*")
         Else
-            char = Asc("*")'15
+            char = Asc("*") '15
         EndIf
     Return ASCIITile(ASCIITexture(char, star,star,star, "star"), ASCIITexture(219, col,col,col))
 End Function
