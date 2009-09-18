@@ -495,6 +495,16 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
                 bufferBlendFunc = @CacheBlend_CircleInwards
 				BuildNoiseTables game.curStarmap.seed, 8
 				dostuff(-1)
+			ElseIf game.viewLevel = zOrbit Then
+				pl.x = game.curPlanet.x
+				pl.y = game.curPlanet.y
+				prevTileBuf = tileBuf
+				tileBuf = TileCache(pl.x, pl.y, @GetSolarTile)
+				bufferBlendFunc = @CacheBlend_CircleInwards
+				BuildNoiseTables game.curSystem.seed, 8
+				pl.curIcon = char_starship
+				dostuff(-1)
+				AddMsg("Leaving planet orbit")
 			Else
 				If pl.x < 0 Then pl.x += game.boundW(game.viewLevel)
 				If pl.y < 0 Then pl.y += game.boundH(game.viewLevel)
