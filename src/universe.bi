@@ -479,8 +479,8 @@ End Type
                     boundW(zSystem) = this.curSystem.size
                     boundH(zSystem) = this.curSystem.size
                 Case zOrbit
-                    boundW(zOrbit) = this.curPlanet.w
-                    boundH(zOrbit) = this.curPlanet.h
+                    boundW(zOrbit) = ORBITSIZE
+                    boundH(zOrbit) = ORBITSIZE
 				Case zPlanet
                     boundW(zPlanet) = this.curPlanet.w
                     boundH(zPlanet) = this.curPlanet.h
