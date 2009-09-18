@@ -158,27 +158,21 @@ End Type
 		Case Is > 0
 			Redim planetorbitmap(0 to this.w/ORBITFACTOR-1, 0 to this.h/ORBITFACTOR-1)
 			dim as integer r,g,b,cnt
-			AddLog("Start Building Map.")
+			'AddLog("Start Building Map.")
 			For j as integer = 0 to UBound(planetorbitmap,2)'-1
 				for i as integer = 0 to UBound(planetorbitmap,1)'-1
 					cnt = 0: r=0:g=0:b=0
-'AddLog("huva1")
-
-					for n as integer= 1 to ORBITFACTOR step 32
-						for m as integer = 1 to ORBITFACTOR step 32
+					For n as integer= 1 to ORBITFACTOR step 32
+						For m as integer = 1 to ORBITFACTOR step 32
 							cnt+=1
 							Var til = GetGroundTile(i*ORBITFACTOR+m, j*ORBITFACTOR+n)
 							r += til.tex1.r : g += til.tex1.g : b += til.tex1.b
-'AddLog("huva2")
-
-						next m
-					next n
+						Next m
+					Next n
 					planetorbitmap(i,j) = ASCIITile(ASCIITexture(176, r/cnt,g/cnt,b/cnt, "planet"), 0,,@Anim_RotatePlanet)
-'AddLog("huva3")
-
-				next i
-			next j
-			AddLog("Orbit Map Built.")
+				Next i
+			Next j
+			'AddLog("Orbit Map Built.")
 		End Select
 	End Sub
 
