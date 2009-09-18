@@ -2,7 +2,10 @@
 
 #Define INF_VERSION "0.4.5"
 
-#Define NETWORK_enabled
+'#Define LEE
+#IfNDef LEE
+	#Define NETWORK_enabled
+#EndIf
 #Define CLIPBOARD_enabled
 
 
@@ -35,7 +38,7 @@ EndIf
 Declare Sub ParseCommandLine()
 ParseCommandline
 
-#IfDef NETWORK_enabled
+#IfNDef LEE
 	Print "Infiniverse-client "+INF_VERSION
 #Else
 	Print "Infiniverse Lone Explorer Edition "+INF_VERSION
@@ -164,6 +167,7 @@ Dim As Integer i,j, tempx,tempy, tempz, count
         game.updateBounds
         game.curStarmap.seed = game.curGalaxy.seed
 		BuildNoiseTables game.curStarmap.seed, 8
+	BuildNoiseTable 1, 9 'fixed noise
     'Dim pl As SpaceShip = SpaceShip(GALAXYSIZE/2,GALAXYSIZE/2,90)
     Dim pl As SpaceShip = SpaceShip(game.curStarmap.size/2,game.curStarmap.size/2,90)
     Dim tileBuf As TileCache = TileCache(pl.x, pl.y, @GetStarmapTile)
@@ -198,6 +202,17 @@ Dim As Integer i,j, tempx,tempy, tempz, count
         If consoleOpen = 0 Then Keys pl, tileBuf
         If gotoBookmarkSlot <> 0 Then tempz = GoToCoords(bookmarks(gotoBookmarkSlot),pl,tileBuf): gotoBookmarkSlot = 0
         
+		#IfDef LEE
+			ForIJ(1, viewStartX/8, 1, scrH/8)
+				tempx = Perlin(i,j,512,512,2,9)
+				If tempx > 200 Then Draw String ((i-1)*8, (j-1)*8), ".", RGB(tempx,tempx,tempx)
+			NextIJ
+			ForIJ(viewX*2 +1 + viewStartX/8, scrW/8, 1, scrH/8)
+				tempx = Perlin(i,j,512,512,2,9)
+				If tempx > 200 Then Draw String ((i-1)*8, (j-1)*8), ".", RGB(tempx,tempx,tempx)
+			NextIJ
+		#EndIf
+		
         UpdateCache tileBuf, CInt(pl.x),CInt(pl.y), viewX,viewY
 		'Blending
 		If game.viewLevelChanged And bufferBlendFunc <> 0 Then bufferBlendFactor = 1.0
@@ -247,6 +262,9 @@ Dim As Integer i,j, tempx,tempy, tempz, count
         
 		#Define UIframe1 RGB(0,24,96)
 		#Define UItext1  RGB(64,64,96)
+		#IfDef LEE
+		
+		#Else 'LEE
         '' Status ''
         tempx = 0 : tempy = viewStartY-8
 		DrawASCIIFrame tempx, tempy, viewStartX-16, tempy+8*8, UIframe1, "Ship Status"
@@ -291,6 +309,7 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 		DrawASCIIFrame viewStartX+16*viewX+16, tempy-8, scrW-8, viewStartY+8+16*viewY, RGB(100,50,0), "Cargo Inventory"
 		Color UItext1
 		Draw String (viewStartX+16*viewX+16+16, tempy+8), "Nothing"
+		#EndIf 'LEE
         '' Info ''
         DrawASCIIFrame viewStartX-8, 8, scrW-viewStartX+8, 5*8, RGB(0,0,96), "Information"
         Draw String (viewStartX+8, 16), "Coords: "+Str(CLngInt(pl.x))+" - "+Str(CLngInt(pl.y))
@@ -350,6 +369,7 @@ Function GoToCoords(stamp As String, ByRef pl As SpaceShip, ByRef tileBuf As Til
     Dim As Integer x,y, oldx,oldy
     Dim As Byte nounder = 0
     pl.curIcon = char_starship
+	prevTileBuf = tileBuf
 	For i As Integer = zStarmap To zStarmap+count-1
 		x = CInt( GetWord( GetWord(stamp,i-zStarmap+1,"#"), 1, "," ) )
 		y = CInt( GetWord( GetWord(stamp,i-zStarmap+1,"#"), 2, "," ) )
@@ -825,10 +845,13 @@ Sub ParseCommandline()
 	Do While arg <> ""
 		Select Case arg
 			Case "-h", "--help"
-				#IfDef NETWORK_enabled
+				#IfNDef LEE
 					Print "Infiniverse-client ("+EXENAME+")"
 				#Else
 					Print "Infiniverse Lone Explorer Edition ("+EXENAME+")"
+				#EndIf
+				#IfNDef NETWORK_enabled
+					Print "(Networking disabled)"
 				#EndIf
 				Print "Version " + INF_VERSION
 				Print "Arguments:"
