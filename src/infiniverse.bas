@@ -177,7 +177,7 @@ Dim As Integer i,j, tempx,tempy, tempz, count
     GoToCoords("4194312,4194292", pl, tileBuf)
     Dim gameTimer As FrameTimer
     Dim trafficTimer As DelayTimer = DelayTimer(0.05)
-	Dim Shared As Byte moveStyle = 0, hasMoved = 0, hasMovedOnline = 0
+	Dim Shared As Byte moveStyle = 0, hasMoved = 0, hasMovedOnline = 0, buildMode = 0
 	Dim Shared As UByte serverQueries = queries.timeSync, gotoBookmarkSlot = 0
 	Dim Shared As Byte consoleOpen = 0, auto_slow = 0
 	Dim Shared As String bookmarks(1 To 9)
@@ -264,7 +264,7 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 		#Define UItext1  RGB(64,64,96)
 		#IfDef LEE
 		
-		#Else 'LEE
+		#Else 'Not LEE
         '' Status ''
         tempx = 0 : tempy = viewStartY-8
 		DrawASCIIFrame tempx, tempy, viewStartX-16, tempy+8*8, UIframe1, "Ship Status"
@@ -299,16 +299,26 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 			Draw String (tempx+16, tempy+16+(i-1)*8), Str(i)+": N/A"
 		Next i
 		'Draw String (tempx+16, tempy+8)
-        '' Cargo ''
+        '' Cargo / Build ''
 		DrawASCIIFrame viewStartX+16*viewX+16, viewStartY-8, scrW-8, viewStartY+8*8, RGB(0,96,24), "Cargo Stats"
 		Color UItext1
 		Draw String (viewStartX+16*viewX+16+16, viewStartY   ), !"Total Space:     100 m3"
 		Draw String (viewStartX+16*viewX+16+16, viewStartY+8 ), !"Used Space :       0 m3"
 		Draw String (viewStartX+16*viewX+16+16, viewStartY+16), !"Used %     :       0 %"
 		tempy = viewStartY + 11*8
-		DrawASCIIFrame viewStartX+16*viewX+16, tempy-8, scrW-8, viewStartY+8+16*viewY, RGB(100,50,0), "Cargo Inventory"
-		Color UItext1
-		Draw String (viewStartX+16*viewX+16+16, tempy+8), "Nothing"
+		If buildMode Then temp = "BUILD MENU" Else temp = "Cargo Inventory"
+		DrawASCIIFrame viewStartX+16*viewX+16, tempy-8, scrW-8, viewStartY+8+16*viewY, RGB(100,50,0), temp
+		If buildMode = 0 Then
+			Color UItext1
+			Draw String (viewStartX+16*viewX+16+16, tempy+8), "Nothing"
+		Else
+			tempx = viewStartX+16*viewX+16+16
+			For i = 1 To BuildingCount
+				temp = Str(i) + " = " + Buildings(i).desc + String(17-Len(Buildings(i).desc), " ") +Chr(Buildings(i).tex.char)
+				Draw String (tempx, tempy+i*8), temp, RGB(Buildings(i).tex.r, Buildings(i).tex.g, Buildings(i).tex.b)
+			Next i
+		EndIf
+		
 		#EndIf 'LEE
         '' Info ''
         DrawASCIIFrame viewStartX-8, 8, scrW-viewStartX+8, 5*8, RGB(0,0,96), "Information"
@@ -424,45 +434,51 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
 	    moveStyle = 0
 	    pl.spd = 0
 	    game.viewLevelChanged = -1
+		buildMode = 0
 	#EndMacro
-    Static moveTimer As DelayTimer = DelayTimer(0.01)
+    Static moveTimer As DelayTimer = DelayTimer(0.002)
     Static keyTimer As DelayTimer = DelayTimer(0.5)
     hasMoved = 0
     
-    If MultiKey(KEY_LSHIFT) Then moveTimer.delay = 0 Else moveTimer.delay = .002
+    'If MultiKey(KEY_LSHIFT) Then moveTimer.delay = 0 Else moveTimer.delay = .002
     'If moveStyle = 0 Then moveTimer.delay = .1 Else moveTimer.delay = .002
-    
-    Dim As Integer tempx, tempy
-    
-    If moveTimer.hasExpired Then
-        pl.oldx = pl.x : pl.oldy = pl.y
-        If moveStyle = 0 Then
-        	Dim As UByte tempang = 0
-        	pl.spd = 0
-	        If MultiKey(KEY_UP)    Then tempang+=&b1000: pl.spd = .333
-	        If MultiKey(KEY_DOWN)  Then tempang+=&b0010: pl.spd = .333
-	        If MultiKey(KEY_LEFT)  Then tempang+=&b0001: pl.spd = .333
-	        If MultiKey(KEY_RIGHT) Then tempang+=&b0100: pl.spd = .333
-	        If pl.spd <> 0 Then pl.ang = table_dirAngles(tempang)
-	        If MultiKey(KEY_W) AndAlso game.viewLevel <> zDetail AndAlso game.viewLevel <> zGalaxy Then moveStyle = 1: pl.spd = 1.0
-        Else
-        	If MultiKey(KEY_SPACE) Then
-	       		If pl.spd < 0.01 Then pl.spd = 0: pl.x = CInt(pl.x): pl.y = CInt(pl.y)
+	If buildMode = 0 Then moveTimer.delay = 0.002 Else moveTimer.delay = 0.1
+	
+	Dim As Integer tempx, tempy
+
+	If moveTimer.hasExpired Then
+		pl.oldx = pl.x : pl.oldy = pl.y
+		Dim As Integer strafe = 0
+		Dim As UByte tempang = 0
+		If moveStyle = 0 Then
+			pl.spd = 0
+			If MultiKey(KEY_UP)    Then tempang+=&b1000: pl.spd = .333
+			If MultiKey(KEY_DOWN)  Then tempang+=&b0010: pl.spd = .333
+			If MultiKey(KEY_LEFT)  Then tempang+=&b0001: pl.spd = .333
+			If MultiKey(KEY_RIGHT) Then tempang+=&b0100: pl.spd = .333
+			If MultiKey(KEY_LSHIFT) OrElse MultiKey(KEY_RSHIFT) Then strafe = 1
+			If tempang <> 0 AndAlso strafe = 0 Then pl.ang = table_dirAngles(tempang)
+			If MultiKey(KEY_W) AndAlso game.viewLevel <> zDetail AndAlso game.viewLevel <> zGalaxy Then moveStyle = 1: pl.spd = 1.0
+		Else
+			If MultiKey(KEY_SPACE) Then
+				If pl.spd < 0.01 Then pl.spd = 0: pl.x = CInt(pl.x): pl.y = CInt(pl.y)
 				pl.spd *= 0.85
 			EndIf
-	        If MultiKey(KEY_W) Then
-	        	pl.spd += .02
-	        Else
-	        	If auto_slow Then pl.spd *= .95
-	        	If pl.spd < .2 Then pl.spd = 0: moveStyle = 0
-	        EndIf
-	        If MultiKey(KEY_S) Then pl.spd = Max(0.0, pl.spd-0.01)': moveTimer.start
-        EndIf
-        If MultiKey(KEY_A) Then pl.ang = wrap(pl.ang+5,360): moveTimer.start
-        If MultiKey(KEY_D) Then pl.ang = wrap(pl.ang-5,360): moveTimer.start
+			If MultiKey(KEY_W) Then
+				pl.spd += .02
+			Else
+				If auto_slow Then pl.spd *= .95
+				If pl.spd < .2 Then pl.spd = 0: moveStyle = 0
+			EndIf
+			If MultiKey(KEY_S) Then pl.spd = Max(0.0, pl.spd-0.01)': moveTimer.start
+		EndIf
+		If MultiKey(KEY_A) Then pl.ang = wrap(pl.ang+5,360): moveTimer.start
+		If MultiKey(KEY_D) Then pl.ang = wrap(pl.ang-5,360): moveTimer.start
 		If pl.spd <> 0 Then
-	        pl.x = pl.x + Cos(pl.ang * DegToRad) * pl.spd
-	        pl.y = pl.y - Sin(pl.ang * DegToRad) * pl.spd
+			Dim As Single moveang = pl.ang
+			If strafe <> 0 Then moveang = table_dirAngles(tempang)
+			pl.x = pl.x + Cos(moveang * DegToRad) * pl.spd
+			pl.y = pl.y - Sin(moveang * DegToRad) * pl.spd
 			hasMoved = -1
 			moveTimer.start
 		EndIf
@@ -516,8 +532,8 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
 		EndIf
     EndIf
     
-    Dim As Byte controlKey = 0, buildMode = 0
-    If MultiKey(KEY_B) And game.viewLevel = zDetail Then buildMode = -1'Not buildmode '-1
+    Dim As Byte controlKey = 0 ', buildMode = 0
+    'If MultiKey(KEY_B) And game.viewLevel = zDetail Then switch(buildMode) ' = -1'Not buildmode '-1
     If MultiKey(KEY_CONTROL) Then controlKey = -1
     
     tempx = CInt(pl.x): tempy = CInt(pl.y)
@@ -525,6 +541,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
     If keyTimer.hasExpired Then
     	Dim As String tempk
     	If MultiKey(KEY_T) Then consoleOpen = -1: tempk = InKey: Exit Sub
+		If MultiKey(KEY_B) And game.viewLevel = zDetail Then switch(buildMode): keyTimer.start ' = -1'Not buildmode '-1
     	'If MultiKey(KEY_F2) Then switch(moveStyle): pl.x = Int(pl.x): pl.y = Int(pl.y): keyTimer.start
     	If MultiKey(KEY_F3) Then switch(auto_slow): keyTimer.start
     	#Ifdef NETWORK_enabled
@@ -535,6 +552,8 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
     	If buildMode Then
     		For i As Integer = 1 To BuildingCount
     			If MultiKey(i+1) Then
+					tempx += CInt(Cos(pl.ang * DegToRad))
+					tempy -= CInt(Sin(pl.ang * DegToRad))
     				If game.curArea.Modify(tempx,tempy, ASCIITile( buildings(i).tex,0,buildings(i).flags )) Then
 						#Ifdef NETWORK_enabled
 				    		pendingModifications+=1
