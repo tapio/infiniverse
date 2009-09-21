@@ -1,6 +1,6 @@
 ' Project "Infiniverse" - A Procedural Exploration Game
 
-#Define INF_VERSION "0.4.5"
+#Define INF_VERSION "0.4.6"
 
 '#Define LEE
 #IfNDef LEE
@@ -8,6 +8,11 @@
 #EndIf
 #Define CLIPBOARD_enabled
 
+#IfDef __FB_LINUX__
+ #Define UPDATER_EXE_NAME "updater"
+#Else
+ #Define UPDATER_EXE_NAME "updater.exe"
+#EndIf
 
 #Include Once "fbclp.bi"
 Using fb_clipboard
@@ -870,6 +875,7 @@ End Function
 
 Sub ParseCommandline()
 	Dim i As Integer = 1
+	Dim launch_updater As Integer = -1
 	Var arg = Command(i)
 	Do While arg <> ""
 		Select Case arg
@@ -923,6 +929,8 @@ Sub ParseCommandline()
 			Case "-l", "--logfile"
 				LOGFILE = Command(i+1)
 				i += 1
+			Case "-d", "--no-launcher"
+				launch_updater = 0
 			Case "-s", "--stars"
 				Print ".  . .   .    .       .    . . \|/ ."
 				Print " .       +     ..    .   *     -o-  "
@@ -937,6 +945,7 @@ Sub ParseCommandline()
 		i += 1
 		arg = Command(i)
 	Loop
+	If launch_updater Then Print "Launching Updater..." : Run("./"+UPDATER_EXE_NAME) : End
 End Sub
 
 #Include "world.bas"
