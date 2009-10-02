@@ -76,6 +76,7 @@ End Type
         this.g = _g
         this.b = _b
         this.char = _char
+        this.desc = _desc
         'If _desc <> "" Then
 			'this.desc = CUByte(_desc)
 		'EndIf

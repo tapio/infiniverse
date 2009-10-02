@@ -274,15 +274,15 @@ Dim As Integer i,j, tempx,tempy, tempz, count
         tempx = 0 : tempy = viewStartY-8
 		DrawASCIIFrame tempx, tempy, viewStartX-16, tempy+8*8, UIframe1, "Ship Status"
 		Color UItext1
-		Draw String (tempx+16, tempy+8 ), "Hull cond: "+Str(100)+"%"
+		Draw String (tempx+16, tempy+16 ), "Hull cond: "+Str(100)+"%"
 		'Draw String (tempx+16, tempy+16), "Shields  : "+Str(100)+"%"
-		Draw String (tempx+16, tempy+16), "A-M Fuel : "+Str(pl.fuel)+"kg"
-		Draw String (tempx+16, tempy+24), "Energy   : "+Str(pl.energy)+"kg"
+		Draw String (tempx+16, tempy+24), "A-M Fuel : "+Str(pl.fuel)+"kg"
+		Draw String (tempx+16, tempy+32), "Energy   : "+Str(pl.energy)+""
 	    '' Scanners ''
         tempx = 0 : tempy = viewStartY-8 + 10*8
 		DrawASCIIFrame tempx, tempy, viewStartX-16, tempy+8*8, UIframe1, "Scanners"
 		Color UItext1
-        Draw String (tempx+16, tempy+8), UpFirst(tileBuf.GetTexture(pl.x,pl.y).tex1.desc)
+        Draw String (tempx+16, tempy+16), UpFirst(tileBuf.GetTexture(pl.x,pl.y).tex1.desc)
         Select Case game.viewLevel
         	Case zSystem
         		Draw String (tempx+16, tempy+24 ), "Suns   : "+Str(game.curSystem.starCount)
@@ -304,12 +304,19 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 			Draw String (tempx+16, tempy+16+(i-1)*8), Str(i)+": N/A"
 		Next i
 		'Draw String (tempx+16, tempy+8)
+		'' Missiles ''
+		tempy = viewStartY-8 + 44*8
+		DrawASCIIFrame tempx, tempy, viewStartX-16, tempy+5*8, RGB(64,0,16), "Torpedos"
+		Color RGB(96,0,00)
+		Draw String (tempx+16, tempy+2*8), "Amount: 0"
+		Draw String (tempx+16, tempy+3*8), "Armed:  0"
+		
         '' Cargo / Build ''
 		DrawASCIIFrame viewStartX+16*viewX+16, viewStartY-8, scrW-8, viewStartY+8*8, RGB(0,96,24), "Cargo Stats"
 		Color UItext1
-		Draw String (viewStartX+16*viewX+16+16, viewStartY   ), !"Total Space:     100 m3"
-		Draw String (viewStartX+16*viewX+16+16, viewStartY+8 ), !"Used Space :       0 m3"
-		Draw String (viewStartX+16*viewX+16+16, viewStartY+16), !"Used %     :       0 %"
+		Draw String (viewStartX+16*viewX+16+16, viewStartY+8 ), !"Total Space:     100 m3"
+		Draw String (viewStartX+16*viewX+16+16, viewStartY+16), !"Used Space :       0 m3"
+		Draw String (viewStartX+16*viewX+16+16, viewStartY+24), !"Used %     :       0 %"
 		tempy = viewStartY + 11*8
 		If buildMode Then temp = "BUILD MENU" Else temp = "Cargo Inventory"
 		DrawASCIIFrame viewStartX+16*viewX+16, tempy-8, scrW-8, viewStartY+8+16*viewY, RGB(100,50,0), temp
@@ -329,6 +336,7 @@ Dim As Integer i,j, tempx,tempy, tempz, count
         DrawASCIIFrame viewStartX-8, 8, scrW-viewStartX+8, 5*8, RGB(0,0,96), "Information"
         Draw String (viewStartX+8, 16), "Coords: "+Str(CLngInt(pl.x))+" - "+Str(CLngInt(pl.y))
 		Draw String (viewStartX+8, 24), "Time: "+GetTimeString()
+		Draw String (viewStartX+8, 32), "Credits: "+Str(0)
         '' Messages ''
         DrawASCIIFrame viewStartX-8, 9*8+16*viewY, scrW-viewStartX+8, scrH-4*8, RGB(64,0,24), "Messages"
         PrintMessages viewStartX, 10*8+16*viewY, 10

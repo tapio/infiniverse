@@ -328,8 +328,16 @@ Function SystemStarBG(x As Integer, y As Integer) As ASCIITexture
     x = wrap(x,worldW)
     y = wrap(y,worldH) 
     Dim As UByte star = Perlin(x,y,worldW,worldH,4,3)
-    Dim As UByte starC = star / 2 + 128
-    If star Mod 10 = 0 Then Return ASCIITexture(Asc("."), starC,starC,starC, "distant star")
+    Dim As UByte starC = star ' * .8 + 51
+    'If Rnd < .1 Then
+    If star Mod 10 = 0 Then 
+    	Return ASCIITexture(Asc("."), starC,starC,starC, "distant star")
+    'ElseIf Rnd < .1 Then 'star Mod 5 = 0 Then ' Very distant parallax stars
+    	'If x Mod 2 = 0 Then x = wrap(x-1, worldW)
+    	'If y Mod 2 = 0 Then y = wrap(y-1, worldH)
+    '	starC = Perlin(x,y,WorldW,worldH,4,4) / 2
+    '	Return ASCIITexture(Asc("."), starC,0,0, "distant star")
+    EndIf
 '    star = farStarBG(x,y)
 '	If star > 0 Then Return ASCIITexture(Asc("."), star,star,star, "distant star")
     Return ASCIITexture(0, 0,0,0,"emptiness")
@@ -371,7 +379,7 @@ Function StarmapHasStar(x As Integer, y As Integer) As ASCIITexture
         col += 50
         If col > 255 Then col = 255
         r = col: g = r: b = r
-        Return ASCIITexture(char,r,g,b,"star")
+        Return ASCIITexture(char,r,g,b,"star system")
     EndIf
     Return ASCIITexture(0,0,0,0,"emptiness")
 End Function
@@ -381,7 +389,7 @@ Function GetGalaxyTile(x As Integer, y As Integer) As ASCIITile
     Dim As UByte col = 0
     col = Perlin(x,y,GALAXYSIZE,GALAXYSIZE,32,1)
     col = ExpFilter(col,200,.99) *.333
-    If Not in2dArray(game.curGalaxy.gmap,x,y) OrElse game.curGalaxy.gmap(x,y) = 0 Then Return ASCIITile(ASCIITexture(0,0,0,0, "emptiness"), ASCIITexture(219, col,col,col))
+    If Not in2dArray(game.curGalaxy.gmap,x,y) OrElse game.curGalaxy.gmap(x,y) = 0 Then Return ASCIITile(ASCIITexture(0,0,0,0, "stars"), ASCIITexture(219, col,col,col))
     Dim As Integer star = Min( 100 + game.curGalaxy.gmap(x,y) * 20, 255)
     Dim As UByte char
         If star < 160 Then
@@ -391,5 +399,5 @@ Function GetGalaxyTile(x As Integer, y As Integer) As ASCIITile
         Else
             char = Asc("*") '15
         EndIf
-    Return ASCIITile(ASCIITexture(char, star,star,star, "star"), ASCIITexture(219, col,col,col))
+    Return ASCIITile(ASCIITexture(char, star,star,star, "lots of stars"), ASCIITexture(219, col,col,col))
 End Function
