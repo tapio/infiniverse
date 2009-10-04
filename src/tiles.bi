@@ -103,3 +103,26 @@ End Type
         this.originY = originY
     End Sub
 
+
+
+
+Type Trail
+	x As Integer
+	y As Integer
+	fade As Integer
+	Declare Constructor(x As Integer=0, y As Integer=0, fade As Integer=1000)
+End Type
+	Constructor Trail(x As Integer=0, y As Integer=0, fade As Integer=1000)
+		this.x = x
+		this.y = y
+		this.fade = fade
+	End Constructor
+
+Operator = (lhs As Trail, rhs As Trail) As Integer
+	Return (lhs.x = rhs.x) AndAlso (lhs.y = rhs.y) AndAlso (lhs.fade = rhs.fade)
+End Operator
+
+
+'DeclareSingleLinkedListType(Trail)
+'Dim Shared trails As TrailSingleLinkedList
+Dim Shared trails As SingleLinkedList

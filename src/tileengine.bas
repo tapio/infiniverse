@@ -36,6 +36,28 @@ Sub UpdateCache(ByRef cache As TileCache, x As Integer, y As Integer, xdist As I
 End Sub
 
 
+Sub DrawTrails(x As Integer, y As Integer, viewScreenX As Integer, viewScreenY As Integer, viewXDist As Integer, viewYDist As Integer)
+	Dim As Integer i,j
+	Var trailtex = ASCIITexture(249, 0, 0, 0)
+	viewScreenX += TEXTURESIZE * VIEWXDIST
+	viewScreenY += TEXTURESIZE * VIEWYDIST 
+	Dim iter As Trail Ptr = trails.initIterator()
+	While iter <> 0
+		iter->fade -= 5
+		trailtex.b = iter->fade
+		If iter->fade <= 0 Then
+			trails.remove(iter)
+		Else
+			If inBounds(iter->x,x-VIEWXDIST,x+VIEWXDIST) AndAlso _
+			   inBounds(iter->y,y-VIEWYDIST,y+VIEWYDIST) AndAlso _
+			   trailtex <> 0 Then _
+			   trailtex.DrawTexture( viewStartX + 8*(viewX + (iter->x-x)), _
+			   						 viewStartY + 8*(viewY + (iter->y-y)) )
+		EndIf
+		iter = trails.getNext()
+	Wend
+End Sub
+
 
 Sub DrawView(ByRef cache As TileCache, x As Integer, y As Integer, viewScreenX As Integer, viewScreenY As Integer, viewXDist As Integer, viewYDist As Integer)
     Dim As Integer i,j

@@ -94,6 +94,14 @@ End Type
 '		Return ""
 '	End Property
 
+Operator = (lhs As ASCIITexture, rhs As Integer) As Integer
+	Return lhs.char = rhs
+End Operator
+
+Operator <> (lhs As ASCIITexture, rhs As Integer) As Integer
+	Return lhs.char <> rhs
+End Operator
+
 
 Type Building
 	tex As ASCIITexture
