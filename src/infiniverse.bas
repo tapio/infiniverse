@@ -227,7 +227,7 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 			DrawView tempTileBuf, CInt(pl.x),CInt(pl.y), viewStartX,viewStartY, viewX,viewY
 		EndIf
         DrawTrails CInt(pl.x),CInt(pl.y), viewStartX,viewStartY, viewX,viewY
-        		
+        
         Draw String ( viewStartX + 8*viewX, viewStartY + 8*viewY ), pl.curIcon, RGB(150,250,150)
         Draw String ( viewStartX + 8*(viewX+CInt(Cos(pl.ang*DegToRad)*10)), viewStartY + 8*(viewY-CInt(Sin(pl.ang*DegToRad)*10)) ), "x", RGB(0,255,0)
         If pl.upX > 0 AndAlso Abs(pl.upX-pl.x) < viewX AndAlso Abs(pl.upY-pl.y) < viewY Then Draw String ( viewStartX + 8*(viewX + (pl.upX-CInt(pl.x))), viewStartY + 8*(viewY + (pl.upY-CInt(pl.y))) ), "X", RGB(200,0,200)
@@ -460,29 +460,30 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
 
 	If moveTimer.hasExpired Then
 		pl.oldx = pl.x : pl.oldy = pl.y
-		Dim As Integer strafe = 0
+		Dim As Integer strafe = 0, thrust = 0
 		Dim As UByte tempang = 0
 		If moveStyle = 0 Then
 			pl.spd = 0
-			If MultiKey(KEY_UP)    Then tempang+=&b1000: pl.spd = .333
-			If MultiKey(KEY_DOWN)  Then tempang+=&b0010: pl.spd = .333
-			If MultiKey(KEY_LEFT)  Then tempang+=&b0001: pl.spd = .333
-			If MultiKey(KEY_RIGHT) Then tempang+=&b0100: pl.spd = .333
+			If MultiKey(KEY_UP)    Then tempang+=&b1000: pl.spd = .333: thrust = 1
+			If MultiKey(KEY_DOWN)  Then tempang+=&b0010: pl.spd = .333: thrust = 1
+			If MultiKey(KEY_LEFT)  Then tempang+=&b0001: pl.spd = .333: thrust = 1
+			If MultiKey(KEY_RIGHT) Then tempang+=&b0100: pl.spd = .333: thrust = 1
 			If MultiKey(KEY_LSHIFT) OrElse MultiKey(KEY_RSHIFT) Then strafe = 1
 			If tempang <> 0 AndAlso strafe = 0 Then pl.ang = table_dirAngles(tempang)
-			If MultiKey(KEY_W) AndAlso game.viewLevel <> zDetail AndAlso game.viewLevel <> zGalaxy Then moveStyle = 1: pl.spd = 1.0
+			If MultiKey(KEY_W) AndAlso game.viewLevel <> zDetail AndAlso game.viewLevel <> zGalaxy Then moveStyle = 1: pl.spd = 1.0: thrust = 1
 		Else
 			If MultiKey(KEY_SPACE) Then
 				If pl.spd < 0.01 Then pl.spd = 0: pl.x = CInt(pl.x): pl.y = CInt(pl.y)
 				pl.spd *= 0.85
 			EndIf
-			If MultiKey(KEY_W) Then
+			If MultiKey(KEY_W) Then 
 				pl.spd += .02
+				thrust = 1
 			Else
 				If auto_slow Then pl.spd *= .95
 				If pl.spd < .2 Then pl.spd = 0: moveStyle = 0
 			EndIf
-			If MultiKey(KEY_S) Then pl.spd = Max(0.0, pl.spd-0.01)': moveTimer.start
+			If MultiKey(KEY_S) Then pl.spd = Max(0.0, pl.spd-0.01) ': moveTimer.start
 		EndIf
 		If MultiKey(KEY_A) Then pl.ang = wrap(pl.ang+5,360): moveTimer.start
 		If MultiKey(KEY_D) Then pl.ang = wrap(pl.ang-5,360): moveTimer.start
@@ -492,7 +493,14 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
 			pl.x = pl.x + Cos(moveang * DegToRad) * pl.spd
 			pl.y = pl.y - Sin(moveang * DegToRad) * pl.spd
 			hasMoved = -1
-			trails.add(New Trail(pl.oldx,pl.oldy,255))
+			If game.viewLevel <> zDetail AndAlso game.viewLevel <> zSpecial Then
+				'AndAlso ( Abs(Int(pl.x)-Int(pl.oldx)) >= 1 OrElse _
+				'Abs(Int(pl.y)-Int(pl.oldy)) >= 1 ) Then
+					If thrust = 0 Then _
+						trails.add(New Trail(pl.oldx,pl.oldy,96,0,255,Timer,1)) _
+					Else _
+						trails.add(New Trail(pl.oldx,pl.oldy,255,128,0,Timer,1))
+			EndIf
 			moveTimer.start
 		EndIf
 		'If ( game.viewLevel = zGalaxy ) AndAlso (Not inBounds(pl.x,0,game.boundW(game.viewLevel)-1) OrElse Not inBounds(pl.y,0,game.boundH(game.viewLevel)-1)) Then

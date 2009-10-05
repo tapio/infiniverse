@@ -107,20 +107,29 @@ End Type
 
 
 Type Trail
-	x As Integer
-	y As Integer
-	fade As Integer
-	Declare Constructor(x As Integer=0, y As Integer=0, fade As Integer=1000)
+	x As Double
+	y As Double
+	r As UByte
+	g As UByte
+	b As UByte
+	c As UByte = 249
+	fadeTime As Single
+	startTime As Double
+	Declare Constructor(x As Integer=0, y As Integer=0, r As UByte=0, g As UByte=0, b As UByte=0, startTime As Double, fade As Single=1)
 End Type
-	Constructor Trail(x As Integer=0, y As Integer=0, fade As Integer=1000)
+	Constructor Trail(x As Integer=0, y As Integer=0, r As UByte=0, g As UByte=0, b As UByte=0, startTime As Double, fade As Single=1)
 		this.x = x
 		this.y = y
-		this.fade = fade
+		this.r = r
+		this.g = g
+		this.b = b
+		this.fadeTime = fade
+		this.startTime = startTime
 	End Constructor
 
-Operator = (lhs As Trail, rhs As Trail) As Integer
-	Return (lhs.x = rhs.x) AndAlso (lhs.y = rhs.y) AndAlso (lhs.fade = rhs.fade)
-End Operator
+'Operator = (lhs As Trail, rhs As Trail) As Integer
+'	Return (lhs.x = rhs.x) AndAlso (lhs.y = rhs.y) AndAlso (lhs.fade = rhs.fade)
+'End Operator
 
 
 'DeclareSingleLinkedListType(Trail)

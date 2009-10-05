@@ -37,22 +37,23 @@ End Sub
 
 
 Sub DrawTrails(x As Integer, y As Integer, viewScreenX As Integer, viewScreenY As Integer, viewXDist As Integer, viewYDist As Integer)
-	Dim As Integer i,j
-	Var trailtex = ASCIITexture(249, 0, 0, 0)
+	Var trailtex = ASCIITexture(0, 0, 0, 0)
 	viewScreenX += TEXTURESIZE * VIEWXDIST
 	viewScreenY += TEXTURESIZE * VIEWYDIST 
+	Dim As Single fader
 	Dim iter As Trail Ptr = trails.initIterator()
 	While iter <> 0
-		iter->fade -= 5
-		trailtex.b = iter->fade
-		If iter->fade <= 0 Then
+		fader = iter->startTime + iter->fadeTime - Timer
+		If fader < 0 Then
 			trails.remove(iter)
 		Else
 			If inBounds(iter->x,x-VIEWXDIST,x+VIEWXDIST) AndAlso _
-			   inBounds(iter->y,y-VIEWYDIST,y+VIEWYDIST) AndAlso _
-			   trailtex <> 0 Then _
-			   trailtex.DrawTexture( viewStartX + 8*(viewX + (iter->x-x)), _
-			   						 viewStartY + 8*(viewY + (iter->y-y)) )
+			   inBounds(iter->y,y-VIEWYDIST,y+VIEWYDIST) Then
+			   		fader = fader / iter->fadeTime
+			   		trailtex = ASCIITexture(iter->c,iter->r*fader,iter->g*fader,iter->b*fader)
+			   		trailtex.DrawTexture( viewStartX + 8*(viewX + (iter->x-x)), _
+			   						 	  viewStartY + 8*(viewY + (iter->y-y)) )
+			EndIf
 		EndIf
 		iter = trails.getNext()
 	Wend
