@@ -494,12 +494,24 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
 			pl.y = pl.y - Sin(moveang * DegToRad) * pl.spd
 			hasMoved = -1
 			If game.viewLevel <> zDetail AndAlso game.viewLevel <> zSpecial Then
-				'AndAlso ( Abs(Int(pl.x)-Int(pl.oldx)) >= 1 OrElse _
-				'Abs(Int(pl.y)-Int(pl.oldy)) >= 1 ) Then
+				Var xdiff = Abs(CInt(pl.x)-CInt(pl.oldx))
+				Var ydiff = Abs(CInt(pl.y)-CInt(pl.oldy))
+				If xdiff = 1 OrElse ydiff = 1 Then
 					If thrust = 0 Then _
 						trails.add(New Trail(pl.oldx,pl.oldy,96,0,255,Timer,1)) _
 					Else _
 						trails.add(New Trail(pl.oldx,pl.oldy,255,128,0,Timer,1))
+				ElseIf xdiff > 1 OrElse ydiff > 1 Then
+					Dim As Integer d = Distance(pl.x, pl.y, pl.oldx, pl.oldy)
+					For dd As Single = 1 To d ' Step 0.5
+						tempx = pl.x - CInt(Cos(pl.ang * DegToRad)*dd)
+						tempy = pl.y + CInt(Sin(pl.ang * DegToRad)*dd)
+						If thrust = 0 Then _
+							trails.add(New Trail(tempx,tempy,96,0,255,Timer,1)) _
+						Else _
+							trails.add(New Trail(tempx,tempy,255,128,0,Timer,1))
+					Next dd
+				EndIf
 			EndIf
 			moveTimer.start
 		EndIf
@@ -841,6 +853,39 @@ Sub DrawASCIIFrame(x1 As Integer, y1 As Integer, x2 As Integer, y2 As Integer, c
 	Draw String (x2,y2), Chr(188), col '217
 	If Title <> "" Then Line (x1+15, y1)-(x1+15+8*Len(Title), y1+7), RGB(0,0,0), BF : Draw String (x1+16, y1), Title, col
 End Sub
+
+
+Sub TextLine(x1 As Integer, y1 As Integer, x2 As Integer, y2 As Integer, char As String = ".", col As UInteger = 0)
+	If col = 0 Then col = LoWord(Color())
+	Dim As Integer steep = Abs(y2 - y1) > Abs(x2 - x1)
+	If steep Then
+		Swap x1, y1
+		Swap x2, y2
+	EndIf
+	If x1 > x2 Then
+		Swap x1, x2
+		Swap y1, y2
+	EndIf
+	Dim As Integer deltax = x2 - x1
+	Dim As Integer deltay = Abs(y2 - y1)
+	Dim As Integer erro = deltax / 2
+	Dim As Integer ystep
+	Dim As Integer y = y1
+	If y1 < y2 Then ystep = 1 Else ystep = -1
+	For x As Integer = x1 To x2
+		If steep Then
+			Draw String (y*8,x*8), char, col
+		Else
+			Draw String (x*8,y*8), char, col
+		EndIf
+		erro = erro - deltay
+		If erro < 0 Then
+			y = y + ystep
+			erro = erro + deltax
+		EndIf
+	Next x
+End Sub
+
 
 Sub SaveBookmarks(filename As String = "bookmarks.ini")
 	Var f = FreeFile
