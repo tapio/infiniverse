@@ -86,7 +86,7 @@ Declare Function GetGroundTexture(height As UByte, temperature As UByte, rainfal
 Declare Function GetPureGround(x As Integer, y As Integer) As ASCIITile
 Declare Function GetGalaxyTile(x As Integer, y As Integer) As ASCIITile
 Declare Sub AddTrail(x1 As Integer, y1 As Integer, x2 As Integer, y2 As Integer, col As UInteger=0)
-Declare Function GameInput(promt As String = "", x As Integer, y As Integer, stri As String, k As String = "") As String
+Declare Function GameInput(promt As String = "", x As Integer, y As Integer, stri As String, k As String = "", passwordchar As String = "") As String
 'Declare Function GoToCoords(stamp As String, ByRef pl As SpaceShip, ByRef tileBuf As TileCache) As Byte
 Declare Sub GenerateTextures(seed As Double = -1)
 Declare Sub GenerateDistantStarBG(array() As UByte)
@@ -812,19 +812,30 @@ End Sub
 
 
 
-Function GameInput(promt As String = "", x As Integer, y As Integer, stri As String, k As String = "") As String
+Function GameInput(promt As String = "", x As Integer, y As Integer, stri As String, k As String = "", passwordchar As String = "") As String
+	Static _input_timer As Double
+	Static _backspace_timer_delay As Double = 0.5
+	Static _backspace_down_flag As Integer = 0
 	Dim As UByte j = Asc(k)
 	If j >= 32 And j <= 246 Then stri = stri & Chr(j)
-	If Len(stri) > 0 Then
-		If j = 8 Then
+	If Len(stri) > 0 And Timer > _input_timer + _backspace_timer_delay Then
+		If j = 8 Or MultiKey(KEY_BACKSPACE) Then
 			stri = Left(stri,Len(stri)-1)
-		ElseIf MultiKey(KEY_BACKSPACE) Then	
-			stri = Left(stri,Len(stri)-1)
+			_input_timer = Timer
+			If _backspace_down_flag = 1 Then _
+				_backspace_timer_delay = 0.01 _
+				Else _backspace_down_flag += 1
+		Else
+			_backspace_timer_delay = .5
+			_backspace_down_flag = 0
 		EndIf		
 	EndIf
-	Draw String (x,y), promt & stri & "|", RGB(150,250,250)
+	Var dispstri = stri
+	If passwordchar <> "" Then dispstri = String(Len(stri), passwordchar)
+	Draw String (x,y), promt & dispstri & "|", RGB(150,250,250)
 	Return stri
 End Function
+
 
 Sub DrawASCIIFrame(x1 As Integer, y1 As Integer, x2 As Integer, y2 As Integer, col As UInteger = 0, Title As String = "")
 	If col = 0 Then col = LoWord(Color())
