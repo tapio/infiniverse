@@ -106,7 +106,7 @@ End Type
 
 
 
-Type Trail
+Type Particle
 	x As Double
 	y As Double
 	r As UByte
@@ -115,14 +115,14 @@ Type Trail
 	c As UByte = 249
 	fadeTime As Single
 	startTime As Double
-	Declare Constructor(x As Integer=0, y As Integer=0, r As UByte=0, g As UByte=0, b As UByte=0, startTime As Double, fade As Single=1, char As UByte=249)
+	Declare Constructor(x As Integer=0, y As Integer=0, col As UInteger = 0, startTime As Double, fade As Single=1, char As UByte=249)
 End Type
-	Constructor Trail(x As Integer=0, y As Integer=0, r As UByte=0, g As UByte=0, b As UByte=0, startTime As Double, fade As Single=1, char As UByte=249)
+	Constructor Particle(x As Integer=0, y As Integer=0, col As UInteger = 0, startTime As Double, fade As Single=1, char As UByte=249)
 		this.x = x
 		this.y = y
-		this.r = r
-		this.g = g
-		this.b = b
+		this.r = rgb_r(col)
+		this.g = rgb_g(col)
+		this.b = rgb_b(col)
 		this.c = char
 		this.fadeTime = fade
 		this.startTime = startTime
@@ -135,4 +135,4 @@ End Type
 
 'DeclareSingleLinkedListType(Trail)
 'Dim Shared trails As TrailSingleLinkedList
-Dim Shared trails As SingleLinkedList
+Dim Shared particles As SingleLinkedList

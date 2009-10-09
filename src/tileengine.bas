@@ -36,26 +36,26 @@ Sub UpdateCache(ByRef cache As TileCache, x As Integer, y As Integer, xdist As I
 End Sub
 
 
-Sub DrawTrails(x As Integer, y As Integer, viewScreenX As Integer, viewScreenY As Integer, viewXDist As Integer, viewYDist As Integer)
-	Var trailtex = ASCIITexture(0, 0, 0, 0)
+Sub DrawParticles(x As Integer, y As Integer, viewScreenX As Integer, viewScreenY As Integer, viewXDist As Integer, viewYDist As Integer)
+	Var partex = ASCIITexture(0, 0, 0, 0)
 	viewScreenX += TEXTURESIZE * VIEWXDIST
 	viewScreenY += TEXTURESIZE * VIEWYDIST 
 	Dim As Single fader
-	Dim iter As Trail Ptr = trails.initIterator()
+	Dim iter As Particle Ptr = particles.initIterator()
 	While iter <> 0
 		fader = iter->startTime + iter->fadeTime - Timer
 		If fader < 0 Then
-			trails.remove(iter)
+			particles.remove(iter)
 		Else
 			If inBounds(iter->x,x-VIEWXDIST,x+VIEWXDIST) AndAlso _
 			   inBounds(iter->y,y-VIEWYDIST,y+VIEWYDIST) Then
 			   		fader = fader / iter->fadeTime
-			   		trailtex = ASCIITexture(iter->c,iter->r*fader,iter->g*fader,iter->b*fader)
-			   		trailtex.DrawTexture( viewStartX + 8*(viewX + (iter->x-x)), _
-			   						 	  viewStartY + 8*(viewY + (iter->y-y)) )
+			   		partex = ASCIITexture(iter->c,iter->r*fader,iter->g*fader,iter->b*fader)
+			   		partex.DrawTexture( viewStartX + 8*(viewX + (iter->x-x)), _
+			   							viewStartY + 8*(viewY + (iter->y-y)) )
 			EndIf
 		EndIf
-		iter = trails.getNext()
+		iter = particles.getNext()
 	Wend
 End Sub
 

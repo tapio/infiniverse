@@ -401,3 +401,22 @@ Function GetGalaxyTile(x As Integer, y As Integer) As ASCIITile
         EndIf
     Return ASCIITile(ASCIITexture(char, star,star,star, "lots of stars"), ASCIITexture(219, col,col,col))
 End Function
+
+
+
+Sub AddTrail(x1 As Integer, y1 As Integer, x2 As Integer, y2 As Integer, col As UInteger = 0)
+	If col = 0 Then col = RGB(128,0,255)
+	Var xdiff = Abs(CInt(x1)-CInt(x2))
+	Var ydiff = Abs(CInt(y1)-CInt(y2))
+	If xdiff = 1 OrElse ydiff = 1 Then
+		particles.add(New Particle(x2,y2,col,Timer,1))
+	ElseIf xdiff > 1 OrElse ydiff > 1 Then
+		Dim As Integer d = Distance(x1, y1, x2, y2)
+		Dim As Single tempang = GetAngle(x1,y1,x2,y2)
+		For dd As Single = 1 To d ' Step 0.5
+			Var tempx = x1 + CInt(Cos(tempang)*dd)
+			Var tempy = y1 - CInt(Sin(tempang)*dd)
+			particles.add(New Particle(tempx,tempy,col,Timer,1))
+		Next dd
+	EndIf
+End Sub

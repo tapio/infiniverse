@@ -85,6 +85,7 @@ Declare Function SystemStarBG(x As Integer, y As Integer) As ASCIITexture
 Declare Function GetGroundTexture(height As UByte, temperature As UByte, rainfall As UByte, vegetation As UByte, turb As UByte = 0) As ASCIITile
 Declare Function GetPureGround(x As Integer, y As Integer) As ASCIITile
 Declare Function GetGalaxyTile(x As Integer, y As Integer) As ASCIITile
+Declare Sub AddTrail(x1 As Integer, y1 As Integer, x2 As Integer, y2 As Integer, col As UInteger=0)
 Declare Function GameInput(promt As String = "", x As Integer, y As Integer, stri As String, k As String = "") As String
 'Declare Function GoToCoords(stamp As String, ByRef pl As SpaceShip, ByRef tileBuf As TileCache) As Byte
 Declare Sub GenerateTextures(seed As Double = -1)
@@ -141,6 +142,8 @@ Declare Function GoToCoords(stamp As String, ByRef pl As SpaceShip, ByRef tileBu
 Type Player
 	x As Integer
 	y As Integer
+	oldx As Integer
+	oldy As Integer
 	id As String
 End Type
 ReDim players(0) As Player
@@ -226,7 +229,7 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 			Var tempTileBuf = BlendTileCaches(prevTileBuf, tileBuf, bufferBlendFactor, bufferBlendFunc)
 			DrawView tempTileBuf, CInt(pl.x),CInt(pl.y), viewStartX,viewStartY, viewX,viewY
 		EndIf
-        DrawTrails CInt(pl.x),CInt(pl.y), viewStartX,viewStartY, viewX,viewY
+        DrawParticles CInt(pl.x),CInt(pl.y), viewStartX,viewStartY, viewX,viewY
         
         Draw String ( viewStartX + 8*viewX, viewStartY + 8*viewY ), pl.curIcon, RGB(150,250,150)
         Draw String ( viewStartX + 8*(viewX+CInt(Cos(pl.ang*DegToRad)*10)), viewStartY + 8*(viewY-CInt(Sin(pl.ang*DegToRad)*10)) ), "x", RGB(0,255,0)
@@ -255,13 +258,13 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 			game.viewLevelChanged = 0
 		#EndIf
 
-        Locate 1,1: Color RGB(80,40,40)
-        Print "FPS:";gameTimer.getFPS
-        'Print "UniqueId:";GetStarId(pl.x,pl.y)
-        'Print "Players:";numPlayers
-        'Print traffic_in
+		Locate 1,1: Color RGB(80,40,40)
+		Print "FPS:";gameTimer.getFPS
+		Print "Particles: ";particles.itemCount
+		'Print "UniqueId:";GetStarId(pl.x,pl.y)
+		Print "Players:";numPlayers
+		Print traffic_in
         'Print "Coords:";pl.x;pl.y
-        Print trails.itemCount
         DrawASCIIFrame viewStartX-8, viewStartY-8, scrW-viewStartX+8, viewStartY+8+16*viewY, RGB(0,32,48)
         
 		#Define UIframe1 RGB(0,24,96)
@@ -493,25 +496,11 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
 			pl.x = pl.x + Cos(moveang * DegToRad) * pl.spd
 			pl.y = pl.y - Sin(moveang * DegToRad) * pl.spd
 			hasMoved = -1
-			If game.viewLevel <> zDetail AndAlso game.viewLevel <> zSpecial Then
-				Var xdiff = Abs(CInt(pl.x)-CInt(pl.oldx))
-				Var ydiff = Abs(CInt(pl.y)-CInt(pl.oldy))
-				If xdiff = 1 OrElse ydiff = 1 Then
-					If thrust = 0 Then _
-						trails.add(New Trail(pl.oldx,pl.oldy,96,0,255,Timer,1)) _
-					Else _
-						trails.add(New Trail(pl.oldx,pl.oldy,255,128,0,Timer,1))
-				ElseIf xdiff > 1 OrElse ydiff > 1 Then
-					Dim As Integer d = Distance(pl.x, pl.y, pl.oldx, pl.oldy)
-					For dd As Single = 1 To d ' Step 0.5
-						tempx = pl.x - CInt(Cos(pl.ang * DegToRad)*dd)
-						tempy = pl.y + CInt(Sin(pl.ang * DegToRad)*dd)
-						If thrust = 0 Then _
-							trails.add(New Trail(tempx,tempy,96,0,255,Timer,1)) _
-						Else _
-							trails.add(New Trail(tempx,tempy,255,128,0,Timer,1))
-					Next dd
-				EndIf
+			If game.viewLevel <> zDetail AndAlso game.viewLevel <> zSpecial _
+				AndAlso game.viewLevel <> zGalaxy Then
+				If thrust = 0 Then _
+					 AddTrail(pl.x,pl.y,pl.oldx,pl.oldy) _
+				Else AddTrail(pl.x,pl.y,pl.oldx,pl.oldy,RGB(255,196,0))
 			EndIf
 			moveTimer.start
 		EndIf
