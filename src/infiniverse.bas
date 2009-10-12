@@ -71,6 +71,7 @@ Const log_enabled = -1
 Const BOOKMARKFILE = "data/bookmarks.ini"
 
 #Include Once "protocol.bi"
+#Include Once "game.bi"
 #Include Once "tileengine.bas"
 
 Declare Function Anim_RotatePlanet(tile As ASCIITile, x As Integer, y As Integer) As ASCIITile
@@ -85,7 +86,7 @@ Declare Function SystemStarBG(x As Integer, y As Integer) As ASCIITexture
 Declare Function GetGroundTexture(height As UByte, temperature As UByte, rainfall As UByte, vegetation As UByte, turb As UByte = 0) As ASCIITile
 Declare Function GetPureGround(x As Integer, y As Integer) As ASCIITile
 Declare Function GetGalaxyTile(x As Integer, y As Integer) As ASCIITile
-Declare Sub AddTrail(x1 As Integer, y1 As Integer, x2 As Integer, y2 As Integer, col As UInteger=0)
+'Declare Sub AddTrail(x1 As Integer, y1 As Integer, x2 As Integer, y2 As Integer, col As UInteger=0)
 Declare Function GameInput(promt As String = "", x As Integer, y As Integer, stri As String, k As String = "", passwordchar As String = "") As String
 'Declare Function GoToCoords(stamp As String, ByRef pl As SpaceShip, ByRef tileBuf As TileCache) As Byte
 Declare Sub GenerateTextures(seed As Double = -1)
@@ -111,43 +112,11 @@ Dim Shared As ULongInt gametime = 0
 'Dim Shared As UByte farStarBG(1024, 1024)
 'GenerateDistantStarBG(farStarBG()) 
 
-#Define char_starship Chr(234)
-#Define char_lander   Chr(227)
-#Define char_walking  "@"
-
-Type SpaceShip
-	x    As Double
-	y    As Double
-    ang  As Single  = 0
-    spd  As Double  = 0
-    oldx As Integer = 0
-    oldy As Integer = 0
-    upX  As Integer = -100
-    upY  As Integer = -100
-    fuel As Single  = 100
-	energy As Single = 100
-    curIcon As String = char_starship
-    Declare Constructor(x As Double = 0, y As Double = 0, ang As Single = 0)
-End Type
-    Constructor SpaceShip(x As Double = 0, y As Double = 0, ang As Single = 0)
-        this.x   = x
-        this.y   = y
-        this.ang = ang
-    End Constructor
-
 
 Declare Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
 Declare Function GoToCoords(stamp As String, ByRef pl As SpaceShip, ByRef tileBuf As TileCache) As Byte
 
-Type Player
-	x As Integer
-	y As Integer
-	oldx As Integer
-	oldy As Integer
-	id As String
-End Type
-ReDim players(0) As Player
-Dim numPlayers As Integer = 0
+
 Dim As String temp, temp2, tempst
 Dim As String msg = "", traffic_in = "", traffic_out = "", k = "" 'k = key
 Dim As Double pingTime, pingTime2, ping
@@ -173,7 +142,7 @@ Dim As Integer i,j, tempx,tempy, tempz, count
         game.curStarmap.seed = game.curGalaxy.seed
 		BuildNoiseTables game.curStarmap.seed, 8
 	BuildNoiseTable 1, 9 'fixed noise
-    'Dim pl As SpaceShip = SpaceShip(GALAXYSIZE/2,GALAXYSIZE/2,90)
+
     Dim pl As SpaceShip = SpaceShip(game.curStarmap.size/2,game.curStarmap.size/2,90)
     Dim tileBuf As TileCache = TileCache(pl.x, pl.y, @GetStarmapTile)
 	Dim Shared prevTileBuf As TileCache
@@ -194,6 +163,16 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 		sock.put(1)
 		sock.put(Chr(actions.changeArea + game.viewLevel) & my_name & SEP & Str(CInt(pl.x)) & SEP & Str(CInt(pl.y)) & SEP & game.getAreaID)
 	#EndIf
+
+	#Macro drawCharToWorld(_x, _y, _c, _col)
+		tempx = CInt(_x)-CInt(pl.x)
+		tempy = CInt(_y)-CInt(pl.y)
+		If Abs(tempx) < viewX AndAlso Abs(tempy) < viewY Then 
+			Draw String (	viewStartX + 8*(viewX + (tempx)), _
+							viewStartY + 8*(viewY + (tempy))), _
+							_c, _col
+		EndIf
+	#EndMacro
 
 
     ' ------- MAIN LOOP ------- '
@@ -229,8 +208,21 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 			Var tempTileBuf = BlendTileCaches(prevTileBuf, tileBuf, bufferBlendFactor, bufferBlendFunc)
 			DrawView tempTileBuf, CInt(pl.x),CInt(pl.y), viewStartX,viewStartY, viewX,viewY
 		EndIf
+		'Particles
         DrawParticles CInt(pl.x),CInt(pl.y), viewStartX,viewStartY, viewX,viewY
+        'Missiles
+		Dim mIter As Missile Ptr = missiles.initIterator()
+		While mIter <> 0
+			mIter->updatePos() 'gameTimer.frameTime)
+			'ConsolePrint Str(mIter->x-pl.x)+" "+Str(mIter->y-pl.y)+" "+Str(mIter->spd)
+			AddTrail(mIter->x,mIter->y,mIter->oldx,mIter->oldy,RGB(255,196,0),0.667)
+			drawCharToWorld(mIter->x, mIter->y, _
+							missile_char( CInt((mIter->ang*RadToDeg)/360.0*8.0) Mod 8 ), _
+							RGB(255,0,0) )
+			mIter = missiles.getNext()
+		Wend
         
+        'Player stuff
         Draw String ( viewStartX + 8*viewX, viewStartY + 8*viewY ), pl.curIcon, RGB(150,250,150)
         Draw String ( viewStartX + 8*(viewX+CInt(Cos(pl.ang*DegToRad)*10)), viewStartY + 8*(viewY-CInt(Sin(pl.ang*DegToRad)*10)) ), "x", RGB(0,255,0)
         If pl.upX > 0 AndAlso Abs(pl.upX-pl.x) < viewX AndAlso Abs(pl.upY-pl.y) < viewY Then Draw String ( viewStartX + 8*(viewX + (pl.upX-CInt(pl.x))), viewStartY + 8*(viewY + (pl.upY-CInt(pl.y))) ), "X", RGB(200,0,200)
@@ -264,6 +256,7 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 		Print "Particles: ";particles.itemCount
 		'Print "UniqueId:";GetStarId(pl.x,pl.y)
 		Print "Players:";numPlayers
+		Print "frameTime: ";gameTimer.frameTime
 		Print traffic_in
         'Print "Coords:";pl.x;pl.y
         DrawASCIIFrame viewStartX-8, viewStartY-8, scrW-viewStartX+8, viewStartY+8+16*viewY, RGB(0,32,48)
@@ -563,6 +556,12 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
     ' Keys that are pressed, not held down: 
     If keyTimer.hasExpired Then
     	Dim As String tempk
+    	' Missiles
+    	If MultiKey(Key_M) AndAlso game.viewLevel <> zDetail AndAlso _
+    		game.viewLevel <> zSpecial AndAlso game.viewLevel <> zGalaxy Then
+    			missiles.add(New Missile(pl.x, pl.y, pl.ang*DegToRad, pl.spd+0.1))
+    		keyTimer.start
+    	EndIf
     	If MultiKey(KEY_T) Then consoleOpen = -1: tempk = InKey: Exit Sub
 		If MultiKey(KEY_B) And game.viewLevel = zDetail Then switch(buildMode): keyTimer.start ' = -1'Not buildmode '-1
     	'If MultiKey(KEY_F2) Then switch(moveStyle): pl.x = Int(pl.x): pl.y = Int(pl.y): keyTimer.start
