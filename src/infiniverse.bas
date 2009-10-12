@@ -150,7 +150,7 @@ ReDim players(0) As Player
 Dim numPlayers As Integer = 0
 Dim As String temp, temp2, tempst
 Dim As String msg = "", traffic_in = "", traffic_out = "", k = "" 'k = key
-Dim As Double pingTime
+Dim As Double pingTime, pingTime2, ping
 Dim As UByte char, testbyte
 Dim As Integer i,j, tempx,tempy, tempz, count
 
@@ -259,7 +259,8 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 		#EndIf
 
 		Locate 1,1: Color RGB(80,40,40)
-		Print "FPS:";gameTimer.getFPS
+		Print "FPS: ";gameTimer.getFPS
+		Print "Ping:";CInt((ping)*1000.0)
 		Print "Particles: ";particles.itemCount
 		'Print "UniqueId:";GetStarId(pl.x,pl.y)
 		Print "Players:";numPlayers
