@@ -146,3 +146,13 @@ Sub AddTrail(x1 As Double, y1 As Double, x2 As Double, y2 As Double, col As UInt
 		Next dd
 	EndIf
 End Sub
+
+
+Sub AddExplosion(x As Double, y As Double, col As UInteger = 0, pCount As Integer = 8, explTime As Single = 1.0)
+	If col = 0 Then col = RGB(255,255,0)
+	#Define EXPL_SPD 2.0
+	Dim As Single angleStep = 2*pi / pCount
+	For a As Single = 0 To 2*pi Step angleStep
+		particles.add(New Particle(x,y,col,Timer,explTime,249,EXPL_SPD,a))
+	Next a
+End Sub
