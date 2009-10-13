@@ -3,23 +3,23 @@
 Const ticksecs = 1.0
 
 Enum actions
-	message     = &b00100000
-	updatePos   = &b01000000
-	changeArea  = &b01100000
-	areaStatus  = &b10000000
-	modifyArea  = &b10100000
-	serverQuery = &b11000000
-	login		= &b11100000
-	register    = &b11110000
+	message     = 1
+	updatePos	' Chr(updatePos,typeId)+4charInt,4charInt+Name
+	changeArea
+	areaStatus
+	modifyArea
+	serverQuery
+	login
+	register
 End Enum
 
 Enum queries
-	ping        = &b00000001
-	playerCount = &b00000010
-	areaInfo    = &b00000011
-	timeSync    = &b00000100
-	clientWait	= &b00000101
-	adminOp		= &b00000111
+	ping        = 1
+	playerCount
+	areaInfo
+	timeSync
+	clientWait
+	adminOp
 End Enum
 
 
@@ -44,12 +44,13 @@ End Enum
 
 
 
-#Define actionMask &b11100000
-#Define viewLvlMask &b00000111
-#Define success &b00001000
+'#Define actionMask &b11100000
+'#Define viewLvlMask &b00000111
+#Define success 89
 #Define SEP Chr(1)
 #Define detCoordOffSet 32
 
+#Define NAME_MAX_LEN 8
 
 Type ASCIITexture
 	'Union
@@ -93,14 +94,6 @@ End Type
 '	Property ASCIITexture.desc() As String
 '		Return ""
 '	End Property
-
-Operator = (lhs As ASCIITexture, rhs As Integer) As Integer
-	Return lhs.char = rhs
-End Operator
-
-Operator <> (lhs As ASCIITexture, rhs As Integer) As Integer
-	Return lhs.char <> rhs
-End Operator
 
 
 Type Building

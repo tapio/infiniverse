@@ -153,13 +153,27 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 	Dim Shared As Byte consoleOpen = 0, auto_slow = 0
 	Dim Shared As String bookmarks(1 To 9)
 	Dim As Byte helpscreen = 0
-
+	
 	LoadBookmarks()
 
-	#Ifdef NETWORK_enabled
-		sock.put(1)
-		sock.put(Chr(actions.changeArea + game.viewLevel) & my_name & SEP & Str(CInt(pl.x)) & SEP & Str(CInt(pl.y)) & SEP & game.getAreaID)
-	#EndIf
+	#Macro formatUpdatePos(variable)
+		tempx = CInt(pl.x) : tempy = CInt(pl.y)
+		variable = Chr(actions.updatePos, game.viewLevel, 0,0,0,0,0,0,0,0) & my_name
+		memcpy(StrPtr(variable)+2, @tempx, 4)
+		memcpy(StrPtr(variable)+6, @tempy, 4)
+	#EndMacro
+
+	#Macro formatChangeArea(variable)
+		tempx = CInt(pl.x) : tempy = CInt(pl.y)
+		variable = String(10+NAME_MAX_LEN, Chr(0))
+		variable[0] = actions.changeArea
+		variable[1] = game.viewLevel
+		'variable = Chr(actions.changeArea, game.viewLevel, 0,0,0,0,0,0,0,0) & my_name
+		memcpy(StrPtr(variable)+2, @tempx, 4)
+		memcpy(StrPtr(variable)+6, @tempy, 4)
+		memcpy(StrPtr(variable)+10, StrPtr(my_name), NAME_MAX_LEN)
+		variable += game.getAreaID
+	#EndMacro
 
 	#Macro drawCharToWorld(_x, _y, _c, _col)
 		tempx = CInt(_x)-CInt(pl.x)
@@ -171,6 +185,12 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 		EndIf
 	#EndMacro
 
+	#Ifdef NETWORK_enabled
+		sock.put(1)
+		formatChangeArea(traffic_out)
+		sock.put(traffic_out)
+	#EndIf
+	
 
     ' ------- MAIN LOOP ------- '
     Do
@@ -263,13 +283,13 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 		#EndIf
 
 		Locate 1,1: Color RGB(80,40,40)
-		Print "spds:";(pl.spd);" ";(Distance(pl.x,pl.y,pl.oldx,pl.oldy)/gameTimer.frameTime)
+		'Print "spds:";(pl.spd);" ";(Distance(pl.x,pl.y,pl.oldx,pl.oldy)/gameTimer.frameTime)
 		Print "FPS: ";gameTimer.getFPS
 		Print "Ping:";CInt((ping)*1000.0)
 		Print "Particles: ";particles.itemCount
 		'Print "UniqueId:";GetStarId(pl.x,pl.y)
 		Print "Players:";numPlayers
-		Print "frameTime: ";gameTimer.frameTime
+		'Print "frameTime: ";gameTimer.frameTime
 		Print traffic_in
         'Print "Coords:";pl.x;pl.y
         DrawASCIIFrame viewStartX-8, viewStartY-8, scrW-viewStartX+8, viewStartY+8+16*viewY, RGB(0,32,48)
@@ -509,7 +529,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
     	If MultiKey(Key_K) Then AddExplosion(pl.x+5,pl.y)
     	' Missiles
     	If MultiKey(Key_M) AndAlso isMacroVL(game.viewLevel) Then
-    			missiles.add(New Missile(pl.x, pl.y, pl.ang, pl.spd+0.1))
+    			missiles.add(New Missile(pl.x, pl.y, pl.ang, pl.spd+20))
     		keyTimer.start
     	EndIf
     	If MultiKey(KEY_T) Then consoleOpen = -1: tempk = InKey: Exit Sub
