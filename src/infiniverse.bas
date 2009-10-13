@@ -140,7 +140,7 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 		BuildNoiseTables game.curStarmap.seed, 8
 	BuildNoiseTable 1, 9 'fixed noise
 
-    Dim pl As SpaceShip = SpaceShip(game.curStarmap.size/2,game.curStarmap.size/2,90)
+    Dim pl As SpaceShip = SpaceShip(game.curStarmap.size/2,game.curStarmap.size/2,pi/2)
     Dim tileBuf As TileCache = TileCache(pl.x, pl.y, @GetStarmapTile)
 	Dim Shared prevTileBuf As TileCache
 	Dim bufferBlendFactor As Single = 0
@@ -214,7 +214,7 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 			'ConsolePrint Str(mIter->x-pl.x)+" "+Str(mIter->y-pl.y)+" "+Str(mIter->spd)
 			AddTrail(mIter->x,mIter->y,mIter->oldx,mIter->oldy,RGB(255,196,0),0.667)
 			drawCharToWorld(mIter->x, mIter->y, _
-							missile_char( CInt((mIter->ang*RadToDeg)/360.0*8.0) Mod 8 ), _
+							missile_char( CInt(mIter->ang/(2*pi)*8.0) Mod 8 ), _
 							RGB(255,0,0) )
 			mIter = missiles.getNext()
 		Wend
@@ -222,9 +222,9 @@ Dim As Integer i,j, tempx,tempy, tempz, count
         'Player stuff
 		If pl.spd <> 0 Then
 			Dim As Single moveang = pl.ang
-			'If pl.strafe <> 0 Then moveang = table_dirAngles(tempang)
-			pl.x += Cos(moveang * DegToRad) * pl.spd * gameTimer.frameTime
-			pl.y -= Sin(moveang * DegToRad) * pl.spd * gameTimer.frameTime
+			If pl.strafe <> 0 Then moveang = table_dirAngles(pl.strafe)
+			pl.x += Cos(moveang) * pl.spd * gameTimer.frameTime
+			pl.y -= Sin(moveang) * pl.spd * gameTimer.frameTime
 			'hasMoved = -1
 			If game.viewLevel <> zDetail AndAlso game.viewLevel <> zSpecial _
 				AndAlso game.viewLevel <> zGalaxy Then
@@ -235,7 +235,7 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 			'moveTimer.start
 		EndIf        
         Draw String ( viewStartX + 8*viewX, viewStartY + 8*viewY ), pl.curIcon, RGB(150,250,150)
-        Draw String ( viewStartX + 8*(viewX+CInt(Cos(pl.ang*DegToRad)*10)), viewStartY + 8*(viewY-CInt(Sin(pl.ang*DegToRad)*10)) ), "x", RGB(0,255,0)
+        Draw String ( viewStartX + 8*(viewX+CInt(Cos(pl.ang)*10)), viewStartY + 8*(viewY-CInt(Sin(pl.ang)*10)) ), "x", RGB(0,255,0)
         If pl.upX > 0 AndAlso Abs(pl.upX-pl.x) < viewX AndAlso Abs(pl.upY-pl.y) < viewY Then Draw String ( viewStartX + 8*(viewX + (pl.upX-CInt(pl.x))), viewStartY + 8*(viewY + (pl.upY-CInt(pl.y))) ), "X", RGB(200,0,200)
 		
 		'Guide arrows
@@ -413,9 +413,8 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
 	
 	Dim As Integer tempx, tempy
 
-	pl.oldx = pl.x : pl.oldy = pl.y
-	Dim As Integer strafe = 0, thrust = 0
-	Dim As UByte tempang = 0
+	pl.oldx = pl.x : pl.oldy = pl.y : pl.strafe = 0
+	Dim As Integer thrust = 0, tempang = 0
 	If moveStyle = 0 Then
 		pl.spd = 0
 		Dim As Single arrows_spd = fine_spd
@@ -424,8 +423,8 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
 		If MultiKey(KEY_DOWN)  Then tempang+=&b0010: pl.spd = arrows_spd: thrust = 1
 		If MultiKey(KEY_LEFT)  Then tempang+=&b0001: pl.spd = arrows_spd: thrust = 1
 		If MultiKey(KEY_RIGHT) Then tempang+=&b0100: pl.spd = arrows_spd: thrust = 1
-		If MultiKey(KEY_LSHIFT) OrElse MultiKey(KEY_RSHIFT) Then strafe = 1
-		If tempang <> 0 AndAlso strafe = 0 Then pl.ang = table_dirAngles(tempang)
+		If MultiKey(KEY_LSHIFT) OrElse MultiKey(KEY_RSHIFT) Then pl.strafe = tempang
+		If tempang <> 0 AndAlso pl.strafe = 0 Then pl.ang = table_dirAngles(tempang)
 		If MultiKey(KEY_W) AndAlso isMacroVL(game.viewLevel) Then _
 			moveStyle = 1: pl.spd = fine_spd: thrust = 1
 	Else
@@ -438,27 +437,18 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
 			thrust = 1
 		Else
 			If MultiKey(KEY_S) OrElse auto_slow Then pl.spd -= acc * frameTime
-			If pl.spd < .2 Then pl.spd = 0: moveStyle = 0
+			If pl.spd < .15 Then pl.spd = 0: moveStyle = 0
 		EndIf
 		'If MultiKey(KEY_S) Then pl.spd = Max(0.0, pl.spd-0.01) ': moveTimer.start
 	EndIf
-	If MultiKey(KEY_A) Then pl.ang = wrap(pl.ang+turn_rate*frameTime,360) ': moveTimer.start
-	If MultiKey(KEY_D) Then pl.ang = wrap(pl.ang-turn_rate*frameTime,360) ': moveTimer.start
-	pl.thrust = thrust
-	If pl.spd <> 0 Then
-'			Dim As Single moveang = pl.ang
-'			If strafe <> 0 Then moveang = table_dirAngles(tempang)
-'			pl.x += Cos(moveang * DegToRad) * pl.spd * frameTime
-'			pl.y -= Sin(moveang * DegToRad) * pl.spd * frameTime
-		hasMoved = -1
-'			If game.viewLevel <> zDetail AndAlso game.viewLevel <> zSpecial _
-'				AndAlso game.viewLevel <> zGalaxy Then
-'				If thrust = 0 Then _
-'					 AddTrail(pl.x,pl.y,pl.oldx,pl.oldy) _
-'				Else AddTrail(pl.x,pl.y,pl.oldx,pl.oldy,RGB(255,196,0))
-'			EndIf
-'		moveTimer.start
+	If MultiKey(KEY_A) Then pl.ang = wrap(pl.ang+turn_rate*frameTime,2*pi) ': moveTimer.start
+	If MultiKey(KEY_D) Then pl.ang = wrap(pl.ang-turn_rate*frameTime,2*pi) ': moveTimer.start
+	If (Not MultiKey(KEY_A)) AndAlso (Not MultiKey(Key_D)) Then 
+		If wrap(pl.ang,pi/4) < 0.2 Then pl.ang = CInt(pl.ang/(pi/4))*(pi/4.0)
 	EndIf
+	pl.thrust = thrust
+	If pl.spd <> 0 Then hasMoved = -1
+
 	'If ( game.viewLevel = zGalaxy ) AndAlso (Not inBounds(pl.x,0,game.boundW(game.viewLevel)-1) OrElse Not inBounds(pl.y,0,game.boundH(game.viewLevel)-1)) Then
 	'	pl.x = pl.oldx: pl.y = pl.oldy
 	If game.viewLevel = zDetail AndAlso (pl.x <> pl.oldx OrElse pl.y <> pl.oldy) Then
@@ -519,7 +509,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
     	If MultiKey(Key_K) Then AddExplosion(pl.x+5,pl.y)
     	' Missiles
     	If MultiKey(Key_M) AndAlso isMacroVL(game.viewLevel) Then
-    			missiles.add(New Missile(pl.x, pl.y, pl.ang*DegToRad, pl.spd+0.1))
+    			missiles.add(New Missile(pl.x, pl.y, pl.ang, pl.spd+0.1))
     		keyTimer.start
     	EndIf
     	If MultiKey(KEY_T) Then consoleOpen = -1: tempk = InKey: Exit Sub
@@ -534,8 +524,8 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
     	If buildMode Then
     		For i As Integer = 1 To BuildingCount
     			If MultiKey(i+1) Then
-					tempx += CInt(Cos(pl.ang * DegToRad))
-					tempy -= CInt(Sin(pl.ang * DegToRad))
+					tempx += CInt(Cos(pl.ang))
+					tempy -= CInt(Sin(pl.ang))
     				If game.curArea.Modify(tempx,tempy, ASCIITile( buildings(i).tex,0,buildings(i).flags )) Then
 						#Ifdef NETWORK_enabled
 				    		pendingModifications+=1
@@ -597,8 +587,8 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
                             game.curPlanet = game.curSystem.objects(i)
                             game.curPlanet.Enter
 							game.curPlanet.BuildMap
-                            pl.x = CInt(ORBITSIZE/2 - Cos(pl.ang*DegToRad) * game.curPlanet.h/ORBITFACTOR)
-                            pl.y = CInt(ORBITSIZE/2 + Sin(pl.ang*DegToRad) * game.curPlanet.h/ORBITFACTOR)
+                            pl.x = CInt(ORBITSIZE/2 - Cos(pl.ang) * game.curPlanet.h/ORBITFACTOR)
+                            pl.y = CInt(ORBITSIZE/2 + Sin(pl.ang) * game.curPlanet.h/ORBITFACTOR)
 							prevTileBuf = tileBuf
                             tileBuf = TileCache(pl.x, pl.y, @GetOrbitTile)
 							bufferBlendFunc = @CacheBlend_CircleOutwards

@@ -32,19 +32,19 @@ table_SystemObjectNames(1) = "gas giant"
 table_SystemObjectNames(2) = "rocky planet"
 table_SystemObjectNames(3) = "gaia planet"
 
-Dim Shared As Short table_dirAngles(0 To 16)
-table_dirAngles(&b0001) = 180
-table_dirAngles(&b0010) = 270
-table_dirAngles(&b0100) =   0
-table_dirAngles(&b1000) =  90
-table_dirAngles(&b0011) = 225
-table_dirAngles(&b0110) = 315
-table_dirAngles(&b1100) =  45
-table_dirAngles(&b1001) = 135
-table_dirAngles(&b1110) =   0
-table_dirAngles(&b0111) = 270
-table_dirAngles(&b1011) = 180
-table_dirAngles(&b1101) =  90
+Dim Shared As Double table_dirAngles(0 To 16)
+table_dirAngles(&b0001) = pi
+table_dirAngles(&b0010) = pi + pi/2.0
+table_dirAngles(&b0100) = 0
+table_dirAngles(&b1000) = pi/2.0
+table_dirAngles(&b0011) = pi + pi/4.0
+table_dirAngles(&b0110) = 2*pi - pi/4.0
+table_dirAngles(&b1100) = pi/4.0
+table_dirAngles(&b1001) = pi - pi/4.0
+table_dirAngles(&b1110) = 0
+table_dirAngles(&b0111) = pi + pi/2.0
+table_dirAngles(&b1011) = pi
+table_dirAngles(&b1101) = pi/2.0
 
 Enum tex
     water

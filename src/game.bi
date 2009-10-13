@@ -1,6 +1,6 @@
 
 #Define acc 20.0
-#Define turn_rate 180.0
+#Define turn_rate pi
 #Define fine_spd 15.0	'speed when using arrows
 #Define build_spd 3.0	'speed in build mode
 
@@ -17,7 +17,7 @@ End Function
 Type SpaceShip
 	x    As Double
 	y    As Double
-    ang  As Single  = 0
+    ang  As Double  = 0
     spd  As Double  = 0
     oldx As Integer = 0
     oldy As Integer = 0
@@ -25,6 +25,7 @@ Type SpaceShip
     upY  As Integer = -100
     fuel As Single  = 100
     thrust As Integer = 0
+    strafe As Integer = 0
 	energy As Single = 100
     curIcon As String = char_starship
     Declare Constructor(x As Double = 0, y As Double = 0, ang As Single = 0)
