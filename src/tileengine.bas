@@ -36,7 +36,8 @@ Sub UpdateCache(ByRef cache As TileCache, x As Integer, y As Integer, xdist As I
 End Sub
 
 
-Sub DrawParticles(x As Integer, y As Integer, viewScreenX As Integer, viewScreenY As Integer, viewXDist As Integer, viewYDist As Integer)
+Sub DrawParticles(centerx As Integer, centery As Integer, viewScreenX As Integer, viewScreenY As Integer, _
+					viewXDist As Integer, viewYDist As Integer, frameTime As Double = 1.0)
 	Var partex = ASCIITexture(0, 0, 0, 0)
 	viewScreenX += TEXTURESIZE * VIEWXDIST
 	viewScreenY += TEXTURESIZE * VIEWYDIST 
@@ -47,12 +48,16 @@ Sub DrawParticles(x As Integer, y As Integer, viewScreenX As Integer, viewScreen
 		If fader < 0 Then
 			particles.remove(iter)
 		Else
-			If inBounds(iter->x,x-VIEWXDIST,x+VIEWXDIST) AndAlso _
-			   inBounds(iter->y,y-VIEWYDIST,y+VIEWYDIST) Then
+			If Abs(iter->spd) > 0.001 Then
+				iter->x += Cos(iter->ang) * iter->spd * frameTime
+				iter->y -= Sin(iter->ang) * iter->spd * frameTime
+			EndIf
+			If inBounds(iter->x, centerx-VIEWXDIST, centerx+VIEWXDIST) AndAlso _
+			   inBounds(iter->y, centery-VIEWYDIST, centery+VIEWYDIST) Then
 			   		fader = fader / iter->fadeTime
 			   		partex = ASCIITexture(iter->c,iter->r*fader,iter->g*fader,iter->b*fader)
-			   		partex.DrawTexture( viewStartX + 8*(viewX + (iter->x-x)), _
-			   							viewStartY + 8*(viewY + (iter->y-y)) )
+			   		partex.DrawTexture( viewStartX + 8*(viewX + (iter->x-centerx)), _
+			   							viewStartY + 8*(viewY + (iter->y-centery)) )
 			EndIf
 		EndIf
 		iter = particles.getNext()

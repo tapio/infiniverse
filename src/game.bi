@@ -102,38 +102,47 @@ Type Particle
 	g As UByte
 	b As UByte
 	c As UByte = 249
+	ang As Single
+	spd As Single
 	fadeTime As Single
 	startTime As Double
-	Declare Constructor(x As Integer=0, y As Integer=0, col As UInteger = 0, startTime As Double, fade As Single=1, char As UByte=249)
+	Declare Constructor(x As Integer=0, y As Integer=0, col As UInteger = 0, startTime As Double, _
+						fade As Single=1, char As UByte=249, spd As Single=0, ang As Single=0)
 End Type
-	Constructor Particle(x As Integer=0, y As Integer=0, col As UInteger = 0, startTime As Double, fade As Single=1, char As UByte=249)
+	Constructor Particle(x As Integer=0, y As Integer=0, col As UInteger = 0, startTime As Double, _
+						fade As Single=1, char As UByte=249, spd As Single=0, ang As Single=0)
 		this.x = x
 		this.y = y
 		this.r = rgb_r(col)
 		this.g = rgb_g(col)
 		this.b = rgb_b(col)
 		this.c = char
+		this.ang = ang
+		this.spd = spd
 		this.fadeTime = fade
 		this.startTime = startTime
 	End Constructor
 
-
 Dim Shared particles As SingleLinkedList
 
 
-Sub AddTrail(x1 As Integer, y1 As Integer, x2 As Integer, y2 As Integer, col As UInteger = 0, trailTime As Single = 1.0)
+
+
+Sub AddTrail(x1 As Double, y1 As Double, x2 As Double, y2 As Double, col As UInteger = 0, trailTime As Single = 1.0)
 	If col = 0 Then col = RGB(128,0,255)
 	Var xdiff = Abs(CInt(x1)-CInt(x2))
 	Var ydiff = Abs(CInt(y1)-CInt(y2))
 	If xdiff = 1 OrElse ydiff = 1 Then
-		particles.add(New Particle(x2,y2,col,Timer,trailTime))
+		'Dim As Single d = Distance(x1, y1, x2, y2)
+		'Dim As Single tempang = GetAngle(x1,y1,x2,y2)
+		particles.add(New Particle(x2,y2,col,Timer,trailTime)) ',,d,tempang))
 	ElseIf xdiff > 1 OrElse ydiff > 1 Then
 		Dim As Integer d = Distance(x1, y1, x2, y2)
 		Dim As Single tempang = GetAngle(x1,y1,x2,y2)
 		For dd As Single = 1 To d ' Step 0.5
 			Var tempx = x1 + CInt(Cos(tempang)*dd)
 			Var tempy = y1 - CInt(Sin(tempang)*dd)
-			particles.add(New Particle(tempx,tempy,col,Timer,trailTime))
+			particles.add(New Particle(tempx,tempy,col,Timer,trailTime)) ',,d,tempang))
 		Next dd
 	EndIf
 End Sub
