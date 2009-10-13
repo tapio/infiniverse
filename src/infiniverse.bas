@@ -86,9 +86,9 @@ Declare Function SystemStarBG(x As Integer, y As Integer) As ASCIITexture
 Declare Function GetGroundTexture(height As UByte, temperature As UByte, rainfall As UByte, vegetation As UByte, turb As UByte = 0) As ASCIITile
 Declare Function GetPureGround(x As Integer, y As Integer) As ASCIITile
 Declare Function GetGalaxyTile(x As Integer, y As Integer) As ASCIITile
-'Declare Sub AddTrail(x1 As Integer, y1 As Integer, x2 As Integer, y2 As Integer, col As UInteger=0)
+Declare Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
 Declare Function GameInput(promt As String = "", x As Integer, y As Integer, stri As String, k As String = "", passwordchar As String = "") As String
-'Declare Function GoToCoords(stamp As String, ByRef pl As SpaceShip, ByRef tileBuf As TileCache) As Byte
+Declare Function GoToCoords(stamp As String, ByRef pl As SpaceShip, ByRef tileBuf As TileCache) As Integer
 Declare Sub GenerateTextures(seed As Double = -1)
 Declare Sub GenerateDistantStarBG(array() As UByte)
 Declare Sub AddVariance(ByRef tile As ASCIITile, variance As Short)
@@ -111,10 +111,6 @@ Dim Shared As ULongInt gametime = 0
 
 'Dim Shared As UByte farStarBG(1024, 1024)
 'GenerateDistantStarBG(farStarBG()) 
-
-
-Declare Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
-Declare Function GoToCoords(stamp As String, ByRef pl As SpaceShip, ByRef tileBuf As TileCache) As Byte
 
 
 Dim As String temp, temp2, tempst
@@ -380,61 +376,6 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 ''''''''''''''''''''''''''''
 
 
-Function GoToCoords(stamp As String, ByRef pl As SpaceShip, ByRef tileBuf As TileCache) As Byte
-    pl.spd = 0
-	pl.upX = -100 : pl.upY = -100
-	moveStyle = 0
-    Dim As Integer count = CountWords(stamp,"#")
-    Dim As Integer x,y, oldx,oldy
-    Dim As Byte nounder = 0
-    pl.curIcon = char_starship
-	prevTileBuf = tileBuf
-	For i As Integer = zStarmap To zStarmap+count-1
-		x = CInt( GetWord( GetWord(stamp,i-zStarmap+1,"#"), 1, "," ) )
-		y = CInt( GetWord( GetWord(stamp,i-zStarmap+1,"#"), 2, "," ) )
-		oldx = pl.x: oldy = pl.y
-		pl.x = x : pl.y = y
-		game.viewLevel = i
-		game.viewLevelChanged = -1
-        game.updateBounds
-        Select Case i
-        	Case zStarmap
-        		BuildNoiseTables game.curStarmap.seed, 8
-                tileBuf = TileCache(pl.x, pl.y, @GetStarmapTile)
-        	Case zSystem
-        		If StarmapHasStar(oldx,oldy).char <> 0 Then game.curSystem = SolarSystem(oldx, oldy) Else pl.x = oldx: pl.y = oldy: Return 0
-        		tileBuf = TileCache(pl.x, pl.y, @GetSolarTile)
-        	Case zOrbit
-        		nounder = -1
-                For j As Integer = game.curSystem.starCount To game.curSystem.starCount + game.curSystem.planetCount-1
-                    If oldx = game.curSystem.objects(j).x And oldy = game.curSystem.objects(j).y Then
-                        game.curPlanet = game.curSystem.objects(j)
-                        nounder = 0
-                        Exit For
-                    EndIf
-                Next j
-                If nounder Then pl.x = oldx: pl.y = oldy: Return 0
-                game.curPlanet.Enter
-				game.curPlanet.BuildMap
-                tileBuf = TileCache(pl.x, pl.y, @GetOrbitTile)
-                If pl.x = -1 OrElse pl.y = -1 Then pl.x = ORBITSIZE/2: pl.y = ORBITSIZE/2
-        	Case zPlanet
-                tileBuf = TileCache(pl.x, pl.y, @GetGroundTile)
-                pl.curIcon = char_lander
-        	Case zDetail
-        		If game.curPlanet.objType = pGas Then pl.x = oldx: pl.y = oldy: Return 0 Else game.curArea = SurfaceArea(oldx, oldy, oldy * game.curPlanet.w + oldx)
-                tileBuf = TileCache(pl.x, pl.y, @GetAreaTile)
-                pl.curIcon = char_walking
-        End Select
-	Next i
-	bufferBlendFunc = @CacheBlend_Fractal
-	Return -1
-End Function
-
-
-
-
-
 Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
 	#Macro dostuff(updown)
 	    game.viewLevel += updown
@@ -556,6 +497,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
     ' Keys that are pressed, not held down: 
     If keyTimer.hasExpired Then
     	Dim As String tempk
+    	If MultiKey(Key_K) Then AddExplosion(pl.x+5,pl.y)
     	' Missiles
     	If MultiKey(Key_M) AndAlso game.viewLevel <> zDetail AndAlso _
     		game.viewLevel <> zSpecial AndAlso game.viewLevel <> zGalaxy Then
@@ -787,6 +729,75 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache)
     EndIf
     If hasMoved Then hasMovedOnline = -1
 End Sub
+
+
+
+
+
+
+Function GoToCoords(stamp As String, ByRef pl As SpaceShip, ByRef tileBuf As TileCache) As Integer
+    pl.spd = 0
+	pl.upX = -100 : pl.upY = -100
+	moveStyle = 0
+    Dim As Integer count = CountWords(stamp,"#")
+    Dim As Integer x,y, oldx,oldy
+    Dim As Byte nounder = 0
+    pl.curIcon = char_starship
+	prevTileBuf = tileBuf
+	For i As Integer = zStarmap To zStarmap+count-1
+		x = CInt( GetWord( GetWord(stamp,i-zStarmap+1,"#"), 1, "," ) )
+		y = CInt( GetWord( GetWord(stamp,i-zStarmap+1,"#"), 2, "," ) )
+		oldx = pl.x: oldy = pl.y
+		pl.x = x : pl.y = y
+		game.viewLevel = i
+		game.viewLevelChanged = -1
+        game.updateBounds
+        Select Case i
+        	Case zStarmap
+        		BuildNoiseTables game.curStarmap.seed, 8
+                tileBuf = TileCache(pl.x, pl.y, @GetStarmapTile)
+        	Case zSystem
+        		If StarmapHasStar(oldx,oldy).char <> 0 Then game.curSystem = SolarSystem(oldx, oldy) Else pl.x = oldx: pl.y = oldy: Return 0
+        		tileBuf = TileCache(pl.x, pl.y, @GetSolarTile)
+        	Case zOrbit
+        		nounder = -1
+                For j As Integer = game.curSystem.starCount To game.curSystem.starCount + game.curSystem.planetCount-1
+                    If oldx = game.curSystem.objects(j).x And oldy = game.curSystem.objects(j).y Then
+                        game.curPlanet = game.curSystem.objects(j)
+                        nounder = 0
+                        Exit For
+                    EndIf
+                Next j
+                If nounder Then pl.x = oldx: pl.y = oldy: Return 0
+                game.curPlanet.Enter
+				game.curPlanet.BuildMap
+                tileBuf = TileCache(pl.x, pl.y, @GetOrbitTile)
+                If pl.x = -1 OrElse pl.y = -1 Then pl.x = ORBITSIZE/2: pl.y = ORBITSIZE/2
+        	Case zPlanet
+                tileBuf = TileCache(pl.x, pl.y, @GetGroundTile)
+                pl.curIcon = char_lander
+        	Case zDetail
+        		If game.curPlanet.objType = pGas Then pl.x = oldx: pl.y = oldy: Return 0 Else game.curArea = SurfaceArea(oldx, oldy, oldy * game.curPlanet.w + oldx)
+                tileBuf = TileCache(pl.x, pl.y, @GetAreaTile)
+                pl.curIcon = char_walking
+        End Select
+	Next i
+	bufferBlendFunc = @CacheBlend_Fractal
+	Return -1
+End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Const maxMsg = 10
 Dim Shared messageBuffer(1 To maxMsg) As String
