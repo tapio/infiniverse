@@ -1,7 +1,18 @@
 
+#Define acc 20.0
+#Define turn_rate 180.0
+#Define fine_spd 15.0	'speed when using arrows
+#Define build_spd 3.0	'speed in build mode
+
 #Define char_starship Chr(234)
 #Define char_lander   Chr(227)
 #Define char_walking  "@"
+
+
+Function isMacroVL(_vl As Integer) As Integer
+	Return (_vl <> zDetail AndAlso _vl <> zSpecial AndAlso _vl <> zGalaxy)
+End Function
+
 
 Type SpaceShip
 	x    As Double
@@ -13,6 +24,7 @@ Type SpaceShip
     upX  As Integer = -100
     upY  As Integer = -100
     fuel As Single  = 100
+    thrust As Integer = 0
 	energy As Single = 100
     curIcon As String = char_starship
     Declare Constructor(x As Double = 0, y As Double = 0, ang As Single = 0)
