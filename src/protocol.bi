@@ -2,7 +2,7 @@
 
 Const ticksecs = 1.0
 
-Enum actions
+Enum actions Explicit
 	message     = 1
 	updatePos		' Chr(updatePos,viewLvl?)+4charInt,4charInt+Name
 	updateMissile	' Chr(updateMissile)+4charUInt(ID)+4charInt,4charInt	
@@ -14,7 +14,7 @@ Enum actions
 	register
 End Enum
 
-Enum queries
+Enum queries Explicit
 	ping        = 1
 	playerCount
 	areaInfo
@@ -24,7 +24,7 @@ Enum queries
 End Enum
 
 
-Enum cflags
+Enum cflags Explicit
 	admin		= &b10000000
 End Enum
 
@@ -109,7 +109,7 @@ End Type
 		this.flags = flags
 	End Constructor
 
-Const BuildingCount As Integer = 6
+Const BuildingCount = 6
 Dim Shared Buildings(1 To BuildingCount) As Building = {	Building("#",128,128,128,"wall",BLOCKS_MOVEMENT), _
 															Building("+",220,  0,  0,"door"), _
 															Building(".",120, 60,  0,"floor"), _
