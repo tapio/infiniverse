@@ -147,7 +147,9 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 	Dim Shared bufferBlendFunc As Function(As Integer, As Integer) As Single
     GoToCoords("4194312,4194292", pl, tileBuf)
     Dim gameTimer As FrameTimer
-    Dim trafficTimer As DelayTimer = DelayTimer(0.05)
+    Dim trafficTimer As DelayTimer = DelayTimer(TRAFFIC_DELAY)
+    Dim keepAliveTimer As DelayTimer = DelayTimer(KEEP_ALIVE_DELAY)
+    Dim pingTimer As DelayTimer = DelayTimer(PING_INTERVAL)
 	Dim Shared As Byte moveStyle = 0, hasMoved = 0, hasMovedOnline = 0, buildMode = 0
 	Dim Shared As UByte serverQueries = queries.timeSync, gotoBookmarkSlot = 0
 	Dim Shared As Byte consoleOpen = 0, auto_slow = 0
@@ -184,6 +186,14 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 							_c, _col
 		EndIf
 	#EndMacro
+	
+	#Macro erasePlayer(_i)
+		players(_i) = players(numPlayers)
+		players(numPlayers).id = ""
+		numPlayers-=1
+		'If log_enabled Then AddLog(my_name & "Player " & temp & " erased.")	
+	#EndMacro
+
 
 	#Ifdef NETWORK_enabled
 		sock.put(1)
@@ -277,6 +287,7 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 		EndIf
 
 		#Ifdef NETWORK_enabled
+			If keepAliveTimer.hasExpired() Then hasMovedOnline = -1
 			#Include "networking.bas"
 		#Else
 			game.viewLevelChanged = 0

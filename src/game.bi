@@ -1,4 +1,10 @@
 
+#Define TRAFFIC_DELAY 0.05
+#Define PING_INTERVAL 1.5
+#Define KEEP_ALIVE_DELAY 0.5
+#Define LOSE_DELAY 2.0
+#Define LOSE_DISTANCE 512
+
 #Define acc 20.0
 #Define turn_rate pi
 #Define fine_spd 15.0	'speed when using arrows
@@ -39,14 +45,37 @@ End Type
 
 
 Type Player
-	x As Integer
-	y As Integer
-	oldx As Integer
-	oldy As Integer
 	id As String
+	As Double x,y,oldx,oldy,refx,refy
+	As Single ang
+	As Single spd
+	As Double lastUpdate
+	Declare Sub updatePos(_frameTime As Double = 1.0)
+	Declare Sub updatePos(_x As Double, _y As Double, _timeAdjust As Double = 0)
 End Type
+	Sub Player.updatePos(_frameTime As Double = 1.0)
+		this.oldx = this.x
+		this.oldy = this.y
+		this.x += (Cos(this.ang) * this.spd * _frameTime)
+		this.y -= (Sin(this.ang) * this.spd * _frameTime)
+	End Sub
+	Sub Player.updatePos(_x As Double, _y As Double, _timeAdjust As Double = 0)
+		this.oldx = this.refx
+		this.oldy = this.refy
+		this.refx = _x
+		this.refy = _y
+		this.x = _x
+		this.y = _y
+		this.ang = GetAngle(oldx,oldy,x,y)
+		this.spd = Distance(oldx,oldy,x,y) / (Timer - this.lastUpdate)
+		this.lastUpdate = Timer + _timeAdjust
+	End Sub
+
 ReDim players(0) As Player
 Dim numPlayers As Integer = 0
+
+
+
 
 
 
@@ -62,20 +91,20 @@ Dim missile_char(0 To 7) As ZString*2
 
 
 Type Missile
-	As Double x,y,oldx,oldy,refx,refy
 	As UInteger id
+	As Double x,y,oldx,oldy,refx,refy
 	As Single ang
 	As Single spd
 	As Single fuel
 	As Double lastUpdate
 	Declare Constructor (_x As Double = 0, _y As Double = 0, _ang As Single = 0, _spd As Single = 1.0, _fuel As Single = 0)
 	Declare Sub updatePos(_frameTime As Double = 1.0)
-	Declare Sub updatePos(_x As Double, _y As Double, _timeAdjust As Single = 0)
-	Declare Sub predictPos(_frameTime As Double = 1.0)
+	Declare Sub updatePos(_x As Double, _y As Double, _timeAdjust As Double = 0)
 End Type
 	Constructor Missile(_x As Double = 0, _y As Double = 0, _ang As Single = 0, _spd As Single = 1.0, _fuel As Single = 0)
 		this.x = _x
 		this.y = _y
+		this.id = CUInt(Rnd*4294967395.0)
 		this.ang = _ang
 		this.spd = _spd
 		this.fuel = _fuel
@@ -89,11 +118,11 @@ End Type
 		this.x += (Cos(this.ang) * this.spd * _frameTime)
 		this.y -= (Sin(this.ang) * this.spd * _frameTime)
 	End Sub
-	Sub Missile.updatePos(_x As Double, _y As Double, _timeAdjust As Single = 0)
+	Sub Missile.updatePos(_x As Double, _y As Double, _timeAdjust As Double = 0)
 		this.oldx = this.refx
 		this.oldy = this.refy
 		this.refx = _x
-		this.refy = _x
+		this.refy = _y
 		this.x = _x
 		this.y = _y
 		this.ang = GetAngle(oldx,oldy,x,y)

@@ -4,7 +4,8 @@ Const ticksecs = 1.0
 
 Enum actions
 	message     = 1
-	updatePos	' Chr(updatePos,typeId)+4charInt,4charInt+Name
+	updatePos		' Chr(updatePos,viewLvl?)+4charInt,4charInt+Name
+	updateMissile	' Chr(updateMissile)+4charUInt(ID)+4charInt,4charInt	
 	changeArea
 	areaStatus
 	modifyArea
@@ -61,7 +62,7 @@ Type ASCIITexture
 	'	chan As RGBA_Color
 	'End Union
 	char As UByte = 0
-	descid As UByte = 0
+	'descid As UByte = 0
 	desc As String 'ZString * 8
 	Declare Constructor()
 	Declare Constructor(_char As UByte=0, _r As UByte=0, _g As UByte=0, _b As UByte=0, _desc As String="")
@@ -83,7 +84,7 @@ End Type
 		'EndIf
     End Constructor
     Operator ASCIITexture.Cast() As String
-    	Return char & r & g & b
+    	Return Chr(this.char, this.r, this.g, this.b)
     End Operator
     Sub ASCIITexture.DrawTexture(x As Integer, y As Integer)
         Draw String (x,y), Chr(this.char), RGB(this.r,this.g,this.b)
@@ -108,7 +109,7 @@ End Type
 		this.flags = flags
 	End Constructor
 
-Const BuildingCount As Short = 6
+Const BuildingCount As Integer = 6
 Dim Shared Buildings(1 To BuildingCount) As Building = {	Building("#",128,128,128,"wall",BLOCKS_MOVEMENT), _
 															Building("+",220,  0,  0,"door"), _
 															Building(".",120, 60,  0,"floor"), _
