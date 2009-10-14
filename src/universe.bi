@@ -445,7 +445,10 @@ End Type
         For i = 1 To NUMHUB+NUMDISK
             sx = Int(factor * stars(i).x) + s / 2.0
             sy = Int(factor * stars(i).y) + s / 2.0
-            this.gmap(sx,sy) = min(255, this.gmap(sx,sy)+1) 
+            sx = clip(sx,0,GALAXYSIZE-1)
+            sy = clip(sy,0,GALAXYSIZE-1)
+            'ConsolePrint Str(sx)+" "+Str(sy)
+            this.gmap(sx,sy) = min(255, CInt(this.gmap(sx,sy))+1)
         Next i  
     End Constructor
 
