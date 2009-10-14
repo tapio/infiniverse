@@ -1,9 +1,11 @@
 
 #Define TRAFFIC_DELAY 0.05
 #Define PING_INTERVAL 2.0
-#Define KEEP_ALIVE_DELAY 0.5
+#Define KEEP_ALIVE_DELAY 0.7
 #Define LOSE_DELAY 2.0
 #Define LOSE_DISTANCE 512
+#Define MISSILES_INTERVAL 0.15
+#Define MAX_PING_DELAY 5.0
 
 #Define acc 20.0
 #Define turn_rate pi
@@ -50,9 +52,16 @@ Type Player
 	As Single ang
 	As Single spd
 	As Double lastUpdate
+	'Declare Constructor(_x As Double=0, _y As Double=0)
 	Declare Sub updatePos(_frameTime As Double = 1.0)
 	Declare Sub updatePos(_x As Double, _y As Double, _timeAdjust As Double = 0)
 End Type
+'	Constructor Player(_x As Double=0, _y As Double=0)
+'		this.x    = _x : this.y    = _y
+'		this.oldx = _x : this.oldy = _y
+'		this.refx = _x : this.refy = _y
+'		this.lastUpdate = Timer
+'	End Constructor
 	Sub Player.updatePos(_frameTime As Double = 1.0)
 		this.oldx = this.x
 		this.oldy = this.y
@@ -97,19 +106,20 @@ Type Missile
 	As Single spd
 	As Single fuel
 	As Double lastUpdate
-	Declare Constructor (_x As Double = 0, _y As Double = 0, _ang As Single = 0, _spd As Single = 1.0, _fuel As Single = 0)
+	As Integer target
+	As Integer owner = 0
+	Declare Constructor (_x As Double = 0, _y As Double = 0, _ang As Single = 0, _spd As Single = 1.0, _fuel As Single = 5)
 	Declare Sub updatePos(_frameTime As Double = 1.0)
 	Declare Sub updatePos(_x As Double, _y As Double, _timeAdjust As Double = 0)
 End Type
-	Constructor Missile(_x As Double = 0, _y As Double = 0, _ang As Single = 0, _spd As Single = 1.0, _fuel As Single = 0)
-		this.x = _x
-		this.y = _y
+	Constructor Missile(_x As Double = 0, _y As Double = 0, _ang As Single = 0, _spd As Single = 1.0, _fuel As Single = 5)
+		this.x    = _x : this.y    = _y
+		this.oldx = _x : this.oldy = _y
+		this.refx = _x : this.refy = _y
 		this.id = CUInt(Rnd*4294967395.0)
 		this.ang = _ang
 		this.spd = _spd
 		this.fuel = _fuel
-		this.oldx = _x
-		this.oldy = _y
 		this.lastUpdate = Timer
 	End Constructor
 	Sub Missile.updatePos(_frameTime As Double = 1.0)
@@ -119,17 +129,15 @@ End Type
 		this.y -= (Sin(this.ang) * this.spd * _frameTime)
 	End Sub
 	Sub Missile.updatePos(_x As Double, _y As Double, _timeAdjust As Double = 0)
-		this.oldx = this.refx
-		this.oldy = this.refy
-		this.refx = _x
-		this.refy = _y
-		this.x = _x
-		this.y = _y
+		this.oldx = this.refx : this.oldy = this.refy
+		this.refx = _x        : this.refy = _y
+		this.x    = _x        : this.y    = _y
 		this.ang = GetAngle(oldx,oldy,x,y)
 		this.spd = Distance(oldx,oldy,x,y) / (Timer - this.lastUpdate)
 		this.lastUpdate = Timer + _timeAdjust
 	End Sub
 
+#Define MISSILE_NETSIZE 12 'size in bytes of one missile when sent over network
 Dim Shared missiles As SingleLinkedList
 
 

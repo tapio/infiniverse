@@ -115,11 +115,12 @@ Dim Shared As ULongInt gametime = 0
 
 
 Dim As String temp, temp2, tempst
-Dim As String msg = "", traffic_in = "", traffic_out = "", k = "" 'k = key
-Dim As Double pingTime, pingTime2
+Dim As String msg = "", traffic_in = "", traffic_out = "", k = "", missiles_status = ""
+Dim As Double pingTime, lastPingResponse
 Dim Shared As Double ping
 Dim As UByte char, testbyte
 Dim As Integer i,j, tempx,tempy, tempz, count
+Dim As UInteger tempuid
 
 
 #Ifdef NETWORK_enabled
@@ -149,6 +150,7 @@ Dim As Integer i,j, tempx,tempy, tempz, count
     GoToCoords("4194312,4194292", pl, tileBuf)
     Dim gameTimer As FrameTimer
     Dim trafficTimer As DelayTimer = DelayTimer(TRAFFIC_DELAY)
+    Dim missileTimer As DelayTimer = DelayTimer(MISSILES_INTERVAL)
     Dim keepAliveTimer As DelayTimer = DelayTimer(KEEP_ALIVE_DELAY)
     Dim pingTimer As DelayTimer = DelayTimer(PING_INTERVAL)
 	Dim Shared As Byte moveStyle = 0, hasMoved = 0, hasMovedOnline = 0, buildMode = 0
@@ -200,6 +202,7 @@ Dim As Integer i,j, tempx,tempy, tempz, count
 		sock.put(1)
 		formatChangeArea(traffic_out)
 		sock.put(traffic_out)
+		lastPingResponse = Timer
 	#EndIf
 	
 
@@ -240,13 +243,31 @@ Dim As Integer i,j, tempx,tempy, tempz, count
         DrawParticles CInt(pl.x),CInt(pl.y), viewStartX,viewStartY, viewX,viewY, gameTimer.frameTime
         'Missiles
 		Dim mIter As Missile Ptr = missiles.initIterator()
+		If missileTimer.hasExpired() Then count = 1 : missiles_status = "" Else count = 0
 		While mIter <> 0
 			mIter->updatePos(gameTimer.frameTime)
-			'ConsolePrint Str(mIter->x-pl.x)+" "+Str(mIter->y-pl.y)+" "+Str(mIter->spd)
+			If count > 0 AndAlso mIter->owner = 0 Then
+				missiles_status += String(MISSILE_NETSIZE, Chr(0))
+				tempx = CInt(mIter->x)
+				tempy = CInt(mIter->y)
+				tempuid = mIter->id
+				memcpy(@missiles_status[  (count-1)*MISSILE_NETSIZE], @tempx, 4)
+				memcpy(@missiles_status[4+(count-1)*MISSILE_NETSIZE], @tempy, 4)
+				memcpy(@missiles_status[8+(count-1)*MISSILE_NETSIZE], @tempuid, 4)
+				count += 1
+			EndIf
+			'If mIter->owner <> 0 Then ConsolePrint Str(mIter->x-pl.x)+" "+Str(mIter->y-pl.y)+" "+Str(mIter->spd)
 			AddTrail(mIter->x,mIter->y,mIter->oldx,mIter->oldy,RGB(255,196,0),0.667)
 			drawCharToWorld(mIter->x, mIter->y, _
-							missile_char( CInt(mIter->ang/(2*pi)*8.0) Mod 8 ), _
+							missile_char( (CInt(mIter->ang/(2*pi)*8.0)+32) Mod 8 ), _
 							RGB(255,0,0) )
+
+			If mIter->owner = 0 Then mIter->fuel -= gameTimer.frameTime
+			If mIter->fuel <= 0 OrElse (mIter->owner <> 0 AndAlso _
+				Timer > mIter->lastUpdate + LOSE_DELAY) Then
+					mIter = missiles.remove(mIter)
+					Delete mIter
+			EndIf
 			mIter = missiles.getNext()
 		Wend
         
