@@ -116,7 +116,8 @@ Dim Shared As ULongInt gametime = 0
 
 Dim As String temp, temp2, tempst
 Dim As String msg = "", traffic_in = "", traffic_out = "", k = "" 'k = key
-Dim As Double pingTime, pingTime2, ping
+Dim As Double pingTime, pingTime2
+Dim Shared As Double ping
 Dim As UByte char, testbyte
 Dim As Integer i,j, tempx,tempy, tempz, count
 
@@ -399,7 +400,7 @@ Dim As Integer i,j, tempx,tempy, tempz, count
         	'#EndIf
         	If MultiKey(KEY_ENTER) Then
         		consoleOpen = 0
-        		If msg = "/ping" Then serverQueries += queries.ping : msg = ""
+        		If msg = "/ping" Then AddMsg("PING: " & Str(CInt((ping)*1000.0))): msg = ""
         		If msg = "/info" Or msg = "/who" Or msg = "/count" Then serverQueries = queries.playerCount : msg = ""
         		If Left(msg,6) = "/goto " Then GoToCoords(Mid(msg,7),pl,tileBuf): msg = ""
         	EndIf
@@ -551,7 +552,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
     	#Ifdef NETWORK_enabled
     	If MultiKey(KEY_I) Then serverQueries = queries.areaInfo   : keyTimer.start
     	If MultiKey(KEY_O) Then serverQueries = queries.playerCount: keyTimer.start
-    	If MultiKey(KEY_P) Then serverQueries = queries.ping       : keyTimer.start
+    	If MultiKey(KEY_P) Then AddMsg("PING: " & Str(CInt((ping)*1000.0))) : keyTimer.start
     	#EndIf
     	If buildMode Then
     		For i As Integer = 1 To BuildingCount
