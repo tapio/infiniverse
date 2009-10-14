@@ -322,8 +322,9 @@ Dim As Integer i,j, tempx,tempy, tempz, count
         tempx = 0 : tempy = viewStartY-8 + 10*8
 		DrawASCIIFrame tempx, tempy, viewStartX-16, tempy+8*8, UIframe1, "Scanners"
 		Color UItext1
-        Draw String (tempx+16, tempy+16), UpFirst(tileBuf.GetTexture(pl.x,pl.y).tex1.desc)
-        Select Case game.viewLevel
+		temp = tileBuf.GetTexture(pl.x,pl.y).tex1.desc
+        Draw String (tempx+16, tempy+16), UpFirst(temp)
+        Select Case As Const game.viewLevel
         	Case zSystem
         		Draw String (tempx+16, tempy+24 ), "Suns   : "+Str(game.curSystem.starCount)
         		Draw String (tempx+16, tempy+32) , "Planets: "+Str(game.curSystem.planetCount)
@@ -399,7 +400,7 @@ Dim As Integer i,j, tempx,tempy, tempz, count
         	If MultiKey(KEY_ENTER) Then
         		consoleOpen = 0
         		If msg = "/ping" Then serverQueries += queries.ping : msg = ""
-        		If msg = "/info" Or msg = "/who" Or msg = "/count" Then serverQueries += queries.playerCount : msg = ""
+        		If msg = "/info" Or msg = "/who" Or msg = "/count" Then serverQueries = queries.playerCount : msg = ""
         		If Left(msg,6) = "/goto " Then GoToCoords(Mid(msg,7),pl,tileBuf): msg = ""
         	EndIf
         Else
