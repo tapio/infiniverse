@@ -191,8 +191,9 @@ Dim As UInteger tempuid
 	#EndMacro
 	
 	#Macro erasePlayer(_i)
-		players(_i) = players(numPlayers)
-		players(numPlayers).id = ""
+		'players(_i) = players(numPlayers)
+		'players(numPlayers).id = ""
+		Delete players(_i)
 		numPlayers-=1
 		'If log_enabled Then AddLog(my_name & "Player " & temp & " erased.")	
 	#EndMacro
@@ -1047,7 +1048,7 @@ Sub ParseCommandline()
 				End
 			Case "-p", "--port"
 				If CInt(Command(i+1)) > 0 Then port = CInt(Command(i+1))
-				i += 1				
+				i += 1
 			Case "-s", "--server"
 				serveraddress = Command(i+1)
 				i += 1

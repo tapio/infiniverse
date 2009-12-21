@@ -80,7 +80,8 @@ End Type
 		this.lastUpdate = Timer + _timeAdjust
 	End Sub
 
-ReDim players(0) As Player
+Const maxPlayers = 250
+Dim players(maxPlayers) As Player Ptr
 Dim numPlayers As Integer = 0
 
 

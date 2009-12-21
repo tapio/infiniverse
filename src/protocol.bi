@@ -1,11 +1,18 @@
 '' FILE: protocol.bi
 
+#Define ID_LEN 1
+#Define COORD_LEN 1
+#Define NAME_MAX_LEN 8
+#Define SEE_DIST 125
+#Define POS_BLOCK_LEN 3
+
 Const ticksecs = 1.0
 
 Enum actions Explicit
 	message     = 1
 	updatePos		' Chr(updatePos,viewLvl?)+4charInt,4charInt+Name
-	updateMissile	' Chr(updateMissile)+4charUInt(ID)+4charInt,4charInt	
+	positions
+	updateMissile	' Chr(updateMissile)+4charUInt(ID)+4charInt,4charInt
 	changeArea
 	areaStatus
 	modifyArea
@@ -51,7 +58,15 @@ End Enum
 #Define SEP Chr(1)
 #Define detCoordOffSet 32
 
-#Define NAME_MAX_LEN 8
+Function EncodePlayerPosition(id As Integer, x As Integer, y As Integer) As String
+	Return Chr(CUByte(id),CUByte(x),CUByte(y))
+End Function
+
+'Function DecodePlayerPosition(id As Integer, x As Integer, y As Integer) As String'
+'	Return Chr(id,x,y)
+'End Function
+
+
 
 Type ASCIITexture
 	'Union
@@ -62,7 +77,7 @@ Type ASCIITexture
 	'	chan As RGBA_Color
 	'End Union
 	char As UByte = 0
-	'descid As UByte = 0
+	descid As UByte = 0
 	desc As String 'ZString * 8
 	Declare Constructor()
 	Declare Constructor(_char As UByte=0, _r As UByte=0, _g As UByte=0, _b As UByte=0, _desc As String="")
@@ -84,7 +99,7 @@ End Type
 		'EndIf
     End Constructor
     Operator ASCIITexture.Cast() As String
-    	Return Chr(this.char, this.r, this.g, this.b)
+    	Return char & r & g & b
     End Operator
     Sub ASCIITexture.DrawTexture(x As Integer, y As Integer)
         Draw String (x,y), Chr(this.char), RGB(this.r,this.g,this.b)
