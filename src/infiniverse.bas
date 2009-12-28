@@ -24,6 +24,7 @@ Using fb_clipboard
 #Include Once "miscfb/libNoise.bas"
 #Include Once "miscfb/words.bi"
 #Include Once "miscfb/singlelinkedlist.bi"
+#Include Once "crt/string.bi"
 
 
 Dim Shared EXENAME As String: EXENAME = Command(0)
