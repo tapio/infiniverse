@@ -1,6 +1,6 @@
 
 Sub DrawHelp(vl As Byte)
-	#define kc Color RGB(0,0,64)
+	#define kc Color RGB(0,0,128)
 	#define dc Color RGB(64,32,64)
 	Print 
 	Print " Help Screen - Controls and Display"
@@ -72,7 +72,7 @@ Sub DrawHelp(vl As Byte)
 		textures(vegetation_warm      ).DrawTexture(legtab+24, legrow)
 		textures(vegetation_warm_humid).DrawTexture(legtab+32, legrow)
 	ElseIf vl = zSystem Then
-		dc: Print "Triangles on the edge of view point to suns and planets."
+		dc: Print !"\tTriangles on the edge of view point to suns and planets."
 	ElseIf vl = zStarmap Then
 		Color RGB(255,255,255): Print !"\t"+Chr(249)+"*"+Chr(15)+!"\t\t";: dc: Print "Stars (solar systems)":?
 		Print !"\t";
@@ -84,4 +84,33 @@ Sub DrawHelp(vl As Byte)
 	ElseIf vl = zGalaxy Then
 		Color RGB(255,255,255): Print !"\t"+Chr(249)+"*"+!"\t\t";: dc: Print "The Galaxy":?
 	EndIf
+End Sub
+
+
+Sub LEETitle()
+	Dim As Integer rows = HiWord(Width()), cols = LoWord(Width())
+	Dim As Byte workpage
+	Do
+		ScreenSet workpage, workpage Xor 1
+		Cls
+		Color RGB(0,0,255)
+		PrintCenterScreen "|  |\  |  |--  |  |\  |  |  |  |  |--  |-\  /--  |--", 7
+		PrintCenterScreen "|  | \ |  |-   |  | \ |  |  |  |  |-   |_/  \-\  |- ", 8
+		PrintCenterScreen "|  |  \|  |    |  |  \|  |   \/   |--  | \  --/  |  ", 9
+		PrintCenterScreen "|                                                |-/", 10
+		PrintCenterScreen "Lone Explorer Edition" ,11
+		PrintCenterScreen "Version " & INF_VERSION ,13
+		PrintCenterScreen "(c) Tapio Vierros 2008-2009", rows-1, 24,24,24
+		Color RGB(128,128,128)
+		PrintCenterScreen "This is a single-player version of Infiniverse, a procedural space exploration game.", 20
+		PrintCenterScreen "This program is an early alpha version, designed to be a sneak-peak of things to come.", 23
+		PrintCenterScreen "'LEE' is very limited, it doesn't have the advanced features of the main game and you", 25
+		PrintCenterScreen "can only travel and explore the incomplete and buggy universe.", 27
+		
+		PrintCenterScreen "Please do NOT judge Infiniverse based on this version.", 30, 255,0,0
+		
+		PrintCenterScreen "Happy testing!", 33, 128,255,0
+		Sleep 100, 1
+		switch(workpage)
+	Loop Until InKey <> ""
 End Sub

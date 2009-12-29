@@ -123,11 +123,13 @@ Dim As UByte char, testbyte
 Dim As Integer i,j, tempx,tempy, tempz, count
 Dim As UInteger tempuid
 
-
-#Ifdef NETWORK_enabled
+#IfDef LEE
+	LEETitle()
+#EndIf
+#IfDef NETWORK_enabled
 	#Include "client.bas"
 #EndIf
-#Ifndef SEP
+#IfNDef SEP
 	#Define SEP Chr(1)
 #EndIf
 
@@ -320,13 +322,14 @@ Dim As UInteger tempuid
 		Locate 1,1: Color RGB(80,40,40)
 		'Print "spds:";(pl.spd);" ";(Distance(pl.x,pl.y,pl.oldx,pl.oldy)/gameTimer.frameTime)
 		Print "FPS: ";gameTimer.getFPS
-		Print "Ping:";CInt((ping)*1000.0)
-		Print "Particles: ";particles.itemCount
+		#IfNDef LEE
+			Print "Ping:";CInt((ping)*1000.0)
+			Print "Players:";numPlayers
+			Print "Particles: ";particles.itemCount
+			Print traffic_in
+		#EndIf
 		'Print "UniqueId:";GetStarId(pl.x,pl.y)
-		Print "Players:";numPlayers
 		'Print "frameTime: ";gameTimer.frameTime
-		Print traffic_in
-        'Print "Coords:";pl.x;pl.y
         DrawASCIIFrame viewStartX-8, viewStartY-8, scrW-viewStartX+8, viewStartY+8+16*viewY, RGB(0,32,48)
         
 		#Define UIframe1 RGB(0,24,96)
@@ -428,7 +431,7 @@ Dim As UInteger tempuid
         		If Left(msg,6) = "/goto " Then GoToCoords(Mid(msg,7),pl,tileBuf): msg = ""
         	EndIf
         Else
-        	If helpscreen = 1 And k <> "" Then helpscreen = 0
+        	If helpscreen = 1 And k <> "" Then helpscreen = 0: k = ""
         	If k = Chr(255,59) Then helpscreen = 1
         EndIf
         switch(workpage)
