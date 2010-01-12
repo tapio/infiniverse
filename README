@@ -20,9 +20,13 @@ contains lots of bugs. For Credits, see AUTHORS and THANKS files.
 License information can be found in the COPYING file.
 
 The game should automatically update itself, whenever a new
-version is available.
+version is available, but don't hope too much.
 
 HELP
+	Run the game by executing either infiniverse-client (linux)
+	or infiniverse-client.exe (windows). The updater is run
+	automatically.
+
 	Use F1 key inside the game to get (context sensitive)
 	listing of available controls.
 
