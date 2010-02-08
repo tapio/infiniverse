@@ -100,7 +100,7 @@ Sub LEETitle()
 		PrintCenterScreen "|                                                |-/", 10
 		PrintCenterScreen "Lone Explorer Edition" ,11
 		PrintCenterScreen "Version " & INF_VERSION ,13
-		PrintCenterScreen "(c) Tapio Vierros 2008-2009", rows-1, 24,24,24
+		PrintCenterScreen "(c) Tapio Vierros 2008-2010", rows-1, 24,24,24
 		Color RGB(128,128,128)
 		PrintCenterScreen "This is a single-player version of Infiniverse, a procedural space exploration game.", 20
 		PrintCenterScreen "This program is an early alpha version, designed to be a sneak-peak of things to come.", 23
