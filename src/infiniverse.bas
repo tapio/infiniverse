@@ -49,10 +49,10 @@ ParseCommandline
 #Else
 	Print "Infiniverse Lone Explorer Edition "+INF_VERSION
 #EndIf
-Print ".  . .   .    .       .    . . \|/ ."
-Print " .       +     ..    .   *     -o-  "
-Print "   * .     . .  . .     .  . . /|\ ."
-Print ". .     .    . * .   +     *    .   "
+Print ".  . .   .	.	   .	. . \|/ ."
+Print " .	   +	 ..	.   *	 -o-  "
+Print "   * .	 . .  . .	 .  . . /|\ ."
+Print ". .	 .	. * .   +	 *	.   "
 If LOGFILE = "" Then Print "Logging disabled (no log file specified)"
 
 Const scrW = 1024
@@ -137,25 +137,25 @@ Dim As UInteger tempuid
 	Dim Shared modQueue(pendingModifications) As String
 	'If log_enabled Then AddLog(my_name & "---NEW---")
 
-    Dim Shared game As GameLogic
-        game.viewLevel = zStarmap
-        game.curGalaxy = Galaxy(42)
-        game.updateBounds
-        game.curStarmap.seed = game.curGalaxy.seed
+	Dim Shared game As GameLogic
+		game.viewLevel = zStarmap
+		game.curGalaxy = Galaxy(42)
+		game.updateBounds
+		game.curStarmap.seed = game.curGalaxy.seed
 		BuildNoiseTables game.curStarmap.seed, 8
 	BuildNoiseTable 1, 9 'fixed noise
 
-    Dim pl As SpaceShip = SpaceShip(game.curStarmap.size/2,game.curStarmap.size/2,pi/2)
-    Dim tileBuf As TileCache = TileCache(pl.x, pl.y, @GetStarmapTile)
+	Dim pl As SpaceShip = SpaceShip(game.curStarmap.size/2,game.curStarmap.size/2,pi/2)
+	Dim tileBuf As TileCache = TileCache(pl.x, pl.y, @GetStarmapTile)
 	Dim Shared prevTileBuf As TileCache
 	Dim bufferBlendFactor As Single = 0
 	Dim Shared bufferBlendFunc As Function(As Integer, As Integer) As Single
-    GoToCoords("4194312,4194292", pl, tileBuf)
-    Dim gameTimer As FrameTimer
-    Dim trafficTimer As DelayTimer = DelayTimer(TRAFFIC_DELAY)
-    Dim missileTimer As DelayTimer = DelayTimer(MISSILES_INTERVAL)
-    Dim keepAliveTimer As DelayTimer = DelayTimer(KEEP_ALIVE_DELAY)
-    Dim pingTimer As DelayTimer = DelayTimer(PING_INTERVAL)
+	GoToCoords("4194312,4194292", pl, tileBuf)
+	Dim gameTimer As FrameTimer
+	Dim trafficTimer As DelayTimer = DelayTimer(TRAFFIC_DELAY)
+	Dim missileTimer As DelayTimer = DelayTimer(MISSILES_INTERVAL)
+	Dim keepAliveTimer As DelayTimer = DelayTimer(KEEP_ALIVE_DELAY)
+	Dim pingTimer As DelayTimer = DelayTimer(PING_INTERVAL)
 	Dim Shared As Byte moveStyle = 0, hasMoved = 0, hasMovedOnline = 0, buildMode = 0
 	Dim Shared As UByte serverQueries = queries.timeSync, gotoBookmarkSlot = 0
 	Dim Shared As Byte consoleOpen = 0, auto_slow = 0
@@ -210,17 +210,17 @@ Dim As UInteger tempuid
 	#EndIf
 	
 
-    ' ------- MAIN LOOP ------- '
-    Do
-        gameTimer.Update
+	' ------- MAIN LOOP ------- '
+	Do
+		gameTimer.Update
 		TimeManager()
-        ScreenSet workpage, workpage Xor 1
-        Cls
-        
-        If helpscreen = 0 Then
-        If consoleOpen = 0 Then Keys pl, tileBuf, gameTimer.frameTime
-        If gotoBookmarkSlot <> 0 Then tempz = GoToCoords(bookmarks(gotoBookmarkSlot),pl,tileBuf): gotoBookmarkSlot = 0
-        
+		ScreenSet workpage, workpage Xor 1
+		Cls
+		
+		If helpscreen = 0 Then
+		If consoleOpen = 0 Then Keys pl, tileBuf, gameTimer.frameTime
+		If gotoBookmarkSlot <> 0 Then tempz = GoToCoords(bookmarks(gotoBookmarkSlot),pl,tileBuf): gotoBookmarkSlot = 0
+		
 		#IfDef LEE
 			ForIJ(1, viewStartX/8, 1, scrH/8)
 				tempx = Perlin(i,j,512,512,2,9)
@@ -232,7 +232,7 @@ Dim As UInteger tempuid
 			NextIJ
 		#EndIf
 		
-        UpdateCache tileBuf, CInt(pl.x),CInt(pl.y), viewX,viewY
+		UpdateCache tileBuf, CInt(pl.x),CInt(pl.y), viewX,viewY
 		'Blending
 		If game.viewLevelChanged And bufferBlendFunc <> 0 Then bufferBlendFactor = 1.0
 		If bufferBlendFactor <= 0 Then
@@ -244,8 +244,8 @@ Dim As UInteger tempuid
 			DrawView tempTileBuf, CInt(pl.x),CInt(pl.y), viewStartX,viewStartY, viewX,viewY
 		EndIf
 		'Particles
-        DrawParticles CInt(pl.x),CInt(pl.y), viewStartX,viewStartY, viewX,viewY, gameTimer.frameTime
-        'Missiles
+		DrawParticles CInt(pl.x),CInt(pl.y), viewStartX,viewStartY, viewX,viewY, gameTimer.frameTime
+		'Missiles
 		Dim mIter As Missile Ptr = missiles.initIterator()
 		If missileTimer.hasExpired() Then count = 1 : missiles_status = "" Else count = 0
 		While mIter <> 0
@@ -274,8 +274,8 @@ Dim As UInteger tempuid
 			EndIf
 			mIter = missiles.getNext()
 		Wend
-        
-        'Player stuff
+		
+		'Player stuff
 		If pl.spd <> 0 Then
 			Dim As Single moveang = pl.ang
 			If pl.strafe <> 0 Then moveang = table_dirAngles(pl.strafe)
@@ -289,10 +289,10 @@ Dim As UInteger tempuid
 				Else AddTrail(pl.x,pl.y,pl.oldx,pl.oldy,RGB(255,196,0))
 			EndIf
 			'moveTimer.start
-		EndIf        
-        Draw String ( viewStartX + 8*viewX, viewStartY + 8*viewY ), pl.curIcon, RGB(150,250,150)
-        Draw String ( viewStartX + 8*(viewX+CInt(Cos(pl.ang)*10)), viewStartY + 8*(viewY-CInt(Sin(pl.ang)*10)) ), "x", RGB(0,255,0)
-        If pl.upX > 0 AndAlso Abs(pl.upX-pl.x) < viewX AndAlso Abs(pl.upY-pl.y) < viewY Then Draw String ( viewStartX + 8*(viewX + (pl.upX-CInt(pl.x))), viewStartY + 8*(viewY + (pl.upY-CInt(pl.y))) ), "X", RGB(200,0,200)
+		EndIf		
+		Draw String ( viewStartX + 8*viewX, viewStartY + 8*viewY ), pl.curIcon, RGB(150,250,150)
+		Draw String ( viewStartX + 8*(viewX+CInt(Cos(pl.ang)*10)), viewStartY + 8*(viewY-CInt(Sin(pl.ang)*10)) ), "x", RGB(0,255,0)
+		If pl.upX > 0 AndAlso Abs(pl.upX-pl.x) < viewX AndAlso Abs(pl.upY-pl.y) < viewY Then Draw String ( viewStartX + 8*(viewX + (pl.upX-CInt(pl.x))), viewStartY + 8*(viewY + (pl.upY-CInt(pl.y))) ), "X", RGB(200,0,200)
 		
 		'Guide arrows
 		If game.viewLevel = zSystem Then
@@ -330,35 +330,35 @@ Dim As UInteger tempuid
 		#EndIf
 		'Print "UniqueId:";GetStarId(pl.x,pl.y)
 		'Print "frameTime: ";gameTimer.frameTime
-        DrawASCIIFrame viewStartX-8, viewStartY-8, scrW-viewStartX+8, viewStartY+8+16*viewY, RGB(0,32,48)
-        
+		DrawASCIIFrame viewStartX-8, viewStartY-8, scrW-viewStartX+8, viewStartY+8+16*viewY, RGB(0,32,48)
+		
 		#Define UIframe1 RGB(0,24,96)
 		#Define UItext1  RGB(64,64,96)
 		#IfDef LEE
 		
 		#Else 'Not LEE
-        '' Status ''
-        tempx = 0 : tempy = viewStartY-8
+		'' Status ''
+		tempx = 0 : tempy = viewStartY-8
 		DrawASCIIFrame tempx, tempy, viewStartX-16, tempy+8*8, UIframe1, "Ship Status"
 		Color UItext1
 		Draw String (tempx+16, tempy+16 ), "Hull cond: "+Str(100)+"%"
 		'Draw String (tempx+16, tempy+16), "Shields  : "+Str(100)+"%"
 		Draw String (tempx+16, tempy+24), "A-M Fuel : "+Str(pl.fuel)+"kg"
 		Draw String (tempx+16, tempy+32), "Energy   : "+Str(pl.energy)+""
-	    '' Scanners ''
-        tempx = 0 : tempy = viewStartY-8 + 10*8
+		'' Scanners ''
+		tempx = 0 : tempy = viewStartY-8 + 10*8
 		DrawASCIIFrame tempx, tempy, viewStartX-16, tempy+8*8, UIframe1, "Scanners"
 		Color UItext1
 		temp = tileBuf.GetTexture(pl.x,pl.y).tex1.desc
-        Draw String (tempx+16, tempy+16), UpFirst(temp)
-        Select Case As Const game.viewLevel
-        	Case zSystem
-        		Draw String (tempx+16, tempy+24 ), "Suns   : "+Str(game.curSystem.starCount)
-        		Draw String (tempx+16, tempy+32) , "Planets: "+Str(game.curSystem.planetCount)
-        	Case zOrbit
-        		Draw String (tempx+16, tempy+24 ), UpFirst(table_SystemObjectNames(game.curPlanet.objType))
-        		'TODO: add starship count
-        		Draw String (tempx+16, tempy+32), "Starships: "+"0"
+		Draw String (tempx+16, tempy+16), UpFirst(temp)
+		Select Case As Const game.viewLevel
+			Case zSystem
+				Draw String (tempx+16, tempy+24 ), "Suns   : "+Str(game.curSystem.starCount)
+				Draw String (tempx+16, tempy+32) , "Planets: "+Str(game.curSystem.planetCount)
+			Case zOrbit
+				Draw String (tempx+16, tempy+24 ), UpFirst(table_SystemObjectNames(game.curPlanet.objType))
+				'TODO: add starship count
+				Draw String (tempx+16, tempy+32), "Starships: "+"0"
 		End Select
 		'' Devices ''
 		tempy = viewStartY-8 + 20*8
@@ -379,12 +379,12 @@ Dim As UInteger tempuid
 		Draw String (tempx+16, tempy+2*8), "Amount: 0"
 		Draw String (tempx+16, tempy+3*8), "Armed:  0"
 		
-        '' Cargo / Build ''
+		'' Cargo / Build ''
 		DrawASCIIFrame viewStartX+16*viewX+16, viewStartY-8, scrW-8, viewStartY+8*8, RGB(0,96,24), "Cargo Stats"
 		Color UItext1
-		Draw String (viewStartX+16*viewX+16+16, viewStartY+8 ), !"Total Space:     100 m3"
-		Draw String (viewStartX+16*viewX+16+16, viewStartY+16), !"Used Space :       0 m3"
-		Draw String (viewStartX+16*viewX+16+16, viewStartY+24), !"Used %     :       0 %"
+		Draw String (viewStartX+16*viewX+16+16, viewStartY+8 ), !"Total Space:	 100 m3"
+		Draw String (viewStartX+16*viewX+16+16, viewStartY+16), !"Used Space :	   0 m3"
+		Draw String (viewStartX+16*viewX+16+16, viewStartY+24), !"Used %	 :	   0 %"
 		tempy = viewStartY + 11*8
 		If buildMode Then temp = "BUILD MENU" Else temp = "Cargo Inventory"
 		DrawASCIIFrame viewStartX+16*viewX+16, tempy-8, scrW-8, viewStartY+8+16*viewY, RGB(100,50,0), temp
@@ -400,74 +400,74 @@ Dim As UInteger tempuid
 		EndIf
 		
 		#EndIf 'LEE
-        '' Info ''
-        DrawASCIIFrame viewStartX-8, 8, scrW-viewStartX+8, 5*8, RGB(0,0,96), "Information"
-        Draw String (viewStartX+8, 16), "Coords: "+Str(CLngInt(pl.x))+" - "+Str(CLngInt(pl.y))
+		'' Info ''
+		DrawASCIIFrame viewStartX-8, 8, scrW-viewStartX+8, 5*8, RGB(0,0,96), "Information"
+		Draw String (viewStartX+8, 16), "Coords: "+Str(CLngInt(pl.x))+" - "+Str(CLngInt(pl.y))
 		Draw String (viewStartX+8, 24), "Time: "+GetTimeString()
 		Draw String (viewStartX+8, 32), "Credits: "+Str(0)
-        '' Messages ''
-        DrawASCIIFrame viewStartX-8, 9*8+16*viewY, scrW-viewStartX+8, scrH-4*8, RGB(64,0,24), "Messages"
-        PrintMessages viewStartX, 10*8+16*viewY, 10
-        Else
-        	DrawHelp(game.viewLevel)
-        EndIf
+		'' Messages ''
+		DrawASCIIFrame viewStartX-8, 9*8+16*viewY, scrW-viewStartX+8, scrH-4*8, RGB(64,0,24), "Messages"
+		PrintMessages viewStartX, 10*8+16*viewY, 10
+		Else
+			DrawHelp(game.viewLevel)
+		EndIf
 		
-        k = InKey
+		k = InKey
 		If k = Chr(255,68) Then
 			Var shotname = "shots/shot"+Str(Int(Rnd*90000)+10000)+".png"
 			SavePNG(shotname)': Sleep 1000
 			AddMsg("Screenshot saved to "+shotname)
 		EndIf
-        If consoleOpen Then
-        	msg = GameInput("> ", viewStartX, scrH-16, msg, k)
-        	'#Ifdef CLIPBOARD_enabled
-        		If MultiKey(KEY_CONTROL) And MultiKey(KEY_V) Then msg = msg & getClip():Sleep 500
-        		If MultiKey(KEY_CONTROL) And MultiKey(KEY_C) Then setClip(msg):Sleep 500
-        	'#EndIf
-        	If MultiKey(KEY_ENTER) Then
-        		consoleOpen = 0
-        		If msg = "/ping" Then AddMsg("PING: " & Str(CInt((ping)*1000.0))): msg = ""
-        		If msg = "/info" Or msg = "/who" Or msg = "/count" Then serverQueries = queries.playerCount : msg = ""
-        		If Left(msg,6) = "/goto " Then GoToCoords(Mid(msg,7),pl,tileBuf): msg = ""
-        	EndIf
-        Else
-        	If helpscreen = 1 And k <> "" Then helpscreen = 0: k = ""
-        	If k = Chr(255,59) Then helpscreen = 1
-        EndIf
-        switch(workpage)
-        Sleep 2,1 'this hack reduces cpu usage in some cases
-    Loop Until k = Chr(27) Or k = Chr(255) & "k"
+		If consoleOpen Then
+			msg = GameInput("> ", viewStartX, scrH-16, msg, k)
+			'#Ifdef CLIPBOARD_enabled
+				If MultiKey(KEY_CONTROL) And MultiKey(KEY_V) Then msg = msg & getClip():Sleep 500
+				If MultiKey(KEY_CONTROL) And MultiKey(KEY_C) Then setClip(msg):Sleep 500
+			'#EndIf
+			If MultiKey(KEY_ENTER) Then
+				consoleOpen = 0
+				If msg = "/ping" Then AddMsg("PING: " & Str(CInt((ping)*1000.0))): msg = ""
+				If msg = "/info" Or msg = "/who" Or msg = "/count" Then serverQueries = queries.playerCount : msg = ""
+				If Left(msg,6) = "/goto " Then GoToCoords(Mid(msg,7),pl,tileBuf): msg = ""
+			EndIf
+		Else
+			If helpscreen = 1 And k <> "" Then helpscreen = 0: k = ""
+			If k = Chr(255,59) Then helpscreen = 1
+		EndIf
+		switch(workpage)
+		Sleep 2,1 'this hack reduces cpu usage in some cases
+	Loop Until k = Chr(27) Or k = Chr(255) & "k"
 
 	#Ifdef NETWORK_enabled
-    sock.close()
+	sock.close()
 	#EndIf
-    
+	
 	End
 
 
 ''''''''''''''''''''''''''''
-'''                      '''
+'''					  '''
 '''   END OF MAIN LOOP   '''
-'''                      '''
+'''					  '''
 ''''''''''''''''''''''''''''
 
 
 Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double = 1.0)
 	#Macro dostuff(updown)
-	    game.viewLevel += updown
-	    If updown < 0 Then pl.upX = pl.x : pl.upY = pl.y Else pl.upX = -100 : pl.upY = -100
-	    game.updateBounds
-	    moveStyle = 0
-	    pl.spd = 0
-	    game.viewLevelChanged = -1
+		game.viewLevel += updown
+		If updown < 0 Then pl.upX = pl.x : pl.upY = pl.y Else pl.upX = -100 : pl.upY = -100
+		game.updateBounds
+		moveStyle = 0
+		pl.spd = 0
+		game.viewLevelChanged = -1
 		buildMode = 0
 	#EndMacro
-    'Static moveTimer As DelayTimer = DelayTimer(0.002)
-    Static keyTimer As DelayTimer = DelayTimer(0.5)
-    hasMoved = 0
-    
-    'If MultiKey(KEY_LSHIFT) Then moveTimer.delay = 0 Else moveTimer.delay = .002
-    'If moveStyle = 0 Then moveTimer.delay = .1 Else moveTimer.delay = .002
+	'Static moveTimer As DelayTimer = DelayTimer(0.002)
+	Static keyTimer As DelayTimer = DelayTimer(0.5)
+	hasMoved = 0
+	
+	'If MultiKey(KEY_LSHIFT) Then moveTimer.delay = 0 Else moveTimer.delay = .002
+	'If moveStyle = 0 Then moveTimer.delay = .1 Else moveTimer.delay = .002
 	'If buildMode = 0 Then moveTimer.delay = 0.002 Else moveTimer.delay = 0.1
 	
 	Dim As Integer tempx, tempy
@@ -478,7 +478,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
 		pl.spd = 0
 		Dim As Single arrows_spd = fine_spd
 		If buildMode <> 0 Then arrows_spd = build_spd
-		If MultiKey(KEY_UP)    Then tempang+=&b1000: pl.spd = arrows_spd: thrust = 1
+		If MultiKey(KEY_UP)	Then tempang+=&b1000: pl.spd = arrows_spd: thrust = 1
 		If MultiKey(KEY_DOWN)  Then tempang+=&b0010: pl.spd = arrows_spd: thrust = 1
 		If MultiKey(KEY_LEFT)  Then tempang+=&b0001: pl.spd = arrows_spd: thrust = 1
 		If MultiKey(KEY_RIGHT) Then tempang+=&b0100: pl.spd = arrows_spd: thrust = 1
@@ -556,208 +556,208 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
 			'pl.y = wrap(pl.y, game.boundH(game.viewLevel))
 		EndIf
 	EndIf
-    
-    Dim As Integer controlKey = 0 ', buildMode = 0
-    'If MultiKey(KEY_B) And game.viewLevel = zDetail Then switch(buildMode) ' = -1'Not buildmode '-1
-    If MultiKey(KEY_CONTROL) Then controlKey = -1
-    
-    tempx = CInt(pl.x): tempy = CInt(pl.y)
-    ' Keys that are pressed, not held down: 
-    If keyTimer.hasExpired Then
-    	Dim As String tempk
-    	If MultiKey(Key_K) Then AddExplosion(pl.x+5,pl.y)
-    	' Missiles
-    	If MultiKey(Key_M) AndAlso isMacroVL(game.viewLevel) Then
-    			missiles.add(New Missile(pl.x, pl.y, pl.ang, pl.spd+20))
-    		keyTimer.start
-    	EndIf
-    	If MultiKey(KEY_T) Then consoleOpen = -1: tempk = InKey: Exit Sub
+	
+	Dim As Integer controlKey = 0 ', buildMode = 0
+	'If MultiKey(KEY_B) And game.viewLevel = zDetail Then switch(buildMode) ' = -1'Not buildmode '-1
+	If MultiKey(KEY_CONTROL) Then controlKey = -1
+	
+	tempx = CInt(pl.x): tempy = CInt(pl.y)
+	' Keys that are pressed, not held down: 
+	If keyTimer.hasExpired Then
+		Dim As String tempk
+		If MultiKey(Key_K) Then AddExplosion(pl.x+5,pl.y)
+		' Missiles
+		If MultiKey(Key_M) AndAlso isMacroVL(game.viewLevel) Then
+				missiles.add(New Missile(pl.x, pl.y, pl.ang, pl.spd+20))
+			keyTimer.start
+		EndIf
+		If MultiKey(KEY_T) Then consoleOpen = -1: tempk = InKey: Exit Sub
 		If MultiKey(KEY_B) And game.viewLevel = zDetail Then switch(buildMode): keyTimer.start ' = -1'Not buildmode '-1
-    	'If MultiKey(KEY_F2) Then switch(moveStyle): pl.x = Int(pl.x): pl.y = Int(pl.y): keyTimer.start
-    	If MultiKey(KEY_F3) Then switch(auto_slow): keyTimer.start
-    	#Ifdef NETWORK_enabled
-    	If MultiKey(KEY_I) Then serverQueries = queries.areaInfo   : keyTimer.start
-    	If MultiKey(KEY_O) Then serverQueries = queries.playerCount: keyTimer.start
-    	If MultiKey(KEY_P) Then AddMsg("PING: " & Str(CInt((ping)*1000.0))) : keyTimer.start
-    	#EndIf
-    	If buildMode Then
-    		For i As Integer = 1 To BuildingCount
-    			If MultiKey(i+1) Then
+		'If MultiKey(KEY_F2) Then switch(moveStyle): pl.x = Int(pl.x): pl.y = Int(pl.y): keyTimer.start
+		If MultiKey(KEY_F3) Then switch(auto_slow): keyTimer.start
+		#Ifdef NETWORK_enabled
+		If MultiKey(KEY_I) Then serverQueries = queries.areaInfo   : keyTimer.start
+		If MultiKey(KEY_O) Then serverQueries = queries.playerCount: keyTimer.start
+		If MultiKey(KEY_P) Then AddMsg("PING: " & Str(CInt((ping)*1000.0))) : keyTimer.start
+		#EndIf
+		If buildMode Then
+			For i As Integer = 1 To BuildingCount
+				If MultiKey(i+1) Then
 					tempx += CInt(Cos(pl.ang))
 					tempy -= CInt(Sin(pl.ang))
-    				If game.curArea.Modify(tempx,tempy, ASCIITile( buildings(i).tex,0,buildings(i).flags )) Then
+					If game.curArea.Modify(tempx,tempy, ASCIITile( buildings(i).tex,0,buildings(i).flags )) Then
 						#Ifdef NETWORK_enabled
-				    		pendingModifications+=1
-				    		ReDim Preserve modQueue(1 To pendingModifications) As String
-				    		modQueue(pendingModifications) = Chr(tempx+detCoordOffSet,tempy+detCoordOffSet,i)
+							pendingModifications+=1
+							ReDim Preserve modQueue(1 To pendingModifications) As String
+							modQueue(pendingModifications) = Chr(tempx+detCoordOffSet,tempy+detCoordOffSet,i)
 						#Endif
 						'RefreshTile(tileBuf,tempx,tempy)
 						tileBuf.isEmpty = -1
 					EndIf
 					keyTimer.start
-    				Exit For
-    			EndIf
-    		Next i
-       	EndIf
-    	If MultiKey(KEY_N) And MultiKey(KEY_B) And game.viewLevel = zDetail Then
-    		For i As Integer = 1 To 100
-    			tempx = Rand(1,127) : tempy = Rand(1,127)
-    			game.curArea.Modify(tempx,tempy,ASCIITile(ASCIITexture(Asc("#"), 128,128,128),0,BLOCKS_MOVEMENT))
-	    		pendingModifications+=1
-	    		ReDim Preserve modQueue(1 To pendingModifications) As String
-	    		modQueue(pendingModifications) = SEP & Str(tempx) & SEP & Str(tempy) & SEP & "#" & Chr(128,128,128)
-    		Next i
-    		tileBuf.isEmpty = -1
-    		keyTimer.start
-    	EndIf
+					Exit For
+				EndIf
+			Next i
+	   	EndIf
+		If MultiKey(KEY_N) And MultiKey(KEY_B) And game.viewLevel = zDetail Then
+			For i As Integer = 1 To 100
+				tempx = Rand(1,127) : tempy = Rand(1,127)
+				game.curArea.Modify(tempx,tempy,ASCIITile(ASCIITexture(Asc("#"), 128,128,128),0,BLOCKS_MOVEMENT))
+				pendingModifications+=1
+				ReDim Preserve modQueue(1 To pendingModifications) As String
+				modQueue(pendingModifications) = SEP & Str(tempx) & SEP & Str(tempy) & SEP & "#" & Chr(128,128,128)
+			Next i
+			tileBuf.isEmpty = -1
+			keyTimer.start
+		EndIf
 
-        ' enter places
-        If MultiKey(KEY_SPACE) Then
-        	If pl.spd <> 0 Then
+		' enter places
+		If MultiKey(KEY_SPACE) Then
+			If pl.spd <> 0 Then
 				'nop
-        	Else
-            Select Case game.viewLevel
-                Case zGalaxy
-                    If in2dArray(game.curGalaxy.gmap,tempx,tempy) Then
-                        Dim As Double temp = CDbl(game.curStarmap.size) / GALAXYSIZE
-                        pl.x = CInt(temp * CInt(pl.x))
-                        pl.y = CInt(temp * CInt(pl.y))
+			Else
+			Select Case game.viewLevel
+				Case zGalaxy
+					If in2dArray(game.curGalaxy.gmap,tempx,tempy) Then
+						Dim As Double temp = CDbl(game.curStarmap.size) / GALAXYSIZE
+						pl.x = CInt(temp * CInt(pl.x))
+						pl.y = CInt(temp * CInt(pl.y))
 						prevTileBuf = tileBuf
-                        tileBuf = TileCache(pl.x, pl.y, @GetStarmapTile)
+						tileBuf = TileCache(pl.x, pl.y, @GetStarmapTile)
 						bufferBlendFunc = @CacheBlend_CircleOutwards
-                        BuildNoiseTables game.curStarmap.seed, 8
+						BuildNoiseTables game.curStarmap.seed, 8
 						dostuff(1)
 						AddMsg("Jumping to designated galaxy location")
-                    EndIf
-                Case zStarmap
-                    If StarmapHasStar(tempx,tempy).char <> 0 Then
-                        game.curSystem = SolarSystem(CInt(pl.x), CInt(pl.y))
-                        pl.x = CInt(game.curSystem.size / 2)
-                        pl.y = CInt(game.curSystem.size / 2)
+					EndIf
+				Case zStarmap
+					If StarmapHasStar(tempx,tempy).char <> 0 Then
+						game.curSystem = SolarSystem(CInt(pl.x), CInt(pl.y))
+						pl.x = CInt(game.curSystem.size / 2)
+						pl.y = CInt(game.curSystem.size / 2)
 						prevTileBuf = tileBuf
-                        tileBuf = TileCache(pl.x, pl.y, @GetSolarTile)
+						tileBuf = TileCache(pl.x, pl.y, @GetSolarTile)
 						bufferBlendFunc = @CacheBlend_CircleOutwards
 						dostuff(1)
 						AddMsg("Entering solar system")
-	                EndIf 
-                Case zSystem
-                    For i As Integer = game.curSystem.starCount To game.curSystem.starCount + game.curSystem.planetCount-1
-                        If tempx = game.curSystem.objects(i).x And tempy = game.curSystem.objects(i).y Then
-                            game.curPlanet = game.curSystem.objects(i)
-                            game.curPlanet.Enter
+					EndIf 
+				Case zSystem
+					For i As Integer = game.curSystem.starCount To game.curSystem.starCount + game.curSystem.planetCount-1
+						If tempx = game.curSystem.objects(i).x And tempy = game.curSystem.objects(i).y Then
+							game.curPlanet = game.curSystem.objects(i)
+							game.curPlanet.Enter
 							game.curPlanet.BuildMap
-                            pl.x = CInt(ORBITSIZE/2 - Cos(pl.ang) * game.curPlanet.h/ORBITFACTOR)
-                            pl.y = CInt(ORBITSIZE/2 + Sin(pl.ang) * game.curPlanet.h/ORBITFACTOR)
+							pl.x = CInt(ORBITSIZE/2 - Cos(pl.ang) * game.curPlanet.h/ORBITFACTOR)
+							pl.y = CInt(ORBITSIZE/2 + Sin(pl.ang) * game.curPlanet.h/ORBITFACTOR)
 							prevTileBuf = tileBuf
-                            tileBuf = TileCache(pl.x, pl.y, @GetOrbitTile)
+							tileBuf = TileCache(pl.x, pl.y, @GetOrbitTile)
 							bufferBlendFunc = @CacheBlend_CircleOutwards
-                            'pl.curIcon = char_lander
+							'pl.curIcon = char_lander
 							dostuff(1)
 							AddMsg("Orbiting planet")
-                            Exit For
-                        EndIf
-                    Next i
-            	Case zOrbit
+							Exit For
+						EndIf
+					Next i
+				Case zOrbit
 					Dim As Integer radius = CInt(game.curPlanet.h * .5 / ORBITFACTOR)
-            		If Distance(pl.x,pl.y,ORBITSIZE/2,ORBITSIZE/2) <= radius Then
-		                'TODO: laitas oikeaks tuo koordinaatti juttu
+					If Distance(pl.x,pl.y,ORBITSIZE/2,ORBITSIZE/2) <= radius Then
+						'TODO: laitas oikeaks tuo koordinaatti juttu
 						pl.x = CInt( (pl.x - ORBITSIZE*.5 + radius + (GetTime() Mod radius)) * ORBITFACTOR + ORBITFACTOR*.5 )
 						pl.y = CInt( (pl.y - ORBITSIZE*.5 + radius) * ORBITFACTOR + ORBITFACTOR*.5 )
-		                'pl.x = CInt(game.curPlanet.w / 2)
-	                    'pl.y = CInt(game.curPlanet.h / 2)
+						'pl.x = CInt(game.curPlanet.w / 2)
+						'pl.y = CInt(game.curPlanet.h / 2)
 						prevTileBuf = tileBuf
-	                    tileBuf = TileCache(pl.x, pl.y, @GetGroundTile)
+						tileBuf = TileCache(pl.x, pl.y, @GetGroundTile)
 						bufferBlendFunc = @CacheBlend_CircleOutwards
-	                    pl.curIcon = char_lander
+						pl.curIcon = char_lander
 						dostuff(1)
 						AddMsg("Landing shuttle launched")
 						If game.curPlanet.objType = pGaia Then AddMsg("Entering planet atmosphere") Else AddMsg("Descending from high orbit")
-            		EndIf
-            	Case zPlanet
-            		If game.curPlanet.objType <> pGas Then
-            			'AddLog("--Trying to enter area")
-            			If GetGroundTile(pl.x,pl.y).tex1.desc <> "water" Then
-		                    game.curArea = SurfaceArea(tempx, tempy, tempy * game.curPlanet.w + tempx)
-		                    pl.x = CInt(game.curArea.w / 2)
-		                    pl.y = CInt(game.curArea.h / 2)
+					EndIf
+				Case zPlanet
+					If game.curPlanet.objType <> pGas Then
+						'AddLog("--Trying to enter area")
+						If GetGroundTile(pl.x,pl.y).tex1.desc <> "water" Then
+							game.curArea = SurfaceArea(tempx, tempy, tempy * game.curPlanet.w + tempx)
+							pl.x = CInt(game.curArea.w / 2)
+							pl.y = CInt(game.curArea.h / 2)
 							prevTileBuf = tileBuf
-		                    tileBuf = TileCache(pl.x, pl.y, @GetAreaTile)
+							tileBuf = TileCache(pl.x, pl.y, @GetAreaTile)
 							bufferBlendFunc = @CacheBlend_CircleOutwards
-		                    pl.curIcon = char_walking
+							pl.curIcon = char_walking
 							dostuff(1)
 							AddMsg("Landing")
 							'Addlog("--Entering succesful")
-    					EndIf
+						EndIf
 					Else
 						AddMsg("Unable to land: no surface on gas planets")
-    				EndIf
-            End Select
-            EndIf 
-            keyTimer.start
-        EndIf
-        'exit places
-        If MultiKey(KEY_CONTROL) And MultiKey(KEY_X) Then
-            Select Case game.viewLevel
-                Case zStarmap
-                    'Dim As Double temp = CDbl(game.curStarmap.size) / GALAXYSIZE *.5
-                    pl.x = CInt(clngint(pl.x) * GALAXYSIZE / game.curStarmap.size)
-                    pl.y = CInt(clngint(pl.y) * GALAXYSIZE / game.curStarmap.size)
+					EndIf
+			End Select
+			EndIf 
+			keyTimer.start
+		EndIf
+		'exit places
+		If MultiKey(KEY_CONTROL) And MultiKey(KEY_X) Then
+			Select Case game.viewLevel
+				Case zStarmap
+					'Dim As Double temp = CDbl(game.curStarmap.size) / GALAXYSIZE *.5
+					pl.x = CInt(clngint(pl.x) * GALAXYSIZE / game.curStarmap.size)
+					pl.y = CInt(clngint(pl.y) * GALAXYSIZE / game.curStarmap.size)
 					prevTileBuf = tileBuf
-                    tileBuf = TileCache(pl.x, pl.y, @GetGalaxyTile)
+					tileBuf = TileCache(pl.x, pl.y, @GetGalaxyTile)
 					bufferBlendFunc = @CacheBlend_CircleInwards
 					dostuff(-1)
 					AddMsg("Entering trans-galactic navigation mode")
-                Case zSystem
-                    pl.x = game.curSystem.x
-                    pl.y = game.curSystem.y
+				Case zSystem
+					pl.x = game.curSystem.x
+					pl.y = game.curSystem.y
 					prevTileBuf = tileBuf
-                    tileBuf = TileCache(pl.x, pl.y, @GetStarmapTile)
+					tileBuf = TileCache(pl.x, pl.y, @GetStarmapTile)
 					bufferBlendFunc = @CacheBlend_CircleInwards
-                    BuildNoiseTables game.curStarmap.seed, 8
+					BuildNoiseTables game.curStarmap.seed, 8
 					dostuff(-1)
 					AddMsg("Entering inter-stellar navigation mode")
-            	Case zOrbit
-            		pl.x = game.curPlanet.x
-                    pl.y = game.curPlanet.y
+				Case zOrbit
+					pl.x = game.curPlanet.x
+					pl.y = game.curPlanet.y
 					prevTileBuf = tileBuf
-                    tileBuf = TileCache(pl.x, pl.y, @GetSolarTile)
+					tileBuf = TileCache(pl.x, pl.y, @GetSolarTile)
 					bufferBlendFunc = @CacheBlend_CircleInwards
-                    BuildNoiseTables game.curSystem.seed, 8
-                    pl.curIcon = char_starship
+					BuildNoiseTables game.curSystem.seed, 8
+					pl.curIcon = char_starship
 					dostuff(-1)
 					AddMsg("Leaving planet orbit")
-            	Case zPlanet
-            		'TODO: add proper formulas
+				Case zPlanet
+					'TODO: add proper formulas
 					'x = (x + (GetTime() Mod (radius*2))) Mod (radius*2)
-                    'pl.x = CInt(ORBITSIZE*.5 + (pl.x - game.curPlanet.w*.5) / ORBITFACTOR)
-                    'pl.y = CInt(ORBITSIZE*.5 + (pl.y - game.curPlanet.h*.5) / ORBITFACTOR)
+					'pl.x = CInt(ORBITSIZE*.5 + (pl.x - game.curPlanet.w*.5) / ORBITFACTOR)
+					'pl.y = CInt(ORBITSIZE*.5 + (pl.y - game.curPlanet.h*.5) / ORBITFACTOR)
 					Dim As Double tempang = GetAngle(game.curPlanet.w*.5,game.curPlanet.h*.5,pl.x,pl.y)
 					Dim As Double radius = game.curPlanet.h*.5 / ORBITFACTOR
 					pl.x = CInt(ORBITSIZE*.5 + Cos(tempang) * radius * 1.2)
 					pl.y = CInt(ORBITSIZE*.5 - Sin(tempang) * radius * 1.2)
 					prevTileBuf = tileBuf
-                    tileBuf = TileCache(pl.x, pl.y, @GetOrbitTile)
+					tileBuf = TileCache(pl.x, pl.y, @GetOrbitTile)
 					bufferBlendFunc = @CacheBlend_CircleInwards
-                    BuildNoiseTables game.curSystem.seed, 8
-                    pl.curIcon = char_starship
+					BuildNoiseTables game.curSystem.seed, 8
+					pl.curIcon = char_starship
 					dostuff(-1)
 					pl.upX = -100 : pl.upY = -100
 					AddMsg("Ascending to high orbit")
-                Case zDetail
-                    pl.x = game.curArea.x
-                    pl.y = game.curArea.y
+				Case zDetail
+					pl.x = game.curArea.x
+					pl.y = game.curArea.y
 					prevTileBuf = tileBuf
-                    tileBuf = TileCache(pl.x, pl.y, @GetGroundTile)
+					tileBuf = TileCache(pl.x, pl.y, @GetGroundTile)
 					bufferBlendFunc = @CacheBlend_CircleInwards
-                    BuildNoiseTables game.curPlanet.seed, 8
-                    pl.curIcon = char_lander
+					BuildNoiseTables game.curPlanet.seed, 8
+					pl.curIcon = char_lander
 					dostuff(-1)
 					AddMsg("Leaving surface")
-            	Case zSpecial
-            		
-            End Select
-            keyTimer.start
-        EndIf
+				Case zSpecial
+					
+			End Select
+			keyTimer.start
+		EndIf
 		#Macro addBookmark(slot)
 			If MultiKey(KEY_##slot) Then
 				If game.getAreaCoordStamp() <> "" Then bookmarks(slot) = game.getAreaCoordStamp() & "#" & tempx & "," & tempy Else bookmarks(slot) = tempx & "," & tempy
@@ -793,8 +793,8 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
 			gotoBookmark(9)
 		EndIf
 		EndIf
-    EndIf
-    If hasMoved Then hasMovedOnline = -1
+	EndIf
+	If hasMoved Then hasMovedOnline = -1
 End Sub
 
 
@@ -803,13 +803,13 @@ End Sub
 
 
 Function GoToCoords(stamp As String, ByRef pl As SpaceShip, ByRef tileBuf As TileCache) As Integer
-    pl.spd = 0
+	pl.spd = 0
 	pl.upX = -100 : pl.upY = -100
 	moveStyle = 0
-    Dim As Integer count = CountWords(stamp,"#")
-    Dim As Integer x,y, oldx,oldy
-    Dim As Byte nounder = 0
-    pl.curIcon = char_starship
+	Dim As Integer count = CountWords(stamp,"#")
+	Dim As Integer x,y, oldx,oldy
+	Dim As Byte nounder = 0
+	pl.curIcon = char_starship
 	prevTileBuf = tileBuf
 	For i As Integer = zStarmap To zStarmap+count-1
 		x = CInt( GetWord( GetWord(stamp,i-zStarmap+1,"#"), 1, "," ) )
@@ -818,36 +818,36 @@ Function GoToCoords(stamp As String, ByRef pl As SpaceShip, ByRef tileBuf As Til
 		pl.x = x : pl.y = y
 		game.viewLevel = i
 		game.viewLevelChanged = -1
-        game.updateBounds
-        Select Case i
-        	Case zStarmap
-        		BuildNoiseTables game.curStarmap.seed, 8
-                tileBuf = TileCache(pl.x, pl.y, @GetStarmapTile)
-        	Case zSystem
-        		If StarmapHasStar(oldx,oldy).char <> 0 Then game.curSystem = SolarSystem(oldx, oldy) Else pl.x = oldx: pl.y = oldy: Return 0
-        		tileBuf = TileCache(pl.x, pl.y, @GetSolarTile)
-        	Case zOrbit
-        		nounder = -1
-                For j As Integer = game.curSystem.starCount To game.curSystem.starCount + game.curSystem.planetCount-1
-                    If oldx = game.curSystem.objects(j).x And oldy = game.curSystem.objects(j).y Then
-                        game.curPlanet = game.curSystem.objects(j)
-                        nounder = 0
-                        Exit For
-                    EndIf
-                Next j
-                If nounder Then pl.x = oldx: pl.y = oldy: Return 0
-                game.curPlanet.Enter
+		game.updateBounds
+		Select Case i
+			Case zStarmap
+				BuildNoiseTables game.curStarmap.seed, 8
+				tileBuf = TileCache(pl.x, pl.y, @GetStarmapTile)
+			Case zSystem
+				If StarmapHasStar(oldx,oldy).char <> 0 Then game.curSystem = SolarSystem(oldx, oldy) Else pl.x = oldx: pl.y = oldy: Return 0
+				tileBuf = TileCache(pl.x, pl.y, @GetSolarTile)
+			Case zOrbit
+				nounder = -1
+				For j As Integer = game.curSystem.starCount To game.curSystem.starCount + game.curSystem.planetCount-1
+					If oldx = game.curSystem.objects(j).x And oldy = game.curSystem.objects(j).y Then
+						game.curPlanet = game.curSystem.objects(j)
+						nounder = 0
+						Exit For
+					EndIf
+				Next j
+				If nounder Then pl.x = oldx: pl.y = oldy: Return 0
+				game.curPlanet.Enter
 				game.curPlanet.BuildMap
-                tileBuf = TileCache(pl.x, pl.y, @GetOrbitTile)
-                If pl.x = -1 OrElse pl.y = -1 Then pl.x = ORBITSIZE/2: pl.y = ORBITSIZE/2
-        	Case zPlanet
-                tileBuf = TileCache(pl.x, pl.y, @GetGroundTile)
-                pl.curIcon = char_lander
-        	Case zDetail
-        		If game.curPlanet.objType = pGas Then pl.x = oldx: pl.y = oldy: Return 0 Else game.curArea = SurfaceArea(oldx, oldy, oldy * game.curPlanet.w + oldx)
-                tileBuf = TileCache(pl.x, pl.y, @GetAreaTile)
-                pl.curIcon = char_walking
-        End Select
+				tileBuf = TileCache(pl.x, pl.y, @GetOrbitTile)
+				If pl.x = -1 OrElse pl.y = -1 Then pl.x = ORBITSIZE/2: pl.y = ORBITSIZE/2
+			Case zPlanet
+				tileBuf = TileCache(pl.x, pl.y, @GetGroundTile)
+				pl.curIcon = char_lander
+			Case zDetail
+				If game.curPlanet.objType = pGas Then pl.x = oldx: pl.y = oldy: Return 0 Else game.curArea = SurfaceArea(oldx, oldy, oldy * game.curPlanet.w + oldx)
+				tileBuf = TileCache(pl.x, pl.y, @GetAreaTile)
+				pl.curIcon = char_walking
+		End Select
 	Next i
 	bufferBlendFunc = @CacheBlend_Fractal
 	Return -1
@@ -971,7 +971,7 @@ Sub SaveBookmarks(filename As String = BOOKMARKFILE)
 		For i As Integer = 1 To 9
 			Print #f, bookmarks(i)
 		Next i
-    Close #f
+	Close #f
 End Sub
 
 Sub LoadBookmarks(filename As String = BOOKMARKFILE)
@@ -980,7 +980,7 @@ Sub LoadBookmarks(filename As String = BOOKMARKFILE)
 		For i As Integer = 1 To 9
 			Line Input #f, bookmarks(i)
 		Next i
-    Close #f
+	Close #f
 End Sub
 
 
@@ -1071,10 +1071,10 @@ Sub ParseCommandline()
 			Case "-d", "--no-launcher"
 				launch_updater = 0
 			Case "-s", "--stars"
-				Print ".  . .   .    .       .    . . \|/ ."
-				Print " .       +     ..    .   *     -o-  "
-				Print "   * .     . .  . .     .  . . /|\ ."
-				Print ". .     .    . * .   +     *    .   "
+				Print ".  . .   .	.	   .	. . \|/ ."
+				Print " .	   +	 ..	.   *	 -o-  "
+				Print "   * .	 . .  . .	 .  . . /|\ ."
+				Print ". .	 .	. * .   +	 *	.   "
 				End
 			Case Else
 				Print "Unknown command line argument: " + arg

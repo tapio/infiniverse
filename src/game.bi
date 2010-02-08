@@ -23,26 +23,26 @@ End Function
 
 
 Type SpaceShip
-	x    As Double
-	y    As Double
-    ang  As Double  = 0
-    spd  As Double  = 0
-    oldx As Integer = 0
-    oldy As Integer = 0
-    upX  As Integer = -100
-    upY  As Integer = -100
-    fuel As Single  = 100
-    thrust As Integer = 0
-    strafe As Integer = 0
+	x	As Double
+	y	As Double
+	ang  As Double  = 0
+	spd  As Double  = 0
+	oldx As Integer = 0
+	oldy As Integer = 0
+	upX  As Integer = -100
+	upY  As Integer = -100
+	fuel As Single  = 100
+	thrust As Integer = 0
+	strafe As Integer = 0
 	energy As Single = 100
-    curIcon As String = char_starship
-    Declare Constructor(x As Double = 0, y As Double = 0, ang As Single = 0)
+	curIcon As String = char_starship
+	Declare Constructor(x As Double = 0, y As Double = 0, ang As Single = 0)
 End Type
-    Constructor SpaceShip(x As Double = 0, y As Double = 0, ang As Single = 0)
-        this.x   = x
-        this.y   = y
-        this.ang = ang
-    End Constructor
+	Constructor SpaceShip(x As Double = 0, y As Double = 0, ang As Single = 0)
+		this.x   = x
+		this.y   = y
+		this.ang = ang
+	End Constructor
 
 
 
@@ -57,7 +57,7 @@ Type Player
 	Declare Sub updatePos(_x As Double, _y As Double, _timeAdjust As Double = 0)
 End Type
 '	Constructor Player(_x As Double=0, _y As Double=0)
-'		this.x    = _x : this.y    = _y
+'		this.x	= _x : this.y	= _y
 '		this.oldx = _x : this.oldy = _y
 '		this.refx = _x : this.refy = _y
 '		this.lastUpdate = Timer
@@ -131,8 +131,8 @@ End Type
 	End Sub
 	Sub Missile.updatePos(_x As Double, _y As Double, _timeAdjust As Double = 0)
 		this.oldx = this.refx : this.oldy = this.refy
-		this.refx = _x        : this.refy = _y
-		this.x    = _x        : this.y    = _y
+		this.refx = _x	: this.refy = _y
+		this.x	= _x	: this.y	= _y
 		this.ang = GetAngle(oldx,oldy,x,y)
 		this.spd = Distance(oldx,oldy,x,y) / (Timer - this.lastUpdate)
 		this.lastUpdate = Timer + _timeAdjust

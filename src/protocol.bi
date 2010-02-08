@@ -9,7 +9,7 @@
 Const ticksecs = 1.0
 
 Enum actions Explicit
-	message     = 1
+	message	 = 1
 	updatePos		' Chr(updatePos,viewLvl?)+4charInt,4charInt+Name
 	positions
 	updateMissile	' Chr(updateMissile)+4charUInt(ID)+4charInt,4charInt
@@ -22,7 +22,7 @@ Enum actions Explicit
 End Enum
 
 Enum queries Explicit
-	ping        = 1
+	ping		= 1
 	playerCount
 	areaInfo
 	timeSync
@@ -32,7 +32,7 @@ End Enum
 
 
 Enum cflags Explicit
-	admin		= &b10000000
+	admin = &b10000000
 End Enum
 
 Enum tile_flags
@@ -40,14 +40,14 @@ Enum tile_flags
 End Enum
 
 Enum viewLevels
-    'zUniverse
-    zGalaxy
-    zStarmap
-    zSystem
-    zOrbit
-    zPlanet
-    zDetail
-    zSpecial
+	'zUniverse
+	zGalaxy
+	zStarmap
+	zSystem
+	zOrbit
+	zPlanet
+	zDetail
+	zSpecial
 End Enum
 
 
@@ -88,22 +88,22 @@ Type ASCIITexture
 End Type
 	Constructor ASCIITexture()
 	End Constructor
-    Constructor ASCIITexture(_char As UByte=0, _r As UByte=0, _g As UByte=0, _b As UByte=0, _desc As String="")
-        this.r = _r
-        this.g = _g
-        this.b = _b
-        this.char = _char
-        this.desc = _desc
-        'If _desc <> "" Then
+	Constructor ASCIITexture(_char As UByte=0, _r As UByte=0, _g As UByte=0, _b As UByte=0, _desc As String="")
+		this.r = _r
+		this.g = _g
+		this.b = _b
+		this.char = _char
+		this.desc = _desc
+		'If _desc <> "" Then
 			'this.desc = CUByte(_desc)
 		'EndIf
-    End Constructor
-    Operator ASCIITexture.Cast() As String
-    	Return char & r & g & b
-    End Operator
-    Sub ASCIITexture.DrawTexture(x As Integer, y As Integer)
-        Draw String (x,y), Chr(this.char), RGB(this.r,this.g,this.b)
-    End Sub
+	End Constructor
+	Operator ASCIITexture.Cast() As String
+		Return char & r & g & b
+	End Operator
+	Sub ASCIITexture.DrawTexture(x As Integer, y As Integer)
+		Draw String (x,y), Chr(this.char), RGB(this.r,this.g,this.b)
+	End Sub
 '	Property ASCIITexture.desc(_desc As String)
 '	
 '	End Property
