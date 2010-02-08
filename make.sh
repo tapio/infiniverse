@@ -6,7 +6,7 @@
 FBC="fbc" # Path to fbc
 WINFBC="C:\Program Files\FreeBASIC\fbc.exe" # Path to fbc.exe
 WINE="wine" # Wine command
-FLAGS="-w all -mt" # Default compilation flags
+FLAGS="-w all -mt -t 4096" # Default compilation flags
 DEBUGFLAGS="$FLAGS -g -exx" # Debug flags
 EXENAME="./infiniverse-client" # .exe is added if wine is enabled
 UPDATERNAME="./updater" # .exe is added if wine is enabled
