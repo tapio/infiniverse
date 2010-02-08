@@ -6,7 +6,7 @@
 FBC="fbc" # Path to fbc
 WINFBC="C:\Program Files\FreeBASIC\fbc.exe" # Path to fbc.exe
 WINE="wine" # Wine command
-FLAGS="-w all -mt -t 4096" # Default compilation flags
+FLAGS="-w all -mt" # Default compilation flags
 DEBUGFLAGS="$FLAGS -g -exx" # Debug flags
 EXENAME="./infiniverse-client" # .exe is added if wine is enabled
 UPDATERNAME="./updater" # .exe is added if wine is enabled
@@ -35,7 +35,7 @@ case $RULE in
 		;;
 	WINEDEBUG )
 		FBC="$WINFBC"
-		FLAGS=$DEBUGFLAGS
+		FLAGS="$DEBUGFLAGS -t 4096"
 		EXENAME="$EXENAME.exe"
 		UPDATERNAME="$UPDATERNAME.exe"
 		LIBPATH="$LIBPATH/win32"
@@ -46,6 +46,7 @@ case $RULE in
 		;;
 	WINERELEASE )
 		FBC=$WINFBC
+		FLAGS="$FLAGS -t 4096"
 		EXENAME="$EXENAME.exe"
 		UPDATERNAME="$UPDATERNAME.exe"
 		LIBPATH="$LIBPATH/win32"
