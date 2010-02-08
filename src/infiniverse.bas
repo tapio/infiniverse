@@ -1084,7 +1084,7 @@ Sub ParseCommandline()
 		i += 1
 		arg = Command(i)
 	Loop
-	If launch_updater Then Print "Launching Updater..." : Run("./"+UPDATER_EXE_NAME) : End
+	''If launch_updater Then Print "Launching Updater..." : Run("./"+UPDATER_EXE_NAME) : End
 End Sub
 
 #Include "world.bas"
