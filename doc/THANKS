@@ -1,0 +1,19 @@
+Infiniverse THANKS file
+
+Infiniverse has originally been written by the people listed in AUTHORS file. Many people further contributed to the project by reporting problems, suggesting various improvements or providing actual code. Here is a list of these people. Help us keep it complete and exempt of errors.
+
+Pauli Viitapohja
+	 - for testing and enthusiasm 
+
+Matthew Fearnley (counting_pine)
+	- for png screenshot function(ality)
+
+cha0s
+	- for chisock networking library
+
+Garvan O'Keeffe (Sisophon2001)
+	- for fbcliplib clipboard library
+	- for FreeBASIC conversion of md5 algorithm (Lockup encryption program)
+
+duke4e
+	- for a nice FreeBASIC implementation of Perlin noise
