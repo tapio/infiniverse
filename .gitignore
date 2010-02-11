@@ -6,3 +6,7 @@ infiniverse-client
 updater
 *.exe
 data/
+m.sh
+twin.sh
+misc/
+server/
