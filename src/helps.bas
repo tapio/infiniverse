@@ -12,7 +12,7 @@ Sub DrawHelp(vl As Byte)
 		kc: Print !"\tS     \t\t";: dc: Print "Use retro-thursters / decelerate":?
 		kc: Print !"\tA, D  \t\t";: dc: Print "Change heading (while main thrusters are online)":?
 		kc: Print !"\tArrows\t\t";: dc: Print "Trim position with directional auxiliary thrusters (main thrusters offline)":?
-		kc: Print !"\tSpace \t\t";: dc: Print "Dead stop / Enter lower view level (when stopped)":?
+		kc: Print !"\tSpace \t\t";: dc: Print "Stop / Enter lower view level (when stopped)":?
 		kc: Print !"\tCtrl+X\t\t";: dc: Print "Engage jump drive - go to higher view level":?
 		kc: Print !"\tF3    \t\t";: dc: Print "Toggle auto-breaking (automatically slow down when not accelerating)":?
 	Else
@@ -24,12 +24,13 @@ Sub DrawHelp(vl As Byte)
 	kc: Print !"\t1...9     \t";: dc: Print "Go to location":?
 	'kc: Print !"\t \t";: dc: Print "":?
 	
-	
+	#IfNDef LEE
 	If vl = zDetail Then
 		Color RGB(0,64,0)
 		?:Print " BUILD MODE":?
 		kc: Print !"\tB\t\t";: dc: Print "Switch to build mode":?
 	EndIf
+	#EndIf
 	Color RGB(0,64,0)
 	?:Print " GENERAL":?
 	kc: Print !"\tF10\t\t";: dc: Print !"Save screenshot to ""shots/"" -folder":?
@@ -76,7 +77,7 @@ Sub DrawHelp(vl As Byte)
 	ElseIf vl = zStarmap Then
 		Color RGB(255,255,255): Print !"\t"+Chr(249)+"*"+Chr(15)+!"\t\t";: dc: Print "Stars (solar systems)":?
 		Print !"\t";
-		Randomize 4 			'' Potential BUG CAUSE!!!!
+		Randomize 4 			'' FIXME: Potential BUG CAUSE!!!!
 		For i As Integer = 1 To 8
 			Color CUInt(Rand(1,&hffffff)): Print Chr(219);
 		Next i

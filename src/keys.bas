@@ -127,6 +127,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
 		If MultiKey(KEY_O) Then serverQueries = queries.playerCount: keyTimer.start
 		If MultiKey(KEY_P) Then AddMsg("PING: " & Str(CInt((ping)*1000.0))) : keyTimer.start
 		#EndIf
+		#IfNDef LEE
 		If buildMode Then
 			For i As Integer = 1 To BuildingCount
 				If MultiKey(i+1) Then
@@ -145,7 +146,9 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
 					Exit For
 				EndIf
 			Next i
-	   	EndIf
+		EndIf
+		#EndIf
+		'' FIXME: Temporary test hack  V
 		If MultiKey(KEY_N) And MultiKey(KEY_B) And game.viewLevel = zDetail Then
 			For i As Integer = 1 To 100
 				tempx = Rand(1,127) : tempy = Rand(1,127)
