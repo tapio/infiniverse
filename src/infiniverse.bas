@@ -105,8 +105,8 @@ Dim Shared As ULongInt gametime = 0
 #Include Once "universe.bi"
 #Include Once "helps.bas"
 #IfDef NETWORK_enabled
-	#Include Once "lobby.bas"
-	'#Include Once "networking.bas"
+	#Include Once "../server/client/lobby.bas"
+	'#Include Once "../server/client/networking.bas"
 #Else
 	'' Dummy funtions for LEE
 	Sub Lobby(): End Sub
@@ -280,7 +280,7 @@ Do
 		#Ifdef NETWORK_enabled
 			If keepAliveTimer.hasExpired() Then hasMovedOnline = -1
 			'HandleTraffic()
-			#Include "networking.bas"
+			#Include "../server/client/networking.bas"
 		#EndIf
 		Print "Ping:";CInt((ping)*1000.0)
 		Print "Players:";numPlayers

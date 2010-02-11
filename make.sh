@@ -10,9 +10,9 @@ FLAGS="-w all -mt" # Default compilation flags
 DEBUGFLAGS="$FLAGS -g -exx" # Debug flags
 EXENAME="./infiniverse-client" # .exe is added if wine is enabled
 UPDATERNAME="./updater" # .exe is added if wine is enabled
-LIBPATH="../lib" # Where are binary libraries?
-CONTRIBPATH="../contrib" # Where is additional code?
-INCLUDEPATH="../include" # Where are library headers?
+LIBPATH="lib" # Where are binary libraries?
+CONTRIBPATH="contrib" # Where is additional code?
+INCLUDEPATH="include" # Where are library headers?
 
 HELPSTRING="Usage: $0 [RELEASE|DEBUG|CLEAN|WINERELEASE|WINEDEBUG|WINECLEAN|CLEANALL]"
 
