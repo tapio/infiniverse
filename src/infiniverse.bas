@@ -1,6 +1,6 @@
 ' Project "Infiniverse" - A Procedural Exploration Game
 
-#Define INF_VERSION "0.4.6"
+#Define INF_VERSION "0.4.6+"
 
 '#Define LEE
 #IfNDef LEE
