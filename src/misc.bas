@@ -1,4 +1,11 @@
 
+#Macro PrintStars()
+	Print ".  . .   .    .       .    . . \|/ ."
+	Print " .       +     ..    .   *     -o-  "
+	Print "   * .     . .  . .     .  . . /|\ ."
+	Print ". .     .    . * .   +     *    .   "
+#EndMacro
+
 #Macro formatUpdatePos(variable)
 	tempx = CInt(pl.x) : tempy = CInt(pl.y)
 	variable = Chr(actions.updatePos, game.viewLevel, 0,0,0,0,0,0,0,0) & my_name
@@ -87,50 +94,3 @@ Sub TextLine(x1 As Integer, y1 As Integer, x2 As Integer, y2 As Integer, char As
 	Next x
 End Sub
 
-
-Sub SaveBookmarks(filename As String = BOOKMARKFILE)
-	Var f = FreeFile
-	Open filename For Output As #f
-		For i As Integer = 1 To 9
-			Print #f, bookmarks(i)
-		Next i
-	Close #f
-End Sub
-
-Sub LoadBookmarks(filename As String = BOOKMARKFILE)
-	Var f = FreeFile
-	Open filename For Input As #f
-		For i As Integer = 1 To 9
-			Line Input #f, bookmarks(i)
-		Next i
-	Close #f
-End Sub
-
-
-Sub TimeManager()
-	Static timeGame As DelayTimer = DelayTimer(ticksecs)
-	Static timeSyncTimer As DelayTimer = DelayTimer(TimeSyncInterval)
-	If timeGame.hasExpired Then
-		gametime+=1
-		timeGame.start
-	EndIf
-	#Ifdef NETWORK_enabled
-	If timeSyncTimer.hasExpired Then
-		''''' Send time update request
-		serverQueries = queries.timeSync
-		timeSyncTimer.start
-	EndIf
-	#EndIf
-End Sub
-
-Function GetTime() As ULongInt
-	Return gametime
-End Function
-
-Function GetTimeString() As String
-	Var timeString = "Epoch "+Str(Int(gametime / 50000000)+1001) + ", "
-	timeString += "Span "+Str(Int((gametime / 2500000)) Mod 20) + ", "
-	timeString += "Unit "+Str(Int((gametime / 100000)) Mod 25) + ", "
-	timeString += "Beat "+Str(gametime Mod 100000)
-	Return timeString
-End Function

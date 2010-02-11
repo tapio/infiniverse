@@ -2,10 +2,7 @@
 
 #Define INF_VERSION "0.4.6+"
 
-'#Define LEE
-#IfNDef LEE
-	#Define NETWORK_enabled
-#EndIf
+#Define NETWORK_enabled			'' Comment to create LEE-only version
 #Define CLIPBOARD_enabled
 
 #IfDef __FB_LINUX__
@@ -25,11 +22,12 @@ Using fb_clipboard
 #Include Once "miscfb/words.bi"
 #Include Once "miscfb/singlelinkedlist.bi"
 #Include Once "crt/string.bi"
-
+#Include Once "misc.bas"
 
 Dim Shared EXENAME As String: EXENAME = Command(0)
 Dim Shared LOGFILE As String: LOGFILE = ""
 Dim Shared CONFIGFILE As String: CONFIGFILE = "data/server.ini"
+Dim Shared LEE As Integer: LEE = 0
 Dim Shared As String my_name, passwd
 
 Dim Shared As String serveraddress
@@ -43,23 +41,20 @@ EndIf
 
 Declare Sub ParseCommandLine()
 ParseCommandline
-
-#IfNDef LEE
-	Print "Infiniverse-client "+INF_VERSION
-#Else
-	Print "Infiniverse Lone Explorer Edition "+INF_VERSION
+#IfNDef NETWORK_enabled
+	LEE = Not 0
 #EndIf
-Print ".  . .   .	.	   .	. . \|/ ."
-Print " .	   +	 ..	.   *	 -o-  "
-Print "   * .	 . .  . .	 .  . . /|\ ."
-Print ". .	 .	. * .   +	 *	.   "
+
+If Not LEE Then Print "Infiniverse-client "+INF_VERSION _
+Else Print "Infiniverse Lone Explorer Edition "+INF_VERSION
+PrintStars()
 If LOGFILE = "" Then Print "Logging disabled (no log file specified)"
 
 Const scrW = 1024
 Const scrH = 768
 ScreenRes scrW, scrH, 32, 2', 1
 WindowTitle "Infiniverse Client"
-Dim As Byte workpage, curTileCache = 0
+Dim As Integer workpage, curTileCache = 0
 
 'Const viewX = 36
 'Const viewY = 36
@@ -97,7 +92,6 @@ Declare Sub AddVariance(ByRef tile As ASCIITile, variance As Short)
 Declare Function AddVarianceToColor(col As UInteger, variance As Short) As UInteger
 Declare Sub AddMsg(_msg As String)
 Declare Sub PrintMessages(x As Integer, y As Integer, _count As Integer = 1)
-Declare Sub DrawASCIIFrame(x1 As Integer, y1 As Integer, x2 As Integer, y2 As Integer, col As UInteger = 0, Title As String = "")
 Declare Sub SaveBookmarks(filename As String = BOOKMARKFILE)
 Declare Sub LoadBookmarks(filename As String = BOOKMARKFILE)
 
@@ -110,7 +104,14 @@ Dim Shared As ULongInt gametime = 0
 
 #Include Once "universe.bi"
 #Include Once "helps.bas"
-
+#IfDef NETWORK_enabled
+	#Include Once "lobby.bas"
+	'#Include Once "networking.bas"
+#Else
+	'' Dummy funtions for LEE
+	Sub Lobby(): End Sub
+	'Sub HandleTraffic(): End Sub
+#EndIf
 'Dim Shared As UByte farStarBG(1024, 1024)
 'GenerateDistantStarBG(farStarBG()) 
 
@@ -123,12 +124,8 @@ Dim As UByte char, testbyte
 Dim As Integer i,j, tempx,tempy, tempz, count
 Dim As UInteger tempuid
 
-#IfDef LEE
-	LEETitle()
-#EndIf
-#IfDef NETWORK_enabled
-	#Include "lobby.bas"
-#EndIf
+If LEE Then LEETitle() Else Lobby()
+
 #IfNDef SEP
 	#Define SEP Chr(1)
 #EndIf
@@ -162,14 +159,15 @@ Dim Shared As UByte serverQueries = queries.timeSync, gotoBookmarkSlot = 0
 Dim Shared As String bookmarks(1 To 9)
 Dim As Byte helpscreen = 0
 
-#Include Once "misc.bas"
 LoadBookmarks()
 
 #Ifdef NETWORK_enabled
-	sock.put(1)
-	formatChangeArea(traffic_out)
-	sock.put(traffic_out)
-	lastPingResponse = Timer
+	If Not LEE Then
+		sock.put(1)
+		formatChangeArea(traffic_out)
+		sock.put(traffic_out)
+		lastPingResponse = Timer
+	EndIf
 #EndIf
 
 
@@ -184,7 +182,7 @@ Do
 	If consoleOpen = 0 Then Keys pl, tileBuf, gameTimer.frameTime
 	If gotoBookmarkSlot <> 0 Then tempz = GoToCoords(bookmarks(gotoBookmarkSlot),pl,tileBuf): gotoBookmarkSlot = 0
 	
-	#IfDef LEE
+	If LEE Then
 		ForIJ(1, viewStartX/8, 1, scrH/8)
 			tempx = Perlin(i,j,512,512,2,9)
 			If tempx > 200 Then Draw String ((i-1)*8, (j-1)*8), ".", RGB(tempx,tempx,tempx)
@@ -193,7 +191,7 @@ Do
 			tempx = Perlin(i,j,512,512,2,9)
 			If tempx > 200 Then Draw String ((i-1)*8, (j-1)*8), ".", RGB(tempx,tempx,tempx)
 		NextIJ
-	#EndIf
+	EndIf
 	
 	UpdateCache tileBuf, CInt(pl.x),CInt(pl.y), viewX,viewY
 	'Blending
@@ -275,31 +273,31 @@ Do
 		Next i
 	EndIf
 
-	#Ifdef NETWORK_enabled
-		If keepAliveTimer.hasExpired() Then hasMovedOnline = -1
-		#Include "networking.bas"
-	#Else
-		game.viewLevelChanged = 0
-	#EndIf
-
 	Locate 1,1: Color RGB(80,40,40)
 	'Print "spds:";(pl.spd);" ";(Distance(pl.x,pl.y,pl.oldx,pl.oldy)/gameTimer.frameTime)
 	Print "FPS: ";gameTimer.getFPS
-	#IfNDef LEE
+	If Not LEE Then
+		#Ifdef NETWORK_enabled
+			If keepAliveTimer.hasExpired() Then hasMovedOnline = -1
+			'HandleTraffic()
+			#Include "networking.bas"
+		#EndIf
 		Print "Ping:";CInt((ping)*1000.0)
 		Print "Players:";numPlayers
 		Print "Particles: ";particles.itemCount
 		Print traffic_in
-	#EndIf
+	Else
+		game.viewLevelChanged = 0
+	EndIf
 	'Print "UniqueId:";GetStarId(pl.x,pl.y)
 	'Print "frameTime: ";gameTimer.frameTime
 	DrawASCIIFrame viewStartX-8, viewStartY-8, scrW-viewStartX+8, viewStartY+8+16*viewY, RGB(0,32,48)
 	
 	#Define UIframe1 RGB(0,24,96)
 	#Define UItext1  RGB(64,64,96)
-	#IfDef LEE
+	If LEE Then
 	
-	#Else 'Not LEE
+	Else 'Not LEE
 	'' Status ''
 	tempx = 0 : tempy = viewStartY-8
 	DrawASCIIFrame tempx, tempy, viewStartX-16, tempy+8*8, UIframe1, "Ship Status"
@@ -362,7 +360,7 @@ Do
 		Next i
 	EndIf
 	
-	#EndIf 'LEE
+	EndIf 'LEE
 	'' Info ''
 	DrawASCIIFrame viewStartX-8, 8, scrW-viewStartX+8, 5*8, RGB(0,0,96), "Information"
 	Draw String (viewStartX+8, 16), "Coords: "+Str(CLngInt(pl.x))+" - "+Str(CLngInt(pl.y))
@@ -527,6 +525,54 @@ Function GameInput(promt As String = "", x As Integer, y As Integer, stri As Str
 End Function
 
 
+Sub SaveBookmarks(filename As String = BOOKMARKFILE)
+	Var f = FreeFile
+	Open filename For Output As #f
+		For i As Integer = 1 To 9
+			Print #f, bookmarks(i)
+		Next i
+	Close #f
+End Sub
+
+Sub LoadBookmarks(filename As String = BOOKMARKFILE)
+	Var f = FreeFile
+	Open filename For Input As #f
+		For i As Integer = 1 To 9
+			Line Input #f, bookmarks(i)
+		Next i
+	Close #f
+End Sub
+
+
+Sub TimeManager()
+	Static timeGame As DelayTimer = DelayTimer(ticksecs)
+	Static timeSyncTimer As DelayTimer = DelayTimer(TimeSyncInterval)
+	If timeGame.hasExpired Then
+		gametime+=1
+		timeGame.start
+	EndIf
+	#Ifdef NETWORK_enabled
+	If timeSyncTimer.hasExpired Then
+		''''' Send time update request
+		serverQueries = queries.timeSync
+		timeSyncTimer.start
+	EndIf
+	#EndIf
+End Sub
+
+Function GetTime() As ULongInt
+	Return gametime
+End Function
+
+Function GetTimeString() As String
+	Var timeString = "Epoch "+Str(Int(gametime / 50000000)+1001) + ", "
+	timeString += "Span "+Str(Int((gametime / 2500000)) Mod 20) + ", "
+	timeString += "Unit "+Str(Int((gametime / 100000)) Mod 25) + ", "
+	timeString += "Beat "+Str(gametime Mod 100000)
+	Return timeString
+End Function
+
+
 Sub ParseCommandline()
 	Dim i As Integer = 1
 	Dim launch_updater As Integer = -1
@@ -534,13 +580,9 @@ Sub ParseCommandline()
 	Do While arg <> ""
 		Select Case arg
 			Case "-h", "--help"
-				#IfNDef LEE
-					Print "Infiniverse-client ("+EXENAME+")"
-				#Else
-					Print "Infiniverse Lone Explorer Edition ("+EXENAME+")"
-				#EndIf
+				Print "Infiniverse-client ("+EXENAME+")"
 				#IfNDef NETWORK_enabled
-					Print "(Networking disabled)"
+				Print "(Networking disabled)"
 				#EndIf
 				Print "Version " + INF_VERSION
 				Print "Arguments:"
@@ -561,6 +603,11 @@ Sub ParseCommandline()
 				Print !"\t\tdefault: " + CONFIGFILE
 				Print !"\t-l <logfile>, --logfile <logfile>"
 				Print !"\t\tLog output to specified file"
+				#IfDef NETWORK_enabled
+				Print !"\t-z, --lee"
+				Print !"\t\tStart Lone Explorer Edition"
+				Print !"\t\t(single-player version)"
+				#EndIf
 				End
 			Case "-v", "--version"
 				Print EXENAME + " " + INF_VERSION
@@ -583,13 +630,12 @@ Sub ParseCommandline()
 			Case "-l", "--logfile"
 				LOGFILE = Command(i+1)
 				i += 1
+			Case "-z", "--lee"
+				LEE = Not 0
 			Case "-d", "--no-launcher"
 				launch_updater = 0
 			Case "-s", "--stars"
-				Print ".  . .   .    .       .    . . \|/ ."
-				Print " .       +     ..    .   *     -o-  "
-				Print "   * .     . .  . .     .  . . /|\ ."
-				Print ". .     .    . * .   +     *    .   "
+				PrintStars()
 				End
 			Case Else
 				Print "Unknown command line argument: " + arg

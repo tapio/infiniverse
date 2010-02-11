@@ -24,13 +24,11 @@ Sub DrawHelp(vl As Byte)
 	kc: Print !"\t1...9     \t";: dc: Print "Go to location":?
 	'kc: Print !"\t \t";: dc: Print "":?
 	
-	#IfNDef LEE
-	If vl = zDetail Then
+	If Not LEE AndAlso vl = zDetail Then
 		Color RGB(0,64,0)
 		?:Print " BUILD MODE":?
 		kc: Print !"\tB\t\t";: dc: Print "Switch to build mode":?
 	EndIf
-	#EndIf
 	Color RGB(0,64,0)
 	?:Print " GENERAL":?
 	kc: Print !"\tF10\t\t";: dc: Print !"Save screenshot to ""shots/"" -folder":?
