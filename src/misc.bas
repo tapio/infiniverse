@@ -31,7 +31,8 @@
 #Macro erasePlayer(_i)
 	'players(_i) = players(numPlayers)
 	'players(numPlayers).id = ""
-	Delete players(_i)
+	players(_i).id = ""
+	'Delete players(_i)
 	numPlayers-=1
 	'If log_enabled Then AddLog(my_name & "Player " & temp & " erased.")	
 #EndMacro

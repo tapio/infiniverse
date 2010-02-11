@@ -586,10 +586,10 @@ Sub ParseCommandline()
 			Case "-d", "--no-launcher"
 				launch_updater = 0
 			Case "-s", "--stars"
-				Print ".  . .   .	.	   .	. . \|/ ."
-				Print " .	   +	 ..	.   *	 -o-  "
-				Print "   * .	 . .  . .	 .  . . /|\ ."
-				Print ". .	 .	. * .   +	 *	.   "
+				Print ".  . .   .    .       .    . . \|/ ."
+				Print " .       +     ..    .   *     -o-  "
+				Print "   * .     . .  . .     .  . . /|\ ."
+				Print ". .     .    . * .   +     *    .   "
 				End
 			Case Else
 				Print "Unknown command line argument: " + arg
