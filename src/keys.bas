@@ -25,7 +25,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
 		pl.spd = 0
 		Dim As Single arrows_spd = fine_spd
 		If buildMode <> 0 Then arrows_spd = build_spd
-		If MultiKey(KEY_UP)	Then tempang+=&b1000: pl.spd = arrows_spd: thrust = 1
+		If MultiKey(KEY_UP)    Then tempang+=&b1000: pl.spd = arrows_spd: thrust = 1
 		If MultiKey(KEY_DOWN)  Then tempang+=&b0010: pl.spd = arrows_spd: thrust = 1
 		If MultiKey(KEY_LEFT)  Then tempang+=&b0001: pl.spd = arrows_spd: thrust = 1
 		If MultiKey(KEY_RIGHT) Then tempang+=&b0100: pl.spd = arrows_spd: thrust = 1
@@ -57,8 +57,16 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
 
 	'If ( game.viewLevel = zGalaxy ) AndAlso (Not inBounds(pl.x,0,game.boundW(game.viewLevel)-1) OrElse Not inBounds(pl.y,0,game.boundH(game.viewLevel)-1)) Then
 	'	pl.x = pl.oldx: pl.y = pl.oldy
+	'' Detail level
 	If game.viewLevel = zDetail AndAlso (pl.x <> pl.oldx OrElse pl.y <> pl.oldy) Then
-		If (game.curArea.areaArray(CInt(pl.x),CInt(pl.y)).flags And BLOCKS_MOVEMENT) <> 0 Then pl.x = CInt(pl.oldx): pl.y = CInt(pl.oldy): pl.spd = 0
+		'' Collisions
+		If (game.curArea.areaArray(CInt(pl.x),CInt(pl.y)).flags And BLOCKS_MOVEMENT) Then
+			Dim As Single backang = GetAngle(pl.x,pl.y,pl.oldx,pl.oldy)
+			pl.x -= Cos(backang)
+			pl.y += Sin(backang)
+			pl.spd = 0
+		EndIf
+		'' Borders...
 		If (Not inBounds(pl.x,0,game.boundW(game.viewLevel)-1) OrElse Not inBounds(pl.y,0,game.boundH(game.viewLevel)-1)) Then
 			tempx = game.curArea.x
 			tempy = game.curArea.y
@@ -75,6 +83,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
 			bufferBlendFunc = 0
 			game.viewLevelChanged = -1
 		EndIf
+	'' Handle coming to borders on other levels
 	ElseIf (Not inBounds(pl.x,0,game.boundW(game.viewLevel)-1)) OrElse (Not inBounds(pl.y,0,game.boundH(game.viewLevel)-1)) Then
 		If game.viewLevel = zSystem Then
 			pl.x = game.curSystem.x
@@ -84,6 +93,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
 			bufferBlendFunc = @CacheBlend_CircleInwards
 			BuildNoiseTables game.curStarmap.seed, 8
 			dostuff(-1)
+			AddMsg("Entering inter-stellar navigation mode")
 		ElseIf game.viewLevel = zOrbit Then
 			pl.x = game.curPlanet.x
 			pl.y = game.curPlanet.y
@@ -105,7 +115,6 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
 	EndIf
 
 	Dim As Integer controlKey = 0 ', buildMode = 0
-	'If MultiKey(KEY_B) And game.viewLevel = zDetail Then switch(buildMode) ' = -1'Not buildmode '-1
 	If MultiKey(KEY_CONTROL) Then controlKey = -1
 
 	tempx = CInt(pl.x): tempy = CInt(pl.y)
@@ -115,11 +124,11 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
 		If MultiKey(Key_K) Then AddExplosion(pl.x+5,pl.y)
 		' Missiles
 		If MultiKey(Key_M) AndAlso isMacroVL(game.viewLevel) Then
-				missiles.add(New Missile(pl.x, pl.y, pl.ang, pl.spd+20))
+			missiles.add(New Missile(pl.x, pl.y, pl.ang, pl.spd+20))
 			keyTimer.start
 		EndIf
 		If MultiKey(KEY_T) Then consoleOpen = -1: tempk = InKey: Exit Sub
-		If MultiKey(KEY_B) And game.viewLevel = zDetail Then switch(buildMode): keyTimer.start ' = -1'Not buildmode '-1
+		If MultiKey(KEY_B) AndAlso game.viewLevel = zDetail Then switch(buildMode): keyTimer.start ' = -1'Not buildmode '-1
 		'If MultiKey(KEY_F2) Then switch(moveStyle): pl.x = Int(pl.x): pl.y = Int(pl.y): keyTimer.start
 		If MultiKey(KEY_F3) Then switch(auto_slow): keyTimer.start
 		#Ifdef NETWORK_enabled
