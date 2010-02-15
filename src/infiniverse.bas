@@ -3,7 +3,7 @@
 #Define INF_VERSION "0.4.6+"
 
 #Define NETWORK_enabled			'' Comment to create LEE-only version
-#Define CLIPBOARD_enabled
+#Define CLIPBOARD_enabled		'' Comment to exclude clipboard functionality
 
 #IfDef __FB_LINUX__
  #Define UPDATER_EXE_NAME "updater"
@@ -11,9 +11,10 @@
  #Define UPDATER_EXE_NAME "updater.exe"
 #EndIf
 
-#Include Once "fbclp.bi"
-Using fb_clipboard
-
+#IfDef CLIPBOARD_enabled
+	#Include Once "fbclp.bi"
+	Using fb_clipboard
+#EndIf
 
 #Include Once "PNGscreenshot.bas"
 #Include Once "miscfb/def.bi"
@@ -113,7 +114,7 @@ Dim Shared As ULongInt gametime = 0
 	'Sub HandleTraffic(): End Sub
 #EndIf
 'Dim Shared As UByte farStarBG(1024, 1024)
-'GenerateDistantStarBG(farStarBG()) 
+'GenerateDistantStarBG(farStarBG())
 
 
 Dim As String temp, temp2, tempst
@@ -130,8 +131,7 @@ If LEE Then LEETitle() Else Lobby()
 	#Define SEP Chr(1)
 #EndIf
 
-Dim Shared As Integer pendingModifications = 0
-Dim Shared modQueue(pendingModifications) As String
+Dim Shared modQueue As String
 'If log_enabled Then AddLog(my_name & "---NEW---")
 
 Dim Shared game As GameLogic
@@ -177,11 +177,11 @@ Do
 	TimeManager()
 	ScreenSet workpage, workpage Xor 1
 	Cls
-	
+
 	If helpscreen = 0 Then
 	If consoleOpen = 0 Then Keys pl, tileBuf, gameTimer.frameTime
 	If gotoBookmarkSlot <> 0 Then tempz = GoToCoords(bookmarks(gotoBookmarkSlot),pl,tileBuf): gotoBookmarkSlot = 0
-	
+
 	If LEE Then
 		ForIJ(1, viewStartX/8, 1, scrH/8)
 			tempx = Perlin(i,j,512,512,2,9)
@@ -192,7 +192,7 @@ Do
 			If tempx > 200 Then Draw String ((i-1)*8, (j-1)*8), ".", RGB(tempx,tempx,tempx)
 		NextIJ
 	EndIf
-	
+
 	UpdateCache tileBuf, CInt(pl.x),CInt(pl.y), viewX,viewY
 	'Blending
 	If game.viewLevelChanged And bufferBlendFunc <> 0 Then bufferBlendFactor = 1.0
@@ -235,7 +235,7 @@ Do
 		EndIf
 		mIter = missiles.getNext()
 	Wend
-	
+
 	'Player stuff
 	If pl.spd <> 0 Then
 		Dim As Single moveang = pl.ang
@@ -250,11 +250,11 @@ Do
 			Else AddTrail(pl.x,pl.y,pl.oldx,pl.oldy,RGB(255,196,0))
 		EndIf
 		'moveTimer.start
-	EndIf		
+	EndIf
 	Draw String ( viewStartX + 8*viewX, viewStartY + 8*viewY ), pl.curIcon, RGB(150,250,150)
 	Draw String ( viewStartX + 8*(viewX+CInt(Cos(pl.ang)*10)), viewStartY + 8*(viewY-CInt(Sin(pl.ang)*10)) ), "x", RGB(0,255,0)
 	If pl.upX > 0 AndAlso Abs(pl.upX-pl.x) < viewX AndAlso Abs(pl.upY-pl.y) < viewY Then Draw String ( viewStartX + 8*(viewX + (pl.upX-CInt(pl.x))), viewStartY + 8*(viewY + (pl.upY-CInt(pl.y))) ), "X", RGB(200,0,200)
-	
+
 	'Guide arrows
 	If game.viewLevel = zSystem Then
 		For i = 0 To game.curSystem.starCount + game.curSystem.planetCount - 1
@@ -292,11 +292,11 @@ Do
 	'Print "UniqueId:";GetStarId(pl.x,pl.y)
 	'Print "frameTime: ";gameTimer.frameTime
 	DrawASCIIFrame viewStartX-8, viewStartY-8, scrW-viewStartX+8, viewStartY+8+16*viewY, RGB(0,32,48)
-	
+
 	#Define UIframe1 RGB(0,24,96)
 	#Define UItext1  RGB(64,64,96)
 	If LEE Then
-	
+
 	Else 'Not LEE
 	'' Status ''
 	tempx = 0 : tempy = viewStartY-8
@@ -339,13 +339,13 @@ Do
 	Color RGB(96,0,00)
 	Draw String (tempx+16, tempy+2*8), "Amount: 0"
 	Draw String (tempx+16, tempy+3*8), "Armed:  0"
-	
+
 	'' Cargo / Build ''
 	DrawASCIIFrame viewStartX+16*viewX+16, viewStartY-8, scrW-8, viewStartY+8*8, RGB(0,96,24), "Cargo Stats"
 	Color UItext1
-	Draw String (viewStartX+16*viewX+16+16, viewStartY+8 ), !"Total Space:	 100 m3"
-	Draw String (viewStartX+16*viewX+16+16, viewStartY+16), !"Used Space :	   0 m3"
-	Draw String (viewStartX+16*viewX+16+16, viewStartY+24), !"Used %	 :	   0 %"
+	Draw String (viewStartX+16*viewX+16+16, viewStartY+8 ), !"Total Space:    100 m3"
+	Draw String (viewStartX+16*viewX+16+16, viewStartY+16), !"Used Space :      0 m3"
+	Draw String (viewStartX+16*viewX+16+16, viewStartY+24), !"Used %     :      0 %"
 	tempy = viewStartY + 11*8
 	If buildMode Then temp = "BUILD MENU" Else temp = "Cargo Inventory"
 	DrawASCIIFrame viewStartX+16*viewX+16, tempy-8, scrW-8, viewStartY+8+16*viewY, RGB(100,50,0), temp
@@ -359,7 +359,7 @@ Do
 			Draw String (tempx, tempy+i*8), temp, RGB(Buildings(i).tex.r, Buildings(i).tex.g, Buildings(i).tex.b)
 		Next i
 	EndIf
-	
+
 	EndIf 'LEE
 	'' Info ''
 	DrawASCIIFrame viewStartX-8, 8, scrW-viewStartX+8, 5*8, RGB(0,0,96), "Information"
@@ -372,7 +372,7 @@ Do
 	Else
 		DrawHelp(game.viewLevel)
 	EndIf
-	
+
 	k = InKey
 	If k = Chr(255,68) Then
 		Var shotname = "shots/shot"+Str(Int(Rnd*90000)+10000)+".png"
@@ -381,10 +381,10 @@ Do
 	EndIf
 	If consoleOpen Then
 		msg = GameInput("> ", viewStartX, scrH-16, msg, k)
-		'#Ifdef CLIPBOARD_enabled
+		#IfDef CLIPBOARD_enabled
 			If MultiKey(KEY_CONTROL) And MultiKey(KEY_V) Then msg = msg & getClip():Sleep 500
 			If MultiKey(KEY_CONTROL) And MultiKey(KEY_C) Then setClip(msg):Sleep 500
-		'#EndIf
+		#EndIf
 		If MultiKey(KEY_ENTER) Then
 			consoleOpen = 0
 			If msg = "/ping" Then AddMsg("PING: " & Str(CInt((ping)*1000.0))): msg = ""
@@ -516,7 +516,7 @@ Function GameInput(promt As String = "", x As Integer, y As Integer, stri As Str
 		Else
 			_backspace_timer_delay = .5
 			_backspace_down_flag = 0
-		EndIf		
+		EndIf
 	EndIf
 	Var dispstri = stri
 	If passwordchar <> "" Then dispstri = String(Len(stri), passwordchar)

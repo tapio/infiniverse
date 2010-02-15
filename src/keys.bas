@@ -12,11 +12,11 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
 	'Static moveTimer As DelayTimer = DelayTimer(0.002)
 	Static keyTimer As DelayTimer = DelayTimer(0.5)
 	hasMoved = 0
-	
+
 	'If MultiKey(KEY_LSHIFT) Then moveTimer.delay = 0 Else moveTimer.delay = .002
 	'If moveStyle = 0 Then moveTimer.delay = .1 Else moveTimer.delay = .002
 	'If buildMode = 0 Then moveTimer.delay = 0.002 Else moveTimer.delay = 0.1
-	
+
 	Dim As Integer tempx, tempy
 
 	pl.oldx = pl.x : pl.oldy = pl.y : pl.strafe = 0
@@ -38,7 +38,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
 			pl.spd -= acc * 4 * frameTime '*= .85
 			If pl.spd < 0.01 Then pl.spd = 0: pl.x = CInt(pl.x): pl.y = CInt(pl.y)
 		EndIf
-		If MultiKey(KEY_W) Then 
+		If MultiKey(KEY_W) Then
 			pl.spd += acc * frameTime
 			thrust = 1
 		Else
@@ -49,7 +49,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
 	EndIf
 	If MultiKey(KEY_A) Then pl.ang = wrap(pl.ang+turn_rate*frameTime,2*pi) ': moveTimer.start
 	If MultiKey(KEY_D) Then pl.ang = wrap(pl.ang-turn_rate*frameTime,2*pi) ': moveTimer.start
-	If (Not MultiKey(KEY_A)) AndAlso (Not MultiKey(Key_D)) Then 
+	If (Not MultiKey(KEY_A)) AndAlso (Not MultiKey(Key_D)) Then
 		If wrap(pl.ang,pi/4) < 0.2 Then pl.ang = CInt(pl.ang/(pi/4))*(pi/4.0)
 	EndIf
 	pl.thrust = thrust
@@ -103,13 +103,13 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
 			'pl.y = wrap(pl.y, game.boundH(game.viewLevel))
 		EndIf
 	EndIf
-	
+
 	Dim As Integer controlKey = 0 ', buildMode = 0
 	'If MultiKey(KEY_B) And game.viewLevel = zDetail Then switch(buildMode) ' = -1'Not buildmode '-1
 	If MultiKey(KEY_CONTROL) Then controlKey = -1
-	
+
 	tempx = CInt(pl.x): tempy = CInt(pl.y)
-	' Keys that are pressed, not held down: 
+	' Keys that are pressed, not held down:
 	If keyTimer.hasExpired Then
 		Dim As String tempk
 		If MultiKey(Key_K) Then AddExplosion(pl.x+5,pl.y)
@@ -127,19 +127,16 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
 		If MultiKey(KEY_O) Then serverQueries = queries.playerCount: keyTimer.start
 		If MultiKey(KEY_P) Then AddMsg("PING: " & Str(CInt((ping)*1000.0))) : keyTimer.start
 		#EndIf
-		#IfNDef LEE
-		If buildMode Then
+		If buildMode And Not LEE Then
 			For i As Integer = 1 To BuildingCount
+				'FIXME: This keybinding is bullsh
 				If MultiKey(i+1) Then
 					tempx += CInt(Cos(pl.ang))
 					tempy -= CInt(Sin(pl.ang))
 					If game.curArea.Modify(tempx,tempy, ASCIITile( buildings(i).tex,0,buildings(i).flags )) Then
-						#Ifdef NETWORK_enabled
-							pendingModifications+=1
-							ReDim Preserve modQueue(1 To pendingModifications) As String
-							modQueue(pendingModifications) = Chr(tempx+detCoordOffSet,tempy+detCoordOffSet,i)
-						#Endif
-						'RefreshTile(tileBuf,tempx,tempy)
+						#IfDef NETWORK_enabled
+							modQueue += Chr(i,tempx,tempy)
+						#EndIf
 						tileBuf.isEmpty = -1
 					EndIf
 					keyTimer.start
@@ -147,21 +144,8 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
 				EndIf
 			Next i
 		EndIf
-		#EndIf
-		'' FIXME: Temporary test hack  V
-		If MultiKey(KEY_N) And MultiKey(KEY_B) And game.viewLevel = zDetail Then
-			For i As Integer = 1 To 100
-				tempx = Rand(1,127) : tempy = Rand(1,127)
-				game.curArea.Modify(tempx,tempy,ASCIITile(ASCIITexture(Asc("#"), 128,128,128),0,BLOCKS_MOVEMENT))
-				pendingModifications+=1
-				ReDim Preserve modQueue(1 To pendingModifications) As String
-				modQueue(pendingModifications) = SEP & Str(tempx) & SEP & Str(tempy) & SEP & "#" & Chr(128,128,128)
-			Next i
-			tileBuf.isEmpty = -1
-			keyTimer.start
-		EndIf
 
-		' enter places
+		'' Enter Places
 		If MultiKey(KEY_SPACE) Then
 			If pl.spd <> 0 Then
 				'nop
@@ -189,7 +173,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
 						bufferBlendFunc = @CacheBlend_CircleOutwards
 						dostuff(1)
 						AddMsg("Entering solar system")
-					EndIf 
+					EndIf
 				Case zSystem
 					For i As Integer = game.curSystem.starCount To game.curSystem.starCount + game.curSystem.planetCount-1
 						If tempx = game.curSystem.objects(i).x And tempy = game.curSystem.objects(i).y Then
@@ -242,7 +226,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
 						AddMsg("Unable to land: no surface on gas planets")
 					EndIf
 			End Select
-			EndIf 
+			EndIf
 			keyTimer.start
 		EndIf
 		'exit places
@@ -304,7 +288,7 @@ Sub Keys(ByRef pl As SpaceShip, ByRef tileBuf As TileCache, frameTime As Double 
 					dostuff(-1)
 					AddMsg("Leaving surface")
 				Case zSpecial
-					
+
 			End Select
 			keyTimer.start
 		EndIf
