@@ -76,9 +76,9 @@ esac
 
 # Make client
 echo "Make Infiniverse client ($EXENAME)"
-$WINE "$FBC" $FLAGS -p "$LIBPATH" -i "$CONTRIBPATH" -i "$INCLUDEPATH" "src/infiniverse.bas" -x "$EXENAME"
+$WINE "$FBC" $FLAGS -p "$LIBPATH" -i "$CONTRIBPATH" -i "$INCLUDEPATH" "src/infiniverse.bas" -x "$EXENAME" || exit 1
 
 # Make updater
 echo "Make Updater ($UPDATERNAME)"
-$WINE "$FBC" $FLAGS -p "$LIBPATH" -i "$CONTRIBPATH" -i "$INCLUDEPATH" "src/updater.bas" -x "$UPDATERNAME"
+$WINE "$FBC" $FLAGS -p "$LIBPATH" -i "$CONTRIBPATH" -i "$INCLUDEPATH" "src/updater.bas" -x "$UPDATERNAME" || exit 1
 
