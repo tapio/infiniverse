@@ -2,7 +2,7 @@
 
 #Define INF_VERSION "0.4.6+"
 
-#Define NETWORK_enabled			'' Comment to create LEE-only version
+'#Define NETWORK_enabled			'' Comment to create LEE-only version
 #Define CLIPBOARD_enabled		'' Comment to exclude clipboard functionality
 
 #IfDef __FB_LINUX__
