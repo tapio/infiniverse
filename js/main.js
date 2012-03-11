@@ -29,7 +29,7 @@ function onKeyDown(k) {
 // Initialize stuff
 function init() {
 	// Initialize Viewport, i.e. the place where the characters are displayed
-	term = new ut.Viewport(document.getElementById("game"), 41, 25);
+	term = new ut.Viewport(document.getElementById("game"), 61, 31);
 	// Initialize Engine, i.e. the Tile manager
 	eng = new ut.Engine(term, getStarmapTile);
 	// Initialize input
