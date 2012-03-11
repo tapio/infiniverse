@@ -26,3 +26,10 @@ function blendMul(a, b) {
 function convertNoise(value) {
 	return ~~(256 * (value * 0.5 + 0.5)); // ~~ is floor
 }
+
+// Exponent filter for making cloud like heightmaps
+function expFilter(value, cover, sharpness) {
+	var c = value - (255.0 - cover);
+	value = 255.0 - (Math.pow(sharpness, c < 0 ? 0 : c) * 255.0);
+	return ~~(value); // floor
+}
