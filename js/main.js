@@ -31,7 +31,7 @@ function init() {
 	// Initialize Viewport, i.e. the place where the characters are displayed
 	term = new ut.Viewport(document.getElementById("game"), 61, 31);
 	// Initialize Engine, i.e. the Tile manager
-	eng = new ut.Engine(term, getStarmapTile);
+	eng = new ut.Engine(term, (new Starmap()).getTile);
 	// Initialize input
 	ut.initInput(onKeyDown);
 	// Render
