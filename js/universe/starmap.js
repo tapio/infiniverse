@@ -8,14 +8,13 @@ var STARS = [ "✦", "★", "☀", "✶", "✳", "✷", "✸" ]; // ✧✦☼☀
 
 // Exponent filter for making cloud like heightmaps
 function expFilter(value, cover, sharpness) {
-	var c = value - (255.0-cover);
-	if (c < 0) c = 0;
-	value = 255.0 - (Math.pow(sharpness,c)*255.0);
-	return Math.floor(value);
+	var c = value - (255.0 - cover);
+	value = 255.0 - (Math.pow(sharpness, c < 0 ? 0 : c) * 255.0);
+	return ~~(value); // floor
 }
 
 function convertNoise(value) {
-	return Math.floor(256 * (value * 0.5 + 0.5));
+	return ~~(256 * (value * 0.5 + 0.5)); // ~~ is floor
 }
 
 function getStarmapTile(x, y) {
