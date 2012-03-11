@@ -21,3 +21,8 @@ function blend(a, b, f) {
 function blendMul(a, b) {
 	return (a * b) >> 8;
 }
+
+// Convert float [-1,1] to integer [0,255]
+function convertNoise(value) {
+	return ~~(256 * (value * 0.5 + 0.5)); // ~~ is floor
+}

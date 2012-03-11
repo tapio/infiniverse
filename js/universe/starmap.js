@@ -13,10 +13,6 @@ function expFilter(value, cover, sharpness) {
 	return ~~(value); // floor
 }
 
-function convertNoise(value) {
-	return ~~(256 * (value * 0.5 + 0.5)); // ~~ is floor
-}
-
 function getStarmapTile(x, y) {
 	var star = convertNoise(simplex_starmap_star.noise(x*10,y*10));
 	var block = " ";
