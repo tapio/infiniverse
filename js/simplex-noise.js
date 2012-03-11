@@ -9,17 +9,18 @@
  * It is assumed to have a random() method.
  */
 var SimplexNoise = function(r) {
-  if (r == undefined) r = Math;
+  if (r === undefined) r = Math;
   this.grad3 = [[1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0], 
                                  [1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1], 
                                  [0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]]; 
   this.p = [];
-  for (var i=0; i<256; i++) {
-	  this.p[i] = Math.floor(r.random()*256);
+  var i;
+  for (i=0; i<256; i++) {
+    this.p[i] = Math.floor(r.random()*256);
   }
   // To remove the need for index wrapping, double the permutation table length 
   this.perm = []; 
-  for(var i=0; i<512; i++) {
+  for(i=0; i<512; i++) {
 		this.perm[i]=this.p[i & 255];
 	} 
 
