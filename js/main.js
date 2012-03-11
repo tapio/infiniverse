@@ -1,3 +1,5 @@
+/*jshint browser:true trailing:true latedef:true */
+
 var term, eng; // Can't be initialized yet because DOM is not ready
 
 var pl = { x: 1024, y: 1024 }; // Player position, FIXME: Make a proper class

@@ -1,10 +1,8 @@
-var simplex = [
-	new SimplexNoise(Math),
-	new SimplexNoise(Math),
-	new SimplexNoise(Math),
-	new SimplexNoise(Math),
-	new SimplexNoise(Math)
-];
+var simplex_starmap_exp = new SimplexNoise(new Alea('starmap_exp'));
+var simplex_starmap_r = new SimplexNoise(new Alea('starmap_r'));
+var simplex_starmap_g = new SimplexNoise(new Alea('starmap_g'));
+var simplex_starmap_b = new SimplexNoise(new Alea('starmap_b'));
+var simplex_starmap_star = new SimplexNoise(new Alea('starmap_star'));
 
 var STARS = [ "✦", "★", "☀", "✶", "✳", "✷", "✸" ]; // ✧✦☼☀✳☆★✶✷✸
 
@@ -21,7 +19,7 @@ function convertNoise(value) {
 }
 
 function getStarmapTile(x, y) {
-	var star = convertNoise(simplex[4].noise(x*10,y*10));
+	var star = convertNoise(simplex_starmap_star.noise(x*10,y*10));
 	var block = " ";
 	if (star % 10 === 0) {
 		block = STARS[Math.floor(star / 255 * STARS.length)];
@@ -32,10 +30,10 @@ function getStarmapTile(x, y) {
 	x *= scale;
 	y *= scale;
 
-	var mask = convertNoise(simplex[0].noise(x,y));
+	var mask = convertNoise(simplex_starmap_exp.noise(x,y));
 	mask = expFilter(mask, 100, 0.99);
-	var br = blendMul(convertNoise(simplex[1].noise(x,y)), mask);
-	var bg = blendMul(convertNoise(simplex[2].noise(x,y)), mask);
-	var bb = blendMul(convertNoise(simplex[3].noise(x,y)), mask);
+	var br = blendMul(convertNoise(simplex_starmap_r.noise(x,y)), mask);
+	var bg = blendMul(convertNoise(simplex_starmap_g.noise(x,y)), mask);
+	var bb = blendMul(convertNoise(simplex_starmap_b.noise(x,y)), mask);
 	return new ut.Tile(block, star, star, star, br, bg, bb);
 }
