@@ -3,6 +3,7 @@
 var term, eng; // Can't be initialized yet because DOM is not ready
 
 var pl = { x: 1024, y: 1024 }; // Player position, FIXME: Make a proper class
+var viewLevel = 0;
 
 // "Main loop"
 function tick() {
@@ -13,6 +14,14 @@ function tick() {
 	term.render(); // Render
 }
 
+function switchViewLevel() {
+	if (viewLevel === 0) viewLevel = 1;
+	else viewLevel = 0;
+
+	if (viewLevel === 0) eng.setTileFunc((new Starmap()).getTile);
+	else eng.setTileFunc((new SolarSystem()).getTile);
+}
+
 // Key press handler - movement & collision handling
 function onKeyDown(k) {
 	var movedir = { x: 0, y: 0 }; // Movement vector
@@ -20,6 +29,7 @@ function onKeyDown(k) {
 	else if (k === ut.KEY_RIGHT || k === ut.KEY_L) movedir.x = 1;
 	else if (k === ut.KEY_UP || k === ut.KEY_K) movedir.y = -1;
 	else if (k === ut.KEY_DOWN || k === ut.KEY_J) movedir.y = 1;
+	if (k === ut.KEY_ENTER) switchViewLevel();
 	if (movedir.x === 0 && movedir.y === 0) return;
 	pl.x += movedir.x;
 	pl.y += movedir.y;
