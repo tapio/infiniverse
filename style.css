@@ -1,0 +1,36 @@
+@charset "utf-8";
+
+body {
+	color: #fff;
+	background-color: #000;
+}
+
+h1 {
+	color: #22f;
+	text-align: center;
+}
+
+.centerer {
+	text-align: center;
+}
+
+#game {
+	font-size: 16px;
+	background-color: #000;
+}
+
+#debug {
+	background-color: #444;
+	border-radius: 5px;
+	padding: 5px 5px 5px 5px;
+	width: 100px;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+footer {
+	color: #555;
+	font-size: 50%;
+	text-align: center;
+	margin-top: 30px;
+}
