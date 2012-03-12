@@ -5,6 +5,25 @@ var term, eng; // Can't be initialized yet because DOM is not ready
 var pl = { x: 1024, y: 1024 }; // Player position, FIXME: Make a proper class
 var viewLevel = 0;
 
+var messages = [];
+var maxMessages = 5;
+
+function addMessage(msg) {
+	messages.push(msg);
+	if (messages.length > maxMessages) messages.splice(0, messages.length - maxMessages);
+	var msgs = "";
+	var color = { r:60, g:77, b:255 };
+	for (var i = messages.length-1; i >= 0; --i) {
+		msgs += '<span style="color: rgb('+color.r+','+color.g+','+color.b+');">'+messages[i]+'</span><br/>';
+		if (i == messages.length-1) msgs = '<span style="font-size:1.1em">'+msgs+'</span>';
+		color.r = Math.max(color.r - 15, 0);
+		color.g = Math.max(color.g - 15, 0);
+		color.b = Math.max(color.b - 25, 0);
+	}
+	$("#messages").html(msgs);
+}
+
+
 // "Main loop"
 function tick() {
 	eng.update(pl.x, pl.y); // Update tiles
@@ -39,12 +58,12 @@ function onKeyDown(k) {
 // Initialize stuff
 function init() {
 	// Initialize Viewport, i.e. the place where the characters are displayed
-	term = new ut.Viewport(document.getElementById("game"), 61, 31);
+	term = new ut.Viewport(document.getElementById("game"), 55, 31);
 	// Initialize Engine, i.e. the Tile manager
 	eng = new ut.Engine(term, (new Starmap()).getTile);
 	// Initialize input
 	ut.initInput(onKeyDown);
 	// Render
 	tick();
-	setInterval(tick, 100);
+	addMessage("Welcome to Infiniverse.");
 }
