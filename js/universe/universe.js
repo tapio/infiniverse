@@ -17,17 +17,22 @@ function Universe(engine) {
 			return viewLevelStack[viewLevelStack.length-1].getTile(x-offsetx, y-offsety);
 		}
 		var newPlace;
-		switch (viewLevelStack.length) {
-			case 1: newPlace = new SolarSystem(x, y, neighbours); break;
-			case 2: /*newPlace = new PlanetAerial(x, y, neighbours);*/ break;
-			case 3: /*newPlace = new PlanetDetail(x, y, neighbours);*/ break;
-			default: return;
+		try {
+			switch (viewLevelStack.length) {
+				case 1: newPlace = new SolarSystem(x, y, neighbours); break;
+				case 2: /*newPlace = new PlanetAerial(x, y, neighbours);*/ break;
+				case 3: /*newPlace = new PlanetDetail(x, y, neighbours);*/ break;
+				default: return;
+			}
+			if (!newPlace) return;
+		} catch (err) {
+			addMessage(err);
+			return;
 		}
-		if (!newPlace) return;
 		viewLevelStack.push(newPlace);
 		this.update();
 		var placename = viewLevelStack[viewLevelStack.length-1].getShortDescription();
-		addMessage("Entered " + placename);
+		addMessage("Entered " + placename + ".");
 	};
 
 	this.exit = function() {
@@ -35,7 +40,7 @@ function Universe(engine) {
 		var placename = viewLevelStack[viewLevelStack.length-1].getShortDescription();
 		viewLevelStack.pop();
 		this.update();
-		addMessage("Exited " + placename);
+		addMessage("Exited " + placename + ".");
 	};
 
 }

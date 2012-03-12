@@ -1,7 +1,10 @@
 
 function SolarSystem(starmapx, starmapy, neighbours) {
 	var simplex_neb = new SimplexNoise(new Alea('solar-system_neb', starmapx, starmapy));
-	var systemNebulaColor = neighbours(0,0).getBackgroundJSON();
+	var tile = neighbours(0,0);
+	if (tile.getChar() === " " || !tile.getChar().length)
+		throw "Nothing interesting there, just empty space.";
+	var systemNebulaColor = tile.getBackgroundJSON();
 
 	this.getTile = function(x, y) {
 		var scale = 0.05;
