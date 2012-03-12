@@ -15,4 +15,8 @@ function SolarSystem(starmapx, starmapy) {
 		var b = blendMul(systemNebulaColor.b, neb);
 		return new ut.Tile(" ", 0,0,0, r, g, b);
 	};
+
+	this.getShortDescription = function() {
+		return "solar system";
+	};
 }

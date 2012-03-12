@@ -27,4 +27,8 @@ function Starmap() {
 		var bb = blendMul(convertNoise(simplex_b.noise(x,y)), mask);
 		return new ut.Tile(block, star, star, star, br, bg, bb);
 	};
+
+	this.getShortDescription = function() {
+		return "star cluster";
+	};
 }

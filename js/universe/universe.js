@@ -21,12 +21,16 @@ function Universe(engine) {
 		if (!newPlace) return;
 		viewLevelStack.push(newPlace);
 		this.update();
+		var placename = viewLevelStack[viewLevelStack.length-1].getShortDescription();
+		addMessage("Entered " + placename);
 	};
 
 	this.exit = function() {
 		if (viewLevelStack.length <= 1) return;
+		var placename = viewLevelStack[viewLevelStack.length-1].getShortDescription();
 		viewLevelStack.pop();
 		this.update();
+		addMessage("Exited " + placename);
 	};
 
 }
