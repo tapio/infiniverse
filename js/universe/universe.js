@@ -11,11 +11,16 @@ function Universe(engine) {
 	this.update();
 
 	this.enter = function(x, y) {
+		function neighbours(offsetx, offsety) {
+			offsetx = offsetx || 0;
+			offsety = offsety || 0;
+			return viewLevelStack[viewLevelStack.length-1].getTile(x-offsetx, y-offsety);
+		}
 		var newPlace;
 		switch (viewLevelStack.length) {
-			case 1: newPlace = new SolarSystem(x, y); break;
-			case 2: /*newPlace = new PlanetAerial(x, y);*/ break;
-			case 3: /*newPlace = new PlanetDetail(x, y);*/ break;
+			case 1: newPlace = new SolarSystem(x, y, neighbours); break;
+			case 2: /*newPlace = new PlanetAerial(x, y, neighbours);*/ break;
+			case 3: /*newPlace = new PlanetDetail(x, y, neighbours);*/ break;
 			default: return;
 		}
 		if (!newPlace) return;
