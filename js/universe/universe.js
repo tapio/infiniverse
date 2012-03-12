@@ -2,7 +2,7 @@
 function Universe(engine) {
 	this.eng = engine;
 	var viewLevelStack = [];
-	viewLevelStack.push(new Starmap());
+	viewLevelStack.push(new Galaxy());
 
 	this.update = function() {
 		this.eng.setTileFunc(viewLevelStack[viewLevelStack.length-1].getTile);
@@ -19,7 +19,8 @@ function Universe(engine) {
 		var newPlace;
 		try {
 			switch (viewLevelStack.length) {
-				case 1: newPlace = new SolarSystem(x, y, neighbours); break;
+				case 1: newPlace = new Starmap(); break;
+				case 2: newPlace = new SolarSystem(x, y, neighbours); break;
 				case 2: /*newPlace = new PlanetAerial(x, y, neighbours);*/ break;
 				case 3: /*newPlace = new PlanetDetail(x, y, neighbours);*/ break;
 				default: return;

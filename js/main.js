@@ -3,7 +3,7 @@
 var term, eng; // Can't be initialized yet because DOM is not ready
 var universe;
 
-var pl = { x: 1024, y: 1024 }; // Player position, FIXME: Make a proper class
+var pl = { x: 20, y: 20 }; // Player position, FIXME: Make a proper class
 
 var messages = [];
 var maxMessages = 5;
@@ -26,9 +26,9 @@ function addMessage(msg) {
 // "Main loop"
 function tick() {
 	eng.update(pl.x, pl.y); // Update tiles
-	var plc = term.get(term.cx, term.cy); // Player character
-	plc.setChar("@");
-	plc.setColor(255,255,255);
+	// Player character
+	var bg = term.get(term.cx, term.cy).getBackgroundJSON();
+	term.unsafePut(new ut.Tile("@", 200,200,200, bg.r, bg.g, bg.b), term.cx, term.cy);
 	term.render(); // Render
 }
 
