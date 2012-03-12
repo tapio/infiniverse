@@ -4,8 +4,22 @@ function degToRad(degrees) {
 	return degrees * Math.PI / 180;
 }
 
-function rand(lo, hi) {
-	return lo + Math.floor(Math.random() * (hi - lo + 1));
+function cosd(degrees) {
+	return Math.cos(degrees * 0.017453292519943295);
+}
+
+function sind(degrees) {
+	return Math.sin(degrees * 0.017453292519943295);
+}
+
+function rand(lo, hi, rng) {
+	rng = rng || Math;
+	return lo + ~~(rng.random() * (hi - lo + 1));
+}
+
+function randf(lo, hi, rng) {
+	rng = rng || Math;
+	return lo + (hi - lo) * (rng.random());
 }
 
 function sign(num) { return ((num > 0) ? 1 : ((num < 0) ? -1 : 0)); }
@@ -20,6 +34,14 @@ function blend(a, b, f) {
 
 function blendMul(a, b) {
 	return (a * b) >> 8;
+}
+
+function clamp(x, a, b) {
+	return x < a ? a : ( x > b ? b : x );
+}
+
+function mapRange(x, in_min, in_max, out_min, out_max) {
+	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
 // Convert float [-1,1] to integer [0,255]
