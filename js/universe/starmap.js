@@ -6,7 +6,7 @@ function Starmap() {
 	var simplex_b = new SimplexNoise(new Alea('starmap_b'));
 	var simplex_star = new SimplexNoise(new Alea('starmap_star'));
 
-	var STARS = [ "✦", "★", "☀", "✶", "✳", "✷", "✸" ]; // ✧✦☼☀✳☆★✶✷✸
+	var STARS = [ "✦", "★", "☀", "✶", "✳", "✷", "✸" ]; // ·✧✦☼☀✳☆★✶✷✸
 
 	this.getTile = function(x, y) {
 		var star = convertNoise(simplex_star.noise(x*10,y*10));
