@@ -42,8 +42,9 @@ function onKeyDown(k) {
 	if (k === ut.KEY_ENTER) universe.enter(pl.x, pl.y);
 	if (k === ut.KEY_BACKSPACE) universe.exit();
 	if (movedir.x === 0 && movedir.y === 0) return;
-	pl.x += movedir.x;
-	pl.y += movedir.y;
+	var warp = ut.isKeyPressed(ut.KEY_SHIFT) ? 5 : 1;
+	pl.x += movedir.x * warp;
+	pl.y += movedir.y * warp;
 	tick();
 }
 
