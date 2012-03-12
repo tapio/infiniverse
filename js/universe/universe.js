@@ -21,8 +21,8 @@ function Universe(engine) {
 			switch (viewLevelStack.length) {
 				case 1: newPlace = new Starmap(); break;
 				case 2: newPlace = new SolarSystem(x, y, neighbours); break;
-				case 2: /*newPlace = new PlanetAerial(x, y, neighbours);*/ break;
-				case 3: /*newPlace = new PlanetDetail(x, y, neighbours);*/ break;
+				case 3: newPlace = new PlanetAerial(x, y, neighbours); break;
+				case 4: newPlace = new PlanetDetail(x, y, neighbours); break;
 				default: return;
 			}
 			if (!newPlace) return;
