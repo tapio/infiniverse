@@ -9,6 +9,10 @@ function PlanetDetail() {
 		return "planet surface";
 	};
 
+	this.getDescription = function() {
+		return "planet surface";
+	};
+
 	// TODO: Check for planet
 	throw "Find clear ground to land on.";
 }

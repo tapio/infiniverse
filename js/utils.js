@@ -13,12 +13,12 @@ function sind(degrees) {
 }
 
 function rand(lo, hi, rng) {
-	rng = rng || Math;
+	//rng = rng || Math;
 	return lo + ~~(rng.random() * (hi - lo + 1));
 }
 
 function randf(lo, hi, rng) {
-	rng = rng || Math;
+	//rng = rng || Math;
 	return lo + (hi - lo) * (rng.random());
 }
 
@@ -54,4 +54,35 @@ function expFilter(value, cover, sharpness) {
 	var c = value - (255.0 - cover);
 	value = 255.0 - (Math.pow(sharpness, c < 0 ? 0 : c) * 255.0);
 	return ~~(value); // floor
+}
+
+function clone(obj) {
+	// Handle the 3 simple types, and null or undefined
+	if (null === obj || "object" != typeof obj) return obj;
+	var copy;
+
+	// Handle Date
+	if (obj instanceof Date) {
+		copy = new Date();
+		copy.setTime(obj.getTime());
+		return copy;
+	}
+
+	// Handle Array
+	if (obj instanceof Array) {
+		copy = [];
+		for (var i = 0, len = obj.length; i < len; ++i)
+			copy[i] = clone(obj[i]);
+		return copy;
+	}
+
+	// Handle Object
+	if (obj instanceof Object) {
+		copy = {};
+		for (var attr in obj)
+			if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+		return copy;
+	}
+
+	throw new Error("Unable to copy obj! Its type isn't supported.");
 }

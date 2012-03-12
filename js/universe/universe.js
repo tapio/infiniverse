@@ -32,7 +32,7 @@ function Universe(engine) {
 		}
 		viewLevelStack.push(newPlace);
 		this.update();
-		var placename = viewLevelStack[viewLevelStack.length-1].getShortDescription();
+		var placename = viewLevelStack[viewLevelStack.length-1].getDescription();
 		addMessage("Entered " + placename + ".");
 	};
 

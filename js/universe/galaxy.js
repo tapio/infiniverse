@@ -83,4 +83,8 @@ function Galaxy() {
 	this.getShortDescription = function() {
 		return "galaxy";
 	};
+
+	this.getDescription = function() {
+		return "galaxy";
+	};
 }

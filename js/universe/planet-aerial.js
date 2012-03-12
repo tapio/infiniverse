@@ -9,6 +9,10 @@ function PlanetAerial() {
 		return "planet";
 	};
 
+	this.getDescription = function() {
+		return "planet";
+	};
+
 	// TODO: Check for planet
 	throw "Find a planet to land.";
 }

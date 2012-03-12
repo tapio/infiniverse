@@ -31,4 +31,8 @@ function Starmap() {
 	this.getShortDescription = function() {
 		return "star cluster";
 	};
+
+	this.getDescription = function() {
+		return "star cluster";
+	};
 }
