@@ -77,7 +77,6 @@ function Galaxy() {
 	}
 
 	this.getTile = function(x, y) {
-		if (x < 0 || y < 0 || x >= self.size || y >= self.size) return ut.NULLTILE;
 		return buffer[y][x];
 	};
 
