@@ -419,7 +419,7 @@ ut.Engine = function(vp, func, w, h) {
 	/// Parameters:
 	///   width - (integer) new world width
 	///   height - (integer) new world height
-	ut.Engine.prototype.setWorldSize = function(width, height) { this.w = width; this.h = height; }
+	ut.Engine.prototype.setWorldSize = function(width, height) { this.w = width; this.h = height; };
 
 	/// Function: setCacheEnabled
 	/// Enables or disables the usage of tile cache. This means that
