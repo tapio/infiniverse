@@ -10,6 +10,8 @@ function Ship(x, y) {
 	this.sensorsOn = true;
 	this.maxCargo = 30;
 	this.usedCargo = 0;
+	this.beacons = 2;
+	this.activeBeacons = [];
 
 	this.move = function() {
 
@@ -17,6 +19,12 @@ function Ship(x, y) {
 
 	this.toggleSensors = function() {
 		this.sensorsOn = !this.sensorsOn;
+	};
+
+	this.deployBeacon = function() {
+		if (this.beacons === 0) return;
+		this.beacons--;
+		this.activeBeacons.push({ title: "Active beacon" });
 	};
 
 	this.launchTorpedo = function() {
@@ -35,7 +43,7 @@ function Ship(x, y) {
 	};
 
 	this.updateUI = function() {
-		var i, str, statusclass;
+		var i, str, len, statusclass;
 		var self = this;
 
 		// Sensorsbox
@@ -48,6 +56,19 @@ function Ship(x, y) {
 		if (cond <= 25) statusclass = "bad";
 		else if (cond < 75) statusclass = "warn";
 		$("#hullcond").html(cond+"%").attr("class", statusclass);
+
+		// Beacons
+		//str = this.beacons + " available ";
+		//if (this.beacons > 0) str += "[B] to deploy";
+		$("#beaconstatus").html(this.beacons);
+		len = this.activeBeacons.length;
+		if (len === 0) $("#navbeaconlist").html("<li>No active beacons.</li>");
+		else {
+			str = "";
+			for (i = 0; i < len; ++i)
+				str += "<li>["+(i+1)+"] " + this.activeBeacons[i].title;
+			$("#navbeaconlist").html(str);
+		}
 
 		// Devices
 		if (ut.isKeyPressed(ut.KEY_SHIFT)) $("#warpdrives span").attr("class", "online");
@@ -72,12 +93,10 @@ function Ship(x, y) {
 		}
 		this.usedCargo = 0;
 		str = "";
-
+		if (this.beacons > 0) str += cargoTypeHTML("B", "beacon", "Navbeacon", this.beacons);
 		if (this.torpedos > 0) str += cargoTypeHTML("T", "torpedo", "Torpedo", this.torpedos);
-
 		var emptySpace = this.maxCargo - this.usedCargo;
 		if (emptySpace > 0) str += cargoTypeHTML("-", "empty", "Free space", emptySpace);
-
 		$("#cargo").html(str);
 
 		statusclass = "good";

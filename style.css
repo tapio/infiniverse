@@ -101,6 +101,7 @@ p {
 /* Cargo colors */
 .torpedo { color: #842; }
 .energy { color: #70d; }
+.beacon { color: #a0d; }
 .empty { color: #666; }
 
 footer {
