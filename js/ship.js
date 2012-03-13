@@ -22,22 +22,34 @@ function Ship(x, y) {
 	};
 
 	this.deployBeacon = function() {
-		if (this.beacons === 0) return;
+		if (this.beacons === 0) {
+			addMessage("Out of navbeacons.", "error");
+			return;
+		}
 		this.beacons--;
 		this.activeBeacons.push({ title: "Active beacon" });
 	};
 
 	this.launchTorpedo = function() {
-		if (this.torpedos === 0) return;
+		if (this.torpedos === 0) {
+			addMessage("Out of torpedos.", "error");
+			return;
+		}
 		this.torpedos--;
 	};
 
 	this.damage = function(amount) {
 		this.hull -= amount;
+		if (this.hull <= 0) {
+			addMessage("Ship destroyed!", "error");
+		}
 	};
 
 	this.useEnergy = function(amount) {
-		if (this.energy < amount) return false;
+		if (this.energy < amount) {
+			addMessage("Not enough energy.", "error");
+			return false;
+		}
 		this.energy -= amount;
 		return true;
 	};
