@@ -16,14 +16,21 @@ function Ship(x, y) {
 	this.minerals = 6;
 	this.radioactives = 3;
 	this.antimatter = 1;
+	this.energyCosts = {
+		convertMinerals: 100, convertRadioactives: 2000, convertAntimatter: 100000,
+		createTorpedo: 200, createBeacon: 5000,
+		drive: 1, warp: 10,
+		sensors: 1,
+		gotoBeacon: 1000
+	};
 
 	this.move = function(dx, dy, warp) {
 		// TODO: different costs for different view levels
-		var cost = 1;
+		var cost = this.energyCosts.drive;
 		if (warp) {
 			dx *= 5;
 			dy *= 5;
-			cost *= 10;
+			cost = this.energyCosts.warp;
 		}
 		if (!this.useEnergy(cost)) return;
 		this.x += dx;
@@ -56,19 +63,19 @@ function Ship(x, y) {
 			case 1:
 				if (this.minerals > 0) {
 					this.minerals--;
-					this.energy += 100;
+					this.energy += this.energyCosts.convertMinerals;
 				} else addMessage("Not enough minerals.", "error");
 				break;
 			case 2:
 				if (this.radioactives > 0) {
 					this.radioactives--;
-					this.energy += 2000;
+					this.energy += this.energyCosts.convertRadioactives;
 				} else addMessage("Not enough radioactives.", "error");
 				break;
 			case 3:
 				if (this.antimatter > 0) {
 					this.antimatter--;
-					this.energy += 100000;
+					this.energy += this.energyCosts.convertAntimatter;
 				} else addMessage("Not enough antimatter.", "error");
 				break;
 		}
@@ -79,13 +86,13 @@ function Ship(x, y) {
 			case 1:
 				if (this.usedCargo >= this.maxCargo)
 					addMessage("Not enough cargo space.", "error");
-				else if (this.useEnergy(200))
+				else if (this.useEnergy(this.energyCosts.createTorpedo))
 					this.torpedos++;
 				break;
 			case 2:
 				if (this.usedCargo >= this.maxCargo)
 					addMessage("Not enough cargo space.", "error");
-				else if (this.useEnergy(5000))
+				else if (this.useEnergy(this.energyCosts.createBeacon))
 					this.beacons++;
 				break;
 		}
@@ -122,7 +129,7 @@ function Ship(x, y) {
 		// Sensorsbox
 		if (this.sensorsOn) {
 			$("#sensorstatus").html("ONLINE").attr("class", "online");
-			$("#sensorenergy").html("-1");
+			$("#sensorenergy").html("-" + this.energyCosts.sensors);
 		} else {
 			$("#sensorstatus").html("OFFLINE").attr("class", "offline");
 			$("#sensorenergy").html("0");
@@ -136,7 +143,8 @@ function Ship(x, y) {
 		else {
 			str = "";
 			for (i = 0; i < len; ++i)
-				str += "<li>["+(i+1)+"] " + this.activeBeacons[i].title + ' <span class="energy">-1000</span>';
+				str += "<li>["+(i+1)+"] " + this.activeBeacons[i].title +
+					' <span class="energy">-' + this.energyCosts.gotoBeacon + '</span>';
 			$("#beacon-menu").html(str);
 		}
 
@@ -154,9 +162,11 @@ function Ship(x, y) {
 		for (i = 0; i < movkeys.length; ++i)
 			if (ut.isKeyPressed(movkeys[i])) { $("#drives span").first().attr("class", "online"); break; }
 		if (i >= movkeys.length) $("#drives span").first().attr("class", "");
+		$("#drives").children(".energy").html("-" + this.energyCosts.drive);
 
 		if (ut.isKeyPressed(ut.KEY_SHIFT)) $("#warpdrives span").first().attr("class", "online");
 		else $("#warpdrives span").first().attr("class", "");
+		$("#warpdrives").children(".energy").html("-" + this.energyCosts.warp);
 
 		// Torpedos
 		$("#torpedos").html(this.torpedos);
