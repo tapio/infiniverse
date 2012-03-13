@@ -12,9 +12,11 @@ var activeMenu = "";
 
 function addMessage(msg, msgtype) {
 	msgtype = msgtype || "info";
-	messages.push({ text: msg, type: msgtype });
+	if (messages.length && messages[messages.length-1].text === msg)
+		messages[messages.length-1].count++;
+	else messages.push({ text: msg, type: msgtype, count: 1 });
 	if (messages.length > maxMessages) messages.splice(0, messages.length - maxMessages);
-	var msgs = "", last = messages.length-1, color, fadefactor, r, g, b;
+	var msgs = "", last = messages.length-1, color, fadefactor, r, g, b, mult;
 	var colors = { info: {r:80,g:80,b:255}, error: {r:255,g:80,b:80} };
 	for (var i = last; i >= 0; --i) {
 		color = colors[messages[i].type];
@@ -22,7 +24,9 @@ function addMessage(msg, msgtype) {
 		r = Math.floor(color.r / fadefactor);
 		g = Math.floor(color.g / fadefactor);
 		b = Math.floor(color.b / fadefactor);
-		msgs += '<span style="color: rgb('+r+','+g+','+b+');">'+messages[i].text+'</span><br/>';
+		if (messages[i].count > 1) mult = " x" + messages[i].count;
+		else mult = "";
+		msgs += '<span style="color: rgb('+r+','+g+','+b+');">'+messages[i].text+mult+'</span><br/>';
 		if (i == messages.length-1) msgs = '<span style="font-size:1.1em">'+msgs+'</span>';
 	}
 	$("#messages").html(msgs);
