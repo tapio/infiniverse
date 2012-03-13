@@ -7,10 +7,11 @@ body {
 	font-size: 12pt;
 }
 
-h1 {
+header h1 {
 	color: rgb(12,27,178);
-	text-align: center;
-	font-size: 25pt;
+	font-size: 15pt;
+	margin: 0px;
+	padding: 0px;
 }
 
 h2 {
@@ -20,29 +21,61 @@ h2 {
 
 h3 {
 	color: rgb(178,140,0);
-	margin: 5px 5px 5px 0px;
+	margin: 0px 15px 3px 0px;
 }
 
-.centerer {
-	text-align: center;
+p {
+	margin: 3px 0px;
+	padding: 0px;
+}
+
+.centerer { text-align: center; }
+.left { float: left; }
+.right { float: right; }
+.clear-left { clear: left; margin: 0px auto 5px auto; }
+.clear-right { clear: right; margin: 0px auto 5px auto; }
+.clear { clear: both; }
+.spacer { width: 100%; }
+
+#wrap {
+	width: 1000px;
+	margin: 5px auto;
+	padding: 0px;
 }
 
 .infobox {
 	color: gray;
 	background-color: rgba(50, 50, 60, 0.6);
-	border-radius: 20px;
-	padding: 15px;
+	width: 200px;
+	padding: 10px;
+	font-size: 10pt;
+	margin: 0px auto 5px auto;
+	border-radius: 10px;
+}
+
+.infobox ol,
+.infobox ul {
+	list-style-position: inside;
+	margin: 3px 5px 3px 0px;
+	padding-left: 0px;
+}
+
+.infobox li {
+	margin-left: 0px;
+	padding-left: 0px;
 }
 
 #messagesbox {
 	text-align: left;
 	font-size: 10pt;
+	width: 980px;
 }
 
 #game {
 	font-size: 16px;
 	background-color: #000;
-	margin-bottom: 10px;
+	margin: 0px auto 10px auto;
+	border: 1px solid #222;
 }
 
 #debug {
@@ -55,7 +88,7 @@ h3 {
 }
 
 footer {
-	color: #555;
+	color: #222;
 	font-size: 50%;
 	text-align: center;
 	margin-top: 100px;

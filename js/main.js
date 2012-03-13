@@ -6,7 +6,7 @@ var universe;
 var pl = { x: 20, y: 20 }; // Player position, FIXME: Make a proper class
 
 var messages = [];
-var maxMessages = 5;
+var maxMessages = 3;
 
 function addMessage(msg) {
 	messages.push(msg);
@@ -16,9 +16,9 @@ function addMessage(msg) {
 	for (var i = messages.length-1; i >= 0; --i) {
 		msgs += '<span style="color: rgb('+color.r+','+color.g+','+color.b+');">'+messages[i]+'</span><br/>';
 		if (i == messages.length-1) msgs = '<span style="font-size:1.1em">'+msgs+'</span>';
-		color.r = Math.max(color.r - 15, 0);
-		color.g = Math.max(color.g - 15, 0);
-		color.b = Math.max(color.b - 25, 0);
+		color.r = Math.max(color.r - 5, 0);
+		color.g = Math.max(color.g - 5, 0);
+		color.b = Math.max(color.b - 75, 0);
 	}
 	$("#messages").html(msgs);
 }
@@ -55,5 +55,7 @@ function init() {
 	universe = new Universe(eng); // Also sets the tile function to Engine
 	ut.initInput(onKeyDown);
 	tick();
+	addMessage("Press F1 for help.");
+	addMessage("Locate the ancient alien knowledge.");
 	addMessage("Welcome to Infiniverse.");
 }
