@@ -1,6 +1,7 @@
 
 function Galaxy() {
-	var SIZE = 60;
+	this.size = 60;
+	var self = this;
 	var NUMHUB   = 2000; // Number of stars in the core (Example: 2000)
 	var NUMDISK  = 4000; // Number of stars in the disk (Example: 4000)
 	var DISKRAD  = 90.0; // Radius of the disk (Example: 90.0)
@@ -13,10 +14,10 @@ function Galaxy() {
 	var rnd = new Alea('galaxy');
 
 	var i, j, sx, sy;
-	var buffer = new Array(SIZE);
-	for (j = 0; j < SIZE; ++j) {
-		buffer[j] = new Array(SIZE);
-		for (i = 0; i < SIZE; ++i)
+	var buffer = new Array(this.size);
+	for (j = 0; j < this.size; ++j) {
+		buffer[j] = new Array(this.size);
+		for (i = 0; i < this.size; ++i)
 			buffer[j][i] = 0;
 	}
 
@@ -54,10 +55,10 @@ function Galaxy() {
 	}
 
 	// Fit the galaxy to the requested size
-	var factor = SIZE / (maxim * 2);
+	var factor = this.size / (maxim * 2);
 	for (i = 0; i < NUMHUB+NUMDISK; ++i) {
-		sx = ~~mapRange(stars[i].x, -maxim, maxim, 0, SIZE-1);
-		sy = ~~mapRange(stars[i].y, -maxim, maxim, 0, SIZE-1);
+		sx = ~~mapRange(stars[i].x, -maxim, maxim, 0, this.size-1);
+		sy = ~~mapRange(stars[i].y, -maxim, maxim, 0, this.size-1);
 		buffer[sy][sx] = Math.min(255, Math.floor(buffer[sy][sx])+1);
 	}
 
@@ -65,8 +66,8 @@ function Galaxy() {
 	var simplex_neb = new SimplexNoise(new Alea('galaxy_noise'));
 	var STARS = [ " ", "✦", "★", "☀", "✶", "✳", "✷", "✸" ]; // ✧✦☼☀✳☆★✶✷✸
 	var block;
-	for (j = 0; j < SIZE; ++j) {
-		for (i = 0; i < SIZE; ++i) {
+	for (j = 0; j < this.size; ++j) {
+		for (i = 0; i < this.size; ++i) {
 			var bg = convertNoise(simplex_neb.noise(i*0.05,j*0.05));
 			bg = ~~(bg * 0.333);
 			var star = Math.min(100 + buffer[j][i] * 20, 255);
@@ -76,7 +77,7 @@ function Galaxy() {
 	}
 
 	this.getTile = function(x, y) {
-		if (x < 0 || y < 0 || x >= SIZE || y >= SIZE) return ut.NULLTILE;
+		if (x < 0 || y < 0 || x >= self.size || y >= self.size) return ut.NULLTILE;
 		return buffer[y][x];
 	};
 

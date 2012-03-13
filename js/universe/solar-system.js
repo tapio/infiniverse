@@ -24,17 +24,18 @@ var starTypes = [
 	{ r:160, g:160, b:160, size:4, freq:0.010, desc:"Class D" }
 ];
 
-function SolarSystem(starmapx, starmapy, neighbours) {
+// TODO: Use also upper level coordinates in seeding
+function SolarSystem(x, y, neighbours) {
+	this.size = 256;
 	var self = this;
-	var size = 256;
-	var simplex_neb = new SimplexNoise(new Alea('solar-system_neb', starmapx, starmapy));
-	var simplex_bgstars = new SimplexNoise(new Alea('solar-system_bgstars', starmapx, starmapy));
+	var simplex_neb = new SimplexNoise(new Alea('solar-system_neb', x, y));
+	var simplex_bgstars = new SimplexNoise(new Alea('solar-system_bgstars', x, y));
 	var tile = neighbours(0,0);
 	if (tile.getChar() === " " || !tile.getChar().length)
 		throw "Nothing interesting there, just empty space.";
 	var nebColor = tile.getBackgroundJSON();
 
-	var rnd = new Alea(starmapx, starmapy);
+	var rnd = new Alea("randomizer", x, y);
 	var starCount = starMultiples[rand(0, starMultiples.length, rnd)];
 	var planetCount = planetMultiples[rand(0, planetMultiples.length, rnd)];
 	var numObjects = starCount + planetCount;
@@ -50,8 +51,8 @@ function SolarSystem(starmapx, starmapy, neighbours) {
 		var starProto = starTypes[~~(rnd.random()*starTypes.length)];
 		this.suns.push(clone(starProto));
 		ang += i * (360.0 / starCount);
-		this.suns[i].x = ~~(size/2 + cosd(ang) * randf(starProto.size, 255, rnd));
-		this.suns[i].y = ~~(size/2 - sind(ang) * randf(starProto.size, 255, rnd));
+		this.suns[i].x = ~~(this.size/2 + cosd(ang) * randf(starProto.size, 255, rnd));
+		this.suns[i].y = ~~(this.size/2 - sind(ang) * randf(starProto.size, 255, rnd));
 	}
 
 	// Planets
@@ -65,8 +66,8 @@ function SolarSystem(starmapx, starmapy, neighbours) {
 			case 3: p.r = 0; p.g = 255; p.b = 0; break;
 		}
 		ang = rnd.random() * 360;
-		p.x = ~~(size/2 + cosd(ang) * randf(30, 100, rnd));
-		p.y = ~~(size/2 - sind(ang) * randf(30, 100, rnd));
+		p.x = ~~(this.size/2 + cosd(ang) * randf(30, 100, rnd));
+		p.y = ~~(this.size/2 - sind(ang) * randf(30, 100, rnd));
 	}
 
 	// Can't use 'this' here due to passing this function to the tile engine

@@ -3,7 +3,7 @@
 var term, eng; // Can't be initialized yet because DOM is not ready
 var universe;
 
-var pl = new Ship(40,40);
+var pl = new Ship(30, 50);
 
 var messages = [];
 var maxMessages = 3;
@@ -62,8 +62,8 @@ function onKeyDown(k) {
 	else if (k === ut.KEY_RIGHT || k === ut.KEY_L) movedir.x = 1;
 	else if (k === ut.KEY_UP || k === ut.KEY_K) movedir.y = -1;
 	else if (k === ut.KEY_DOWN || k === ut.KEY_J) movedir.y = 1;
-	if (k === ut.KEY_ENTER) universe.enter(pl.x, pl.y);
-	if (k === ut.KEY_BACKSPACE) universe.exit();
+	if (k === ut.KEY_ENTER) universe.enter(pl);
+	if (k === ut.KEY_BACKSPACE) universe.exit(pl);
 	if (k === ut.KEY_TAB) pl.toggleSensors();
 	if (k === ut.KEY_G) toggleMenu("#beacon-menu");
 	if (k === ut.KEY_E) toggleMenu("#energyconverter-menu");

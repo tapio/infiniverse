@@ -1,10 +1,11 @@
 
-function Starmap() {
-	var simplex_exp = new SimplexNoise(new Alea('starmap_exp'));
-	var simplex_r = new SimplexNoise(new Alea('starmap_r'));
-	var simplex_g = new SimplexNoise(new Alea('starmap_g'));
-	var simplex_b = new SimplexNoise(new Alea('starmap_b'));
-	var simplex_star = new SimplexNoise(new Alea('starmap_star'));
+function Starmap(x, y, neighbours) {
+	this.size = 64;
+	var simplex_exp = new SimplexNoise(new Alea('starmap_exp', x, y));
+	var simplex_r = new SimplexNoise(new Alea('starmap_r', x, y));
+	var simplex_g = new SimplexNoise(new Alea('starmap_g', x, y));
+	var simplex_b = new SimplexNoise(new Alea('starmap_b', x, y));
+	var simplex_star = new SimplexNoise(new Alea('starmap_star', x, y));
 
 	var STARS = [ "✦", "★", "☀", "✶", "✳", "✷", "✸" ]; // ·✧✦☼☀✳☆★✶✷✸
 
