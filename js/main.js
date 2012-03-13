@@ -8,17 +8,20 @@ var pl = new Ship(40,40);
 var messages = [];
 var maxMessages = 3;
 
-function addMessage(msg) {
-	messages.push(msg);
+function addMessage(msg, msgtype) {
+	msgtype = msgtype || "info";
+	messages.push({ text: msg, type: msgtype });
 	if (messages.length > maxMessages) messages.splice(0, messages.length - maxMessages);
-	var msgs = "";
-	var color = { r:60, g:77, b:255 };
-	for (var i = messages.length-1; i >= 0; --i) {
-		msgs += '<span style="color: rgb('+color.r+','+color.g+','+color.b+');">'+messages[i]+'</span><br/>';
+	var msgs = "", last = messages.length-1, color, fadefactor, r, g, b;
+	var colors = { info: {r:80,g:80,b:255}, error: {r:255,g:80,b:80} };
+	for (var i = last; i >= 0; --i) {
+		color = colors[messages[i].type];
+		fadefactor = (last-i)/3 + 1;
+		r = Math.floor(color.r / fadefactor);
+		g = Math.floor(color.g / fadefactor);
+		b = Math.floor(color.b / fadefactor);
+		msgs += '<span style="color: rgb('+r+','+g+','+b+');">'+messages[i].text+'</span><br/>';
 		if (i == messages.length-1) msgs = '<span style="font-size:1.1em">'+msgs+'</span>';
-		color.r = Math.max(color.r - 5, 0);
-		color.g = Math.max(color.g - 5, 0);
-		color.b = Math.max(color.b - 75, 0);
 	}
 	$("#messages").html(msgs);
 }
