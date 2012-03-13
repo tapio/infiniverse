@@ -98,6 +98,7 @@ function init() {
 	term = new ut.Viewport(document.getElementById("game"), 55, 31);
 	eng = new ut.Engine(term);
 	universe = new Universe(eng); // Also sets the tile function to Engine
+	universe.enter(pl);
 	ut.initInput(onKeyDown, onKeyUp);
 	tick();
 	addMessage("Press F1 for help.");

@@ -86,7 +86,9 @@ function SolarSystem(x, y, neighbours) {
 		for (i = 0; i < planetCount; ++i) {
 			var p = self.planets[i];
 			if (x == p.x && y == p.y) {
-				return new ut.Tile("O", p.r, p.g, p.b);
+				var tile = new ut.Tile("O", p.r, p.g, p.b);
+				tile.planet = p; // Attach planet reference
+				return tile;
 			}
 		}
 		// Suns

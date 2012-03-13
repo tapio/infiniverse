@@ -38,8 +38,14 @@ function Ship(x, y) {
 			this.y += dy;
 		}
 		if (this.sensorsOn && !this.useEnergy(this.energyCosts.sensors)) this.sensorsOn = false;
-		this.x = clamp(this.x, 0, universe.current.size-1);
-		this.y = clamp(this.y, 0, universe.current.size-1);
+		var worldsize = universe.current.size;
+		if (universe.current.type == "aerial") {
+			this.x = (this.x + worldsize) % worldsize;
+			this.y = (this.y + worldsize) % worldsize;
+		} else {
+			this.x = clamp(this.x, 0, worldsize-1);
+			this.y = clamp(this.y, 0, worldsize-1);
+		}
 	};
 
 	this.toggleSensors = function() {

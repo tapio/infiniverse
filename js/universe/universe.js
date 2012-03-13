@@ -7,7 +7,8 @@ function Universe(engine) {
 
 	this.update = function() {
 		this.current = viewLevelStack[viewLevelStack.length-1];
-		this.eng.setWorldSize(this.current.size, this.current.size);
+		if (this.current.type == "aerial") this.eng.setWorldSize();
+		else this.eng.setWorldSize(this.current.size, this.current.size);
 		this.eng.setTileFunc(this.current.getTile);
 	};
 	this.update();
