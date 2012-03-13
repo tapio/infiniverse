@@ -102,6 +102,9 @@ p {
 .torpedo { color: #842; }
 .energy { color: #70d; }
 .beacon { color: #a0d; }
+.minerals { color: #07f; }
+.radioactives { color: #0f0; }
+.antimatter { color: #fff; }
 .empty { color: #666; }
 
 footer {

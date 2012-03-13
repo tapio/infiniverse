@@ -12,6 +12,9 @@ function Ship(x, y) {
 	this.usedCargo = 0;
 	this.beacons = 2;
 	this.activeBeacons = [];
+	this.minerals = 6;
+	this.radioactives = 3;
+	this.antimatter = 1;
 
 	this.move = function(dx, dy, warp) {
 		// TODO: different costs for different view levels
@@ -118,6 +121,9 @@ function Ship(x, y) {
 		str = "";
 		if (this.beacons > 0) str += cargoTypeHTML("B", "beacon", "Navbeacon", this.beacons);
 		if (this.torpedos > 0) str += cargoTypeHTML("T", "torpedo", "Torpedo", this.torpedos);
+		if (this.minerals > 0) str += cargoTypeHTML("M", "minerals", "Minerals", this.minerals);
+		if (this.radioactives > 0) str += cargoTypeHTML("R", "radioactives", "Radioactives", this.radioactives);
+		if (this.antimatter > 0) str += cargoTypeHTML("A", "antimatter", "Antimatter", this.antimatter);
 		var emptySpace = this.maxCargo - this.usedCargo;
 		if (emptySpace > 0) str += cargoTypeHTML("-", "empty", "Free space", emptySpace);
 		$("#cargo").html(str);
