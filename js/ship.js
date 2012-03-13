@@ -12,6 +12,7 @@ function Ship(x, y) {
 	this.usedCargo = 0;
 	this.beacons = 2;
 	this.activeBeacons = [];
+	this.maxActiveBeacons = 8;
 	this.minerals = 6;
 	this.radioactives = 3;
 	this.antimatter = 1;
@@ -38,8 +39,56 @@ function Ship(x, y) {
 			addMessage("Out of navbeacons.", "error");
 			return;
 		}
+		if (this.activeBeacons.length >= this.maxActiveBeacons) {
+			addMessage("Maximum number of active navbeacons reached.", "error");
+			return;
+		}
 		this.beacons--;
-		this.activeBeacons.push({ title: "Active beacon" });
+		this.activeBeacons.push({ title: "Navbeacon" });
+	};
+
+	this.gotoBeacon = function(index) {
+		if (index < 0 || index >= this.activeBeacons.length) return;
+	};
+
+	this.createEnergy = function(button) {
+		switch (button) {
+			case 1:
+				if (this.minerals > 0) {
+					this.minerals--;
+					this.energy += 100;
+				} else addMessage("Not enough minerals.", "error");
+				break;
+			case 2:
+				if (this.radioactives > 0) {
+					this.radioactives--;
+					this.energy += 2000;
+				} else addMessage("Not enough radioactives.", "error");
+				break;
+			case 3:
+				if (this.antimatter > 0) {
+					this.antimatter--;
+					this.energy += 100000;
+				} else addMessage("Not enough antimatter.", "error");
+				break;
+		}
+	};
+
+	this.createMass = function(button) {
+		switch (button) {
+			case 1:
+				if (this.usedCargo >= this.maxCargo)
+					addMessage("Not enough cargo space.", "error");
+				else if (this.useEnergy(200))
+					this.torpedos++;
+				break;
+			case 2:
+				if (this.usedCargo >= this.maxCargo)
+					addMessage("Not enough cargo space.", "error");
+				else if (this.useEnergy(5000))
+					this.beacons++;
+				break;
+		}
 	};
 
 	this.launchTorpedo = function() {
@@ -71,18 +120,23 @@ function Ship(x, y) {
 		var self = this;
 
 		// Sensorsbox
-		if (this.sensorsOn) $("#sensorstatus").html("ONLINE").attr("class", "online");
-		else $("#sensorstatus").html("OFFLINE").attr("class", "offline");
+		if (this.sensorsOn) {
+			$("#sensorstatus").html("ONLINE").attr("class", "online");
+			$("#sensorenergy").html("-1");
+		} else {
+			$("#sensorstatus").html("OFFLINE").attr("class", "offline");
+			$("#sensorenergy").html("0");
+		}
 
 		// Beacons
 		$("#beaconstatus").html(this.beacons);
 		len = this.activeBeacons.length;
-		$("#activebeacons").html(len);
+		$("#activebeacons").html(len + "/" + this.maxActiveBeacons);
 		if (len === 0) $("#beacon-menu").html("<li>No active beacons.</li>");
 		else {
 			str = "";
 			for (i = 0; i < len; ++i)
-				str += "<li>["+(i+1)+"] " + this.activeBeacons[i].title;
+				str += "<li>["+(i+1)+"] " + this.activeBeacons[i].title + ' <span class="energy">-1000</span>';
 			$("#beacon-menu").html(str);
 		}
 

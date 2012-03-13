@@ -42,15 +42,19 @@
 				<h3>Ship Status</h3>
 				<ul>
 					<li>Hull condition: <span id="hullcond">100%</span></li>
-					<li>Energy: <span id="energy" class="energy">n/a</span> <span id="energy-usage">+10</span></li>
+					<li>Energy: <span id="energy" class="energy">n/a</span></li>
 				</ul>
 			</section>
 
 			<section id="sensorbox" class="infobox">
 				<h3>Sensors</h3>
-				<p><span id="sensorstatus">ONLINE</span> [Tab] to switch</p>
-				<ul id="sensorlist">
-					<li>No contacts.</li>
+				<ul>
+					<li>[Tab] <span id="sensorstatus">ONLINE</span> <span id="sensorenergy" class="energy">-1</span></li>
+					<li>[S] Range: <span id="sensorrange">short</span></li>
+					<li>No contacts.
+						<ul id="sensorlist" class="submenu">
+						</ul>
+					</li>
 				</ul>
 			</section>
 
