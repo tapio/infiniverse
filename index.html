@@ -41,6 +41,7 @@
 				<h3>Sensors</h3>
 				<p><span id="sensorstatus">ONLINE</span> (Tab to switch)</p>
 				<ul id="sensorlist">
+					<li>No contacts.</li>
 				</ul>
 			</section>
 
@@ -63,15 +64,25 @@
 		<div class="right">
 			<section id="statusbox" class="infobox">
 				<h3>Ship Status</h3>
-				<p>Hull condition: <span id="hullcond">100%</span></p>
-				<p>Energy: <span id="energy">100%</span></p>
+				<ul>
+					<li>Hull condition: <span id="hullcond">100%</span></li>
+					<li>Energy: <span id="energy">200</span> <span id="energy-usage">+10</span></li>
+				</ul>
 			</section>
 
 			<section id="devicebox" class="infobox">
 				<h3>Devices</h3>
 				<ul id="devicelist">
-					<li>Energy converter</li>
-					<li>Mass converter</li>
+					<li>[E] Energy converter</li>
+					<li>[M] Mass converter</li>
+					<li>[Shift] Warp drives</li>
+				</ul>
+			</section>
+
+			<section id="weaponbox" class="infobox">
+				<h3>Weapon Systems</h3>
+				<ul>
+					<li>[T] Torpedos: <span id="torpedos">|||||||</span></li>
 				</ul>
 			</section>
 
