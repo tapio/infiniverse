@@ -61,9 +61,9 @@ function convertNoise(value) {
 
 // Exponent filter for making cloud like heightmaps
 function expFilter(value, cover, sharpness) {
-	var c = value - (255 - cover);
-	value = 255 - (Math.pow(sharpness, c < 0 ? 0 : c) * 255);
-	return value|0; // floor
+	var c = (value - (1.0 - cover)) * 10000;
+	value = 10000 - (Math.pow(sharpness, c < 0 ? 0 : c) * 10000);
+	return value / 10000;
 }
 
 function clone(obj) {

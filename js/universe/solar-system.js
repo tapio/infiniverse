@@ -29,11 +29,11 @@ function SolarSystem(x, y, neighbours) {
 	this.size = 256;
 	this.type = "solarsystem";
 	var self = this;
-	var halfSize = ~~(this.size * 0.5);
+	var halfSize = (this.size * 0.5) | 0;
 	var simplex_neb = new SimplexNoise(new Alea('solar-system_neb', x, y));
 	var simplex_bgstars = new SimplexNoise(new Alea('solar-system_bgstars', x, y));
 	var tile = neighbours(0,0);
-	if (tile.getChar() === " " || !tile.getChar().length)
+	if (!tile.getChar().length || tile.getChar() === " " || tile.getChar() === "·")
 		throw "Nothing interesting there, just empty space.";
 	var nebColor = tile.getBackgroundJSON();
 
@@ -116,9 +116,9 @@ function SolarSystem(x, y, neighbours) {
 		var b = blendMul(nebColor.b, neb);
 		// Blend sun and background
 		mask = Math.min(mask*2, 255);
-		r = ~~blend(sunR, r, mask/255.0);
-		g = ~~blend(sunG, g, mask/255.0);
-		b = ~~blend(sunB, b, mask/255.0);
+		r = blend(sunR, r, mask/255.0) | 0;
+		g = blend(sunG, g, mask/255.0) | 0;
+		b = blend(sunB, b, mask/255.0) | 0;
 
 		return new ut.Tile(block, star,star,star, r, g, b);
 	};

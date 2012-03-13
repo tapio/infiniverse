@@ -8,27 +8,37 @@ function Starmap(x, y, neighbours) {
 	var simplex_b = new SimplexNoise(new Alea('starmap_b', x, y));
 	var simplex_star = new SimplexNoise(new Alea('starmap_star', x, y));
 	var simplex_startype = new SimplexNoise(new Alea('starmap_startype', x, y));
-
 	var STARS = [ "✦", "★", "☀", "✶", "✳", "✷", "✸" ]; // ·✧✦☼☀✳☆★✶✷✸
+
+	var tile = neighbours(0,0);
+	var bright = (!tile.ch.length || tile.ch === " ") ? 0 : tile.r;
+	var starthreshold = 0.95 - 0.2 * bright / 255;
+	var fogfactor = tile.br / universe.current.nebulaFade / 255;
+	var coverage = 0.4 + 0.4 * fogfactor;
+	var nebulascale = 0.055 - 0.1 * (1.0 - fogfactor);
+	var colorscale = 0.03;
 
 	this.getTile = function(x, y) {
 		var star = simplex_star.noise(x*10,y*10);
 		var block = " ";
-		if (star > 0.8) {
+		if (star > starthreshold) {
 			star = convertNoise(simplex_startype.noise(x*100,y*100));
 			block = STARS[(star / 256 * STARS.length)|0];
-			star = Math.min(star+50, 255);
+			star = Math.min(star+30, 255);
+		} else if (star > starthreshold * 0.9) {
+			block = "·";
+			star = 30;
 		}
 
-		var scale = 0.05;
-		x *= scale;
-		y *= scale;
-
-		var mask = convertNoise(simplex_exp.noise(x,y));
-		mask = expFilter(mask, 100, 0.99);
-		var br = blendMul(convertNoise(simplex_r.noise(x,y)), mask);
-		var bg = blendMul(convertNoise(simplex_g.noise(x,y)), mask);
-		var bb = blendMul(convertNoise(simplex_b.noise(x,y)), mask);
+		var mask = simplex_exp.noise(x * nebulascale, y * nebulascale);
+		mask = expFilter(mask, coverage, 0.9999);
+		x *= colorscale;
+		y *= colorscale;
+		var br = convertNoise(simplex_r.noise(x,y) * mask);
+		var bg = convertNoise(simplex_g.noise(x,y) * mask);
+		var bb = convertNoise(simplex_b.noise(x,y) * mask);
+		var minneb = Math.max(Math.max(br, bg), bb);
+		star = Math.min(star + minneb, 255);
 		return new ut.Tile(block, star, star, star, br, bg, bb);
 	};
 

@@ -2,6 +2,7 @@
 function Galaxy() {
 	this.size = 60;
 	this.type = "galaxy";
+	this.nebulaFade = 0.333;
 	var self = this;
 	var NUMHUB   = 2000; // Number of stars in the core (Example: 2000)
 	var NUMDISK  = 4000; // Number of stars in the disk (Example: 4000)
@@ -70,7 +71,7 @@ function Galaxy() {
 	for (j = 0; j < this.size; ++j) {
 		for (i = 0; i < this.size; ++i) {
 			var bg = convertNoise(simplex_neb.noise(i*0.05,j*0.05));
-			bg = ~~(bg * 0.333);
+			bg = (bg * this.nebulaFade) | 0;
 			var star = Math.min(100 + buffer[j][i] * 20, 255);
 			block = isNaN(star) ? " " : STARS[~~mapRange(star, 100, 255, 0, STARS.length-1)];
 			buffer[j][i] = new ut.Tile(block, star,star,star, bg,bg,bg);
