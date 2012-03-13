@@ -14,8 +14,8 @@ function Starmap(x, y, neighbours) {
 	var bright = (!tile.ch.length || tile.ch === " ") ? 0 : tile.r;
 	var starthreshold = 0.95 - 0.2 * bright / 255;
 	var fogfactor = tile.br / universe.current.nebulaFade / 255;
-	var coverage = 0.4 + 0.4 * fogfactor;
-	var nebulascale = 0.055 - 0.1 * (1.0 - fogfactor);
+	var coverage = 0.3 + 0.5 * fogfactor;
+	var nebulascale = 0.02 + 0.02 * fogfactor;
 	var colorscale = 0.03;
 
 	this.getTile = function(x, y) {
