@@ -42,9 +42,9 @@ function Ship(x, y) {
 		}
 
 		// Cargo
-		function cargoTypeHTML(cargochar, cssclass, amount) {
+		function cargoTypeHTML(cargochar, cssclass, title, amount) {
 			if (cssclass !== "empty") self.usedCargo += amount;
-			var ret = '<span class=" ' +cssclass + '">';
+			var ret = '<span class=" ' +cssclass + '" title="' + title + '">';
 			for (var cargoitem = 0; cargoitem < amount; ++cargoitem)
 				ret += cargochar + " ";
 			return ret + '</span>';
@@ -52,10 +52,10 @@ function Ship(x, y) {
 		this.usedCargo = 0;
 		str = "";
 
-		if (this.torpedos > 0) str += cargoTypeHTML("T", "torpedo", this.torpedos);
+		if (this.torpedos > 0) str += cargoTypeHTML("T", "torpedo", "Torpedo", this.torpedos);
 
 		var emptySpace = this.maxCargo - this.usedCargo;
-		if (emptySpace > 0) str += cargoTypeHTML("-", "empty", emptySpace);
+		if (emptySpace > 0) str += cargoTypeHTML("-", "empty", "Free space", emptySpace);
 
 		$("#cargo").html(str);
 
