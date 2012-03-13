@@ -19,7 +19,7 @@ function Ship(x, y) {
 	this.energyCosts = {
 		convertMinerals: 100, convertRadioactives: 2000, convertAntimatter: 100000,
 		createTorpedo: 200, createBeacon: 5000,
-		drive: 1, warp: 10,
+		drive: 1, warp: 100,
 		sensors: 1,
 		gotoBeacon: 1000
 	};
@@ -51,11 +51,20 @@ function Ship(x, y) {
 			return;
 		}
 		this.beacons--;
-		this.activeBeacons.push({ title: "Navbeacon" });
+		var navname = "", rnd = new Alea();
+		for (var i = 0; i < 10; ++i) navname += (~~(rnd.random()*16)).toString(16);
+		this.activeBeacons.push({
+			title: navname, x: this.x, y: this.y,
+			universeState: universe.getState()
+		});
 	};
 
 	this.gotoBeacon = function(index) {
 		if (index < 0 || index >= this.activeBeacons.length) return;
+		if (!this.useEnergy(this.energyCosts.gotoBeacon)) return;
+		universe.setState(this.activeBeacons[index].universeState);
+		this.x = this.activeBeacons[index].x;
+		this.y = this.activeBeacons[index].y;
 	};
 
 	this.createEnergy = function(button) {

@@ -44,4 +44,12 @@ function Universe(engine) {
 		addMessage("Exited " + placename + ".");
 	};
 
+	this.getState = function() {
+		return clone(viewLevelStack);
+	};
+
+	this.setState = function(state) {
+		viewLevelStack = state;
+		this.update();
+	};
 }
