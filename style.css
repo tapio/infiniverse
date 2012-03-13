@@ -92,10 +92,15 @@ p {
 	white-space: nowrap;
 }
 
-.online { color: #0a0; }
-.offline { color: #a00; }
+.online, .good { color: #0a0; }
+.offline, .bad { color: #a00; }
+.warn { color: #dd0; }
 
-#torpedos { color: #842; }
+.itemstring { word-spacing: -0.6em; }
+
+/* Cargo colors */
+.torpedo { color: #842; }
+.empty { color: #666; }
 
 footer {
 	color: #222;
