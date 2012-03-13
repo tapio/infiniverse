@@ -7,6 +7,7 @@ function PlanetAerial(x, y, neighbours) {
 	this.planet = tile.planet;
 	if (!this.planet)
 		throw "Find a planet to land.";
+	var planetType = this.planet.type;
 
 	var simplex_height = new SimplexNoise(new Alea('planet_height', x, y));
 	var texWater = new ut.Tile("≋", 0,0,255); // ♒
@@ -18,6 +19,11 @@ function PlanetAerial(x, y, neighbours) {
 	this.getTile = function(x, y) {
 		x = x % self.size;
 		y = y % self.size;
+		if (planetType == "ocean") return texWater;
+		if (planetType == "gas") {
+			var gas = convertNoise(simplex_height.noise(x*0.03, y*0.03));
+			return new ut.Tile("▒", 200,200,200, gas,gas,gas);
+		}
 		var h = simplex_height.noise(x*0.05, y*0.05);
 		var tile = texWater;
 		if (h > 0.95) tile = texPeaks;
