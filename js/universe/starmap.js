@@ -7,14 +7,16 @@ function Starmap(x, y, neighbours) {
 	var simplex_g = new SimplexNoise(new Alea('starmap_g', x, y));
 	var simplex_b = new SimplexNoise(new Alea('starmap_b', x, y));
 	var simplex_star = new SimplexNoise(new Alea('starmap_star', x, y));
+	var simplex_startype = new SimplexNoise(new Alea('starmap_startype', x, y));
 
 	var STARS = [ "✦", "★", "☀", "✶", "✳", "✷", "✸" ]; // ·✧✦☼☀✳☆★✶✷✸
 
 	this.getTile = function(x, y) {
-		var star = convertNoise(simplex_star.noise(x*10,y*10));
+		var star = simplex_star.noise(x*10,y*10);
 		var block = " ";
-		if (star % 10 === 0) {
-			block = STARS[Math.floor(star / 255 * STARS.length)];
+		if (star > 0.8) {
+			star = convertNoise(simplex_startype.noise(x*100,y*100));
+			block = STARS[(star / 256 * STARS.length)|0];
 			star = Math.min(star+50, 255);
 		}
 
