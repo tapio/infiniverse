@@ -58,4 +58,5 @@ function init() {
 	addMessage("Press F1 for help.");
 	addMessage("Locate the ancient alien knowledge.");
 	addMessage("Welcome to Infiniverse.");
+	$("#wrap").fadeIn(500);
 }

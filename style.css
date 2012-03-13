@@ -41,6 +41,7 @@ p {
 	width: 1000px;
 	margin: 5px auto;
 	padding: 0px;
+	display: none;
 }
 
 .infobox {
