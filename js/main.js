@@ -74,6 +74,7 @@ function onKeyDown(k) {
 	if (k === ut.KEY_M) toggleMenu("#massfabricator-menu");
 	if (k === ut.KEY_B) pl.deployBeacon();
 	if (k === ut.KEY_T) pl.launchTorpedo();
+	if (k === ut.KEY_R) term.setRenderer(term.getRendererString() === "dom" ? "canvas" : "dom");
 	if (k >= ut.KEY_1 && k <= ut.KEY_9) {
 		if (activeMenu === "#beacon-menu") pl.gotoBeacon(k - ut.KEY_1);
 		else if (activeMenu === "#energyconverter-menu") pl.createEnergy(k - ut.KEY_1 + 1);

@@ -30,7 +30,7 @@ function Universe(engine) {
 			}
 			if (!newPlace) return;
 		} catch (err) {
-			addMessage(err);
+			addMessage(err, "error");
 			return;
 		}
 		viewLevelStack.push(newPlace);
