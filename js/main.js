@@ -3,7 +3,7 @@
 var term, eng; // Can't be initialized yet because DOM is not ready
 var universe;
 
-var pl = { x: 20, y: 20 }; // Player position, FIXME: Make a proper class
+var pl = new Ship(40,40);
 
 var messages = [];
 var maxMessages = 3;
@@ -25,6 +25,7 @@ function addMessage(msg) {
 
 // "Main loop"
 function tick() {
+	pl.updateUI();
 	eng.update(pl.x, pl.y); // Update tiles
 	// Player character
 	var bg = term.get(term.cx, term.cy).getBackgroundJSON();
@@ -41,10 +42,12 @@ function onKeyDown(k) {
 	else if (k === ut.KEY_DOWN || k === ut.KEY_J) movedir.y = 1;
 	if (k === ut.KEY_ENTER) universe.enter(pl.x, pl.y);
 	if (k === ut.KEY_BACKSPACE) universe.exit();
-	if (movedir.x === 0 && movedir.y === 0) return;
-	var warp = ut.isKeyPressed(ut.KEY_SHIFT) ? 5 : 1;
-	pl.x += movedir.x * warp;
-	pl.y += movedir.y * warp;
+	if (k === ut.KEY_TAB) pl.toggleSensors();
+	if (movedir.x !== 0 || movedir.y !== 0) {
+		var warp = ut.isKeyPressed(ut.KEY_SHIFT) ? 5 : 1;
+		pl.x += movedir.x * warp;
+		pl.y += movedir.y * warp;
+	}
 	tick();
 }
 
