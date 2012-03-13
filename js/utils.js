@@ -55,14 +55,14 @@ function mapRange(x, in_min, in_max, out_min, out_max) {
 
 // Convert float [-1,1] to integer [0,255]
 function convertNoise(value) {
-	return ~~(256 * (value * 0.5 + 0.5)); // ~~ is floor
+	return (256 * value)|0; // |0 is floor
 }
 
 // Exponent filter for making cloud like heightmaps
 function expFilter(value, cover, sharpness) {
 	var c = value - (255.0 - cover);
 	value = 255.0 - (Math.pow(sharpness, c < 0 ? 0 : c) * 255.0);
-	return ~~(value); // floor
+	return value|0; // floor
 }
 
 function clone(obj) {

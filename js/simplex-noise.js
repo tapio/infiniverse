@@ -80,8 +80,8 @@ SimplexNoise.prototype.noise = function(xin, yin) {
     n2 = t2 * t2 * this.dot(this.grad3[gi2], x2, y2);
   }
   // Add contributions from each corner to get the final noise value.
-  // The result is scaled to return values in the interval [-1,1].
-  return 70.0 * (n0 + n1 + n2);
+  // The result is scaled to return values in the interval [0,1].
+  return 35.0 * (n0 + n1 + n2) + 0.5;
 };
 
 // 3D simplex noise
@@ -163,6 +163,6 @@ SimplexNoise.prototype.noise3d = function(xin, yin, zin) {
     n3 = t3 * t3 * this.dot(this.grad3[gi3], x3, y3, z3);
   }
   // Add contributions from each corner to get the final noise value.
-  // The result is scaled to stay just inside [-1,1]
-  return 32.0*(n0 + n1 + n2 + n3);
+  // The result is scaled to stay just inside [0,1]
+  return 16.0 * (n0 + n1 + n2 + n3) + 0.5;
 };
