@@ -67,7 +67,7 @@ function SolarSystem(x, y, neighbours) {
 	// Planets
 	for (i = 0; i < planetCount; ++i) {
 		var planetProto = planetTypes[(rnd.random()*planetTypes.length)|0];
-		this.planets.push(planetProto);
+		this.planets.push(clone(planetProto));
 		ang = rnd.random() * 360;
 		this.planets[i].x = ~~(halfSize + cosd(ang) * randf(30, halfSize*0.6, rnd));
 		this.planets[i].y = ~~(halfSize - sind(ang) * randf(30, halfSize*0.6, rnd));
