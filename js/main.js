@@ -52,12 +52,16 @@ function onKeyDown(k) {
 	tick();
 }
 
+function onKeyUp(k) {
+	if (k === ut.KEY_SHIFT) tick();
+}
+
 // Initialize stuff
 function init() {
 	term = new ut.Viewport(document.getElementById("game"), 55, 31);
 	eng = new ut.Engine(term);
 	universe = new Universe(eng); // Also sets the tile function to Engine
-	ut.initInput(onKeyDown);
+	ut.initInput(onKeyDown, onKeyUp);
 	tick();
 	addMessage("Press F1 for help.");
 	addMessage("Locate the ancient alien knowledge.");

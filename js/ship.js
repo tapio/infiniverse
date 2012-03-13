@@ -24,13 +24,34 @@ function Ship(x, y) {
 		this.torpedos--;
 	};
 
+	this.damage = function(amount) {
+		this.hull -= amount;
+	};
+
+	this.useEnergy = function(amount) {
+		if (this.energy < amount) return false;
+		this.energy -= amount;
+		return true;
+	};
+
 	this.updateUI = function() {
-		var i, str;
+		var i, str, statusclass;
 		var self = this;
 
 		// Sensorsbox
 		if (this.sensorsOn) $("#sensorstatus").html("ONLINE").attr("class", "online");
 		else $("#sensorstatus").html("OFFLINE").attr("class", "offline");
+
+		var cond = Math.floor(this.hull / this.maxHull * 100);
+		if (cond < 0) cond = 0;
+		statusclass = "good";
+		if (cond <= 25) statusclass = "bad";
+		else if (cond < 75) statusclass = "warn";
+		$("#hullcond").html(cond+"%").attr("class", statusclass);
+
+		// Devices
+		if (ut.isKeyPressed(ut.KEY_SHIFT)) $("#warpdrives span").attr("class", "online");
+		else $("#warpdrives span").attr("class", "");
 
 		// Torpedos
 		if (this.torpedos <= 0) $("#torpedos").html("-");
@@ -59,9 +80,9 @@ function Ship(x, y) {
 
 		$("#cargo").html(str);
 
-		var cargostatusclass = "good";
-		if (emptySpace <= 5) cargostatusclass = "bad";
-		else if (this.usedCargo / this.maxCargo > 0.666) cargostatusclass = "warn";
-		$("#cargostatus").html(this.usedCargo + "/" + this.maxCargo).attr("class", cargostatusclass);
+		statusclass = "good";
+		if (emptySpace <= 5) statusclass = "bad";
+		else if (this.usedCargo / this.maxCargo > 0.666) statusclass = "warn";
+		$("#cargostatus").html(this.usedCargo + "/" + this.maxCargo).attr("class", statusclass);
 	};
 }
