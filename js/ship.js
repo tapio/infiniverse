@@ -2,7 +2,7 @@
 function Ship(x, y) {
 	this.x = x || 0;
 	this.y = y || 0;
-	this.energy = 100;
+	this.energy = 10000;
 	this.maxHull = 100;
 	this.hull = this.maxHull;
 	this.torpedos = 10;
@@ -13,8 +13,17 @@ function Ship(x, y) {
 	this.beacons = 2;
 	this.activeBeacons = [];
 
-	this.move = function() {
-
+	this.move = function(dx, dy, warp) {
+		// TODO: different costs for different view levels
+		var cost = 1;
+		if (warp) {
+			dx *= 5;
+			dy *= 5;
+			cost *= 10;
+		}
+		if (!this.useEnergy(cost)) return;
+		this.x += dx;
+		this.y += dy;
 	};
 
 	this.toggleSensors = function() {
@@ -62,13 +71,6 @@ function Ship(x, y) {
 		if (this.sensorsOn) $("#sensorstatus").html("ONLINE").attr("class", "online");
 		else $("#sensorstatus").html("OFFLINE").attr("class", "offline");
 
-		var cond = Math.floor(this.hull / this.maxHull * 100);
-		if (cond < 0) cond = 0;
-		statusclass = "good";
-		if (cond <= 25) statusclass = "bad";
-		else if (cond < 75) statusclass = "warn";
-		$("#hullcond").html(cond+"%").attr("class", statusclass);
-
 		// Beacons
 		//str = this.beacons + " available ";
 		//if (this.beacons > 0) str += "[B] to deploy";
@@ -81,6 +83,15 @@ function Ship(x, y) {
 				str += "<li>["+(i+1)+"] " + this.activeBeacons[i].title;
 			$("#navbeaconlist").html(str);
 		}
+
+		// Ship status
+		var cond = Math.floor(this.hull / this.maxHull * 100);
+		if (cond < 0) cond = 0;
+		statusclass = "good";
+		if (cond <= 25) statusclass = "bad";
+		else if (cond < 75) statusclass = "warn";
+		$("#hullcond").html(cond+"%").attr("class", statusclass);
+		$("#energy").html(this.energy);
 
 		// Devices
 		if (ut.isKeyPressed(ut.KEY_SHIFT)) $("#warpdrives span").attr("class", "online");

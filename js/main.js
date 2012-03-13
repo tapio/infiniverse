@@ -48,11 +48,8 @@ function onKeyDown(k) {
 	if (k === ut.KEY_TAB) pl.toggleSensors();
 	if (k === ut.KEY_B) pl.deployBeacon();
 	if (k === ut.KEY_T) pl.launchTorpedo();
-	if (movedir.x !== 0 || movedir.y !== 0) {
-		var warp = ut.isKeyPressed(ut.KEY_SHIFT) ? 5 : 1;
-		pl.x += movedir.x * warp;
-		pl.y += movedir.y * warp;
-	}
+	if (movedir.x !== 0 || movedir.y !== 0)
+		pl.move(movedir.x, movedir.y, ut.isKeyPressed(ut.KEY_SHIFT));
 	tick();
 }
 
