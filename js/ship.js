@@ -200,6 +200,11 @@ function Ship(x, y) {
 		$("#energy").html(this.energy);
 
 		// Devices
+		$("#minerals-energy").html("+" + this.energyCosts.convertMinerals);
+		$("#radioactives-energy").html("+" + this.energyCosts.convertRadioactives);
+		$("#antimatter-energy").html("+" + this.energyCosts.convertAntimatter);
+		$("#torpedo-cost").html("-" + this.energyCosts.createTorpedo);
+		$("#beacon-cost").html("-" + this.energyCosts.createBeacon);
 		var movkeys = [ ut.KEY_LEFT, ut.KEY_RIGHT, ut.KEY_UP, ut.KEY_DOWN, ut.KEY_H, ut.KEY_J, ut.KEY_K, ut.KEY_L ];
 		for (i = 0; i < movkeys.length; ++i)
 			if (ut.isKeyPressed(movkeys[i])) { $("#drives span").first().attr("class", "online"); break; }
