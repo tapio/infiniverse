@@ -96,17 +96,23 @@ function Ship(x, y) {
 		$("#energy").html(this.energy);
 
 		// Devices
-		if (ut.isKeyPressed(ut.KEY_SHIFT)) $("#warpdrives span").attr("class", "online");
-		else $("#warpdrives span").attr("class", "");
+		var movkeys = [ ut.KEY_LEFT, ut.KEY_RIGHT, ut.KEY_UP, ut.KEY_DOWN, ut.KEY_H, ut.KEY_J, ut.KEY_K, ut.KEY_L ];
+		for (i = 0; i < movkeys.length; ++i)
+			if (ut.isKeyPressed(movkeys[i])) { $("#drives span").first().attr("class", "online"); break; }
+		if (i >= movkeys.length) $("#drives span").first().attr("class", "");
+
+		if (ut.isKeyPressed(ut.KEY_SHIFT)) $("#warpdrives span").first().attr("class", "online");
+		else $("#warpdrives span").first().attr("class", "");
 
 		// Torpedos
-		if (this.torpedos <= 0) $("#torpedos").html("-");
+		$("#torpedos").html(this.torpedos);
+		/*if (this.torpedos <= 0) $("#torpedos").html("-");
 		else {
 			str = "";
 			for (i = 0; i < this.torpedos; ++i)
 				str += "| ";
 			$("#torpedos").html(str);
-		}
+		}*/
 
 		// Cargo
 		function cargoTypeHTML(cargochar, cssclass, title, amount) {

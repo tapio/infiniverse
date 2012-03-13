@@ -76,7 +76,7 @@ function onKeyDown(k) {
 }
 
 function onKeyUp(k) {
-	if (k === ut.KEY_SHIFT) tick();
+	tick(); // Some keyups affect the UI
 }
 
 // Initialize stuff
