@@ -75,16 +75,15 @@ function Ship(x, y) {
 		else $("#sensorstatus").html("OFFLINE").attr("class", "offline");
 
 		// Beacons
-		//str = this.beacons + " available ";
-		//if (this.beacons > 0) str += "[B] to deploy";
 		$("#beaconstatus").html(this.beacons);
 		len = this.activeBeacons.length;
-		if (len === 0) $("#navbeaconlist").html("<li>No active beacons.</li>");
+		$("#activebeacons").html(len);
+		if (len === 0) $("#beacon-menu").html("<li>No active beacons.</li>");
 		else {
 			str = "";
 			for (i = 0; i < len; ++i)
 				str += "<li>["+(i+1)+"] " + this.activeBeacons[i].title;
-			$("#navbeaconlist").html(str);
+			$("#beacon-menu").html(str);
 		}
 
 		// Ship status

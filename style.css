@@ -54,21 +54,14 @@ p {
 	border-radius: 10px;
 }
 
-.infobox ol,
 .infobox ul {
 	list-style-position: inside;
+	list-style: none;
 	margin: 3px 5px 3px 0px;
 	padding-left: 0px;
 }
 
-.infobox ul {
-	list-style: none;
-}
-
-.infobox li {
-	margin-left: 0px;
-	padding-left: 0px;
-}
+.submenu li { margin-left: 10px; }
 
 #messagesbox {
 	text-align: left;
@@ -91,6 +84,10 @@ p {
 	overflow: hidden;
 	white-space: nowrap;
 }
+
+#beacon-menu { display: none; }
+#energyconverter-menu { display: none; }
+#massfabricator-menu { display: none; }
 
 .online, .good { color: #0a0; }
 .offline, .bad { color: #a00; }

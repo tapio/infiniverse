@@ -56,9 +56,13 @@
 
 			<section id="navbeaconbox" class="infobox">
 				<h3>Navbeacons</h3>
-				<p>[B] Deployable: <span id="beaconstatus"></span></p>
-				<ul id="navbeaconlist">
-					<li>No active beacons.</li>
+				<ul>
+					<li>[B] Deployable: <span id="beaconstatus"></span></li>
+					<li>[G] <span>Active:</span> <span id="activebeacons"></span>
+						<ul id="beacon-menu" class="submenu">
+							<li>No active beacons.</li>
+						</ul>
+					</li>
 				</ul>
 			</section>
 		</div>
@@ -67,8 +71,19 @@
 			<section id="devicebox" class="infobox">
 				<h3>Devices</h3>
 				<ul id="devicelist">
-					<li>[E] Energy converter</li>
-					<li>[M] Mass converter</li>
+					<li>[E] <span>Energy converter</span>
+						<ul id="energyconverter-menu" class="submenu">
+							<li>[1] Convert <span class="minerals" title="Minerals">M</span> <span class="energy">+100</span></li>
+							<li>[2] Convert <span class="radioactives" title="Radioactives">R</span> <span class="energy">+2000</span></li>
+							<li>[3] Convert <span class="antimatter" title="Antimatter">A</span> <span class="energy">+100000</span></li>
+						</ul>
+					</li>
+					<li>[M] <span>Mass fabricator</span>
+						<ul id="massfabricator-menu" class="submenu">
+							<li>[1] Create <span class="torpedo" title="Torpedo">T</span> <span class="energy">-200</span></li>
+							<li>[2] Create <span class="beacon" title="Navbeacon">B</span> <span class="energy">-5000</span></li>
+						</ul>
+					</li>
 					<li id="warpdrives">[Shift] <span>Warp drives</span></li>
 				</ul>
 			</section>

@@ -8,6 +8,8 @@ var pl = new Ship(40,40);
 var messages = [];
 var maxMessages = 3;
 
+var activeMenu = "";
+
 function addMessage(msg, msgtype) {
 	msgtype = msgtype || "info";
 	messages.push({ text: msg, type: msgtype });
@@ -36,6 +38,23 @@ function tick() {
 	term.render(); // Render
 }
 
+function toggleMenu(menuid) {
+	var ids = [ "#beacon-menu", "#energyconverter-menu", "#massfabricator-menu" ];
+	for (var i = 0; i < ids.length; ++i) {
+		var elem = $(ids[i]);
+		var visible = elem.is(":visible");
+		if (menuid == ids[i] && !visible) {
+			elem.show("blind", 500);
+			elem.parent().parent().children("span").first().attr("class", "online");
+		} else if (visible) {
+			elem.hide("blind", 500);
+			elem.parent().parent().children("span").first().attr("class", "");
+		}
+	}
+	if (activeMenu === menuid) activeMenu = "";
+	else activeMenu = menuid;
+}
+
 // Key press handler - movement & collision handling
 function onKeyDown(k) {
 	var movedir = { x: 0, y: 0 }; // Movement vector
@@ -46,6 +65,9 @@ function onKeyDown(k) {
 	if (k === ut.KEY_ENTER) universe.enter(pl.x, pl.y);
 	if (k === ut.KEY_BACKSPACE) universe.exit();
 	if (k === ut.KEY_TAB) pl.toggleSensors();
+	if (k === ut.KEY_G) toggleMenu("#beacon-menu");
+	if (k === ut.KEY_E) toggleMenu("#energyconverter-menu");
+	if (k === ut.KEY_M) toggleMenu("#massfabricator-menu");
 	if (k === ut.KEY_B) pl.deployBeacon();
 	if (k === ut.KEY_T) pl.launchTorpedo();
 	if (movedir.x !== 0 || movedir.y !== 0)
