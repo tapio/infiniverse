@@ -38,6 +38,8 @@ function Ship(x, y) {
 			this.y += dy;
 		}
 		if (this.sensorsOn && !this.useEnergy(this.energyCosts.sensors)) this.sensorsOn = false;
+		this.x = clamp(this.x, 0, universe.current.size-1);
+		this.y = clamp(this.y, 0, universe.current.size-1);
 	};
 
 	this.toggleSensors = function() {
