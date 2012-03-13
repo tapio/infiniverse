@@ -21,7 +21,8 @@ function Ship(x, y) {
 		createTorpedo: 200, createBeacon: 5000,
 		drive: 1, warp: 100,
 		sensors: 1,
-		gotoBeacon: 1000
+		gotoBeacon: 1000,
+		launchTorpedo: 200
 	};
 
 	this.move = function(dx, dy, warp) {
@@ -32,9 +33,11 @@ function Ship(x, y) {
 			dy *= 5;
 			cost = this.energyCosts.warp;
 		}
-		if (!this.useEnergy(cost)) return;
-		this.x += dx;
-		this.y += dy;
+		if (this.useEnergy(cost)) {
+			this.x += dx;
+			this.y += dy;
+		}
+		if (this.sensorsOn && !this.useEnergy(this.energyCosts.sensors)) this.sensorsOn = false;
 	};
 
 	this.toggleSensors = function() {
@@ -112,6 +115,7 @@ function Ship(x, y) {
 			addMessage("Out of torpedos.", "error");
 			return;
 		}
+		if (!this.useEnergy(this.energyCosts.launchTorpedo)) return;
 		this.torpedos--;
 	};
 
@@ -179,6 +183,7 @@ function Ship(x, y) {
 
 		// Torpedos
 		$("#torpedos").html(this.torpedos);
+		$("#torpedos").siblings(".energy").html("-" + this.energyCosts.launchTorpedo);
 		/*if (this.torpedos <= 0) $("#torpedos").html("-");
 		else {
 			str = "";
