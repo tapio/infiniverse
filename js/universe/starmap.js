@@ -1,6 +1,7 @@
 
 function Starmap(x, y, neighbours) {
 	this.size = 256;
+	this.type = "starmap";
 	var simplex_exp = new SimplexNoise(new Alea('starmap_exp', x, y));
 	var simplex_r = new SimplexNoise(new Alea('starmap_r', x, y));
 	var simplex_g = new SimplexNoise(new Alea('starmap_g', x, y));

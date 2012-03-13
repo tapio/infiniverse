@@ -142,12 +142,39 @@ function Ship(x, y) {
 		var self = this;
 
 		// Sensorsbox
+		var contactCount = 0;
+		function addContacts(collec) {
+			var arrows = "→↗↑↖←↙↓↘";
+			contactCount += collec.length;
+			for (var i = 0, ret = ""; i < collec.length; ++i) {
+				var obj = collec[i];
+				var dir = getAngle(self.x, obj.y, obj.x, self.y); // Flip y
+				dir = (dir + Math.PI*2 + Math.PI/8) % (Math.PI*2);
+				var dirchar = arrows[~~(dir/(Math.PI/4))];
+				var dist = ~~distance(self.x, self.y, obj.x, obj.y);
+				if ((obj.radius && dist <= obj.radius) || dist < 1)
+					dirchar = "↺";
+				var sty = 'style="color:rgb('+obj.r+','+obj.g+','+obj.b+');">';
+				ret += '<li>' + dirchar + ' <span ' + sty + collec[i].desc + "</span> - " + dist + '</li>';
+			}
+			return ret;
+		}
 		if (this.sensorsOn) {
 			$("#sensorstatus").html("ONLINE").attr("class", "online");
 			$("#sensorenergy").html("-" + this.energyCosts.sensors);
+			str = "";
+			if (universe.current.type === "solarsystem") {
+				str += addContacts(universe.current.planets);
+				str += addContacts(universe.current.suns);
+			}
+			$("#sensorlist").html(str);
+			if (!contactCount) $("#contactstitle").html("No contacts.");
+			else $("#contactstitle").html(contactCount + " contacts:");
 		} else {
 			$("#sensorstatus").html("OFFLINE").attr("class", "offline");
 			$("#sensorenergy").html("0");
+			$("#contactstitle").html("Enable sensors to scan.");
+			$("#sensorlist").html("");
 		}
 
 		// Beacons

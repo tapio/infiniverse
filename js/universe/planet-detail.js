@@ -1,6 +1,7 @@
 
 function PlanetDetail() {
 	this.size = 128;
+	this.type = "detail";
 
 	this.getTile = function(x, y) {
 		return ut.NULLTILE;

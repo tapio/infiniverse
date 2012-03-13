@@ -1,6 +1,7 @@
 
 function Galaxy() {
 	this.size = 60;
+	this.type = "galaxy";
 	var self = this;
 	var NUMHUB   = 2000; // Number of stars in the core (Example: 2000)
 	var NUMDISK  = 4000; // Number of stars in the disk (Example: 4000)

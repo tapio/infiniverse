@@ -14,20 +14,22 @@ var planetMultiples = [
 ];
 
 var starTypes = [
-	{ r:200, g:200, b:255, size:250, freq:0.00001, desc:"Class O" },
-	{ r:160, g:160, b:255, size:125, freq:0.010, desc:"Class B" },
-	{ r:200, g:200, b:255, size:50, freq:0.010, desc:"Class A" },
-	{ r:220, g:220, b:160, size:25, freq:0.050, desc:"Class F" },
-	{ r:255, g:255, b:0, size:22, freq:0.150, desc:"Class G" },
-	{ r:200, g:100, b:0, size:20, freq:0.220, desc:"Class K" },
-	{ r:200, g:0, b:5, size:10, freq:0.550, desc:"Class M" },
-	{ r:160, g:160, b:160, size:4, freq:0.010, desc:"Class D" }
+	{ r:200, g:200, b:255, radius:125, freq:0.00001, desc:"Class O star" },
+	{ r:160, g:160, b:255, radius:75, freq:0.010, desc:"Class B star" },
+	{ r:200, g:200, b:255, radius:40, freq:0.010, desc:"Class A star" },
+	{ r:220, g:220, b:160, radius:25, freq:0.050, desc:"Class F star" },
+	{ r:255, g:255, b:0, radius:22, freq:0.150, desc:"Class G star" },
+	{ r:200, g:100, b:0, radius:20, freq:0.220, desc:"Class K star" },
+	{ r:200, g:0, b:5, radius:10, freq:0.550, desc:"Class M star" },
+	{ r:160, g:160, b:160, radius:4, freq:0.010, desc:"Class D star" }
 ];
 
 // TODO: Use also upper level coordinates in seeding
 function SolarSystem(x, y, neighbours) {
 	this.size = 256;
+	this.type = "solarsystem";
 	var self = this;
+	var halfSize = ~~(this.size * 0.5);
 	var simplex_neb = new SimplexNoise(new Alea('solar-system_neb', x, y));
 	var simplex_bgstars = new SimplexNoise(new Alea('solar-system_bgstars', x, y));
 	var tile = neighbours(0,0);
@@ -51,23 +53,24 @@ function SolarSystem(x, y, neighbours) {
 		var starProto = starTypes[~~(rnd.random()*starTypes.length)];
 		this.suns.push(clone(starProto));
 		ang += i * (360.0 / starCount);
-		this.suns[i].x = ~~(this.size/2 + cosd(ang) * randf(starProto.size, 255, rnd));
-		this.suns[i].y = ~~(this.size/2 - sind(ang) * randf(starProto.size, 255, rnd));
+		this.suns[i].x = ~~(halfSize + cosd(ang) * randf(starProto.radius, halfSize, rnd));
+		this.suns[i].y = ~~(halfSize - sind(ang) * randf(starProto.radius, halfSize, rnd));
 	}
 
 	// Planets
 	for (i = 0; i < planetCount; ++i) {
 		this.planets.push({});
 		var p = this.planets[i];
-		p.objType = rand(1, 3, rnd);
+		p.objType = rand(1, 4, rnd);
 		switch (p.objType) {
-			case 1: p.r = 128; p.g = 0; p.b = 0; break;
-			case 2: p.r = 128; p.g = 128; p.b = 128; break;
-			case 3: p.r = 0; p.g = 255; p.b = 0; break;
+			case 1: p.r = 128; p.g = 0; p.b = 0; p.desc = "Gas giant"; break;
+			case 2: p.r = 128; p.g = 128; p.b = 128; p.desc = "Rock planet"; break;
+			case 3: p.r = 128; p.g = 128; p.b = 255; p.desc = "Ocean planet"; break;
+			case 4: p.r = 0; p.g = 255; p.b = 0; p.desc = "Terrestrial"; break;
 		}
 		ang = rnd.random() * 360;
-		p.x = ~~(this.size/2 + cosd(ang) * randf(30, 100, rnd));
-		p.y = ~~(this.size/2 - sind(ang) * randf(30, 100, rnd));
+		p.x = ~~(halfSize + cosd(ang) * randf(30, halfSize*0.6, rnd));
+		p.y = ~~(halfSize - sind(ang) * randf(30, halfSize*0.6, rnd));
 	}
 
 	// Can't use 'this' here due to passing this function to the tile engine
@@ -91,9 +94,8 @@ function SolarSystem(x, y, neighbours) {
 		for (i = 0; i < starCount; ++i) {
 			var sun = self.suns[i];
 			var distSquared = (x-sun.x)*(x-sun.x) + (y-sun.y)*(y-sun.y);
-			if (x == pl.x && y == pl.y) console.log(Math.sqrt(distSquared));
-			if (distSquared < sun.size * sun.size) {
-				dist2 = Math.sqrt(distSquared) / sun.size * 256.0;
+			if (distSquared < sun.radius * sun.radius) {
+				dist2 = Math.sqrt(distSquared) / sun.radius * 256.0;
 				mask = 256-dist2; //expFilter(dst2, 0, .99)
 				//temp = (Perlin(x,y,worldW,worldH,2,2) - 128.0) / 8.0;
 				//mask = Max( Min(mask+temp, 255), 0 );

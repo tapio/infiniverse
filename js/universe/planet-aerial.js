@@ -1,6 +1,7 @@
 
 function PlanetAerial() {
 	this.size = 512;
+	this.type = "aerial";
 
 	this.getTile = function(x, y) {
 		return ut.NULLTILE;
