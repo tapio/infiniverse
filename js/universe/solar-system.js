@@ -24,6 +24,13 @@ var starTypes = [
 	{ r:160, g:160, b:160, radius:4, freq:0.010, desc:"Class D star" }
 ];
 
+var planetTypes = [
+	{ type:"gas", ch:"◌", r:128, g:0, b:0, desc:"Gas giant" },
+	{ type:"rock", ch:"●", r:128, g:128, b:128, desc:"Rock planet" },
+	{ type:"ocean", ch:"○", r:128, g:128, b:255, desc:"Ocean planet" },
+	{ type:"gaia", ch:"◍", r:0, g:255, b:0, desc:"Terrestrial" }
+];
+
 // TODO: Use also upper level coordinates in seeding
 function SolarSystem(x, y, neighbours) {
 	this.size = 256;
@@ -50,7 +57,7 @@ function SolarSystem(x, y, neighbours) {
 
 	var ang = rnd.random() * 360;
 	for (i = 0; i < starCount; ++i) {
-		var starProto = starTypes[~~(rnd.random()*starTypes.length)];
+		var starProto = starTypes[(rnd.random()*starTypes.length)|0];
 		this.suns.push(clone(starProto));
 		ang += i * (360.0 / starCount);
 		this.suns[i].x = ~~(halfSize + cosd(ang) * randf(starProto.radius, halfSize, rnd));
@@ -59,18 +66,11 @@ function SolarSystem(x, y, neighbours) {
 
 	// Planets
 	for (i = 0; i < planetCount; ++i) {
-		this.planets.push({});
-		var p = this.planets[i];
-		p.objType = rand(1, 4, rnd);
-		switch (p.objType) {
-			case 1: p.r = 128; p.g = 0; p.b = 0; p.desc = "Gas giant"; break;
-			case 2: p.r = 128; p.g = 128; p.b = 128; p.desc = "Rock planet"; break;
-			case 3: p.r = 128; p.g = 128; p.b = 255; p.desc = "Ocean planet"; break;
-			case 4: p.r = 0; p.g = 255; p.b = 0; p.desc = "Terrestrial"; break;
-		}
+		var planetProto = planetTypes[(rnd.random()*planetTypes.length)|0];
+		this.planets.push(planetProto);
 		ang = rnd.random() * 360;
-		p.x = ~~(halfSize + cosd(ang) * randf(30, halfSize*0.6, rnd));
-		p.y = ~~(halfSize - sind(ang) * randf(30, halfSize*0.6, rnd));
+		this.planets[i].x = ~~(halfSize + cosd(ang) * randf(30, halfSize*0.6, rnd));
+		this.planets[i].y = ~~(halfSize - sind(ang) * randf(30, halfSize*0.6, rnd));
 	}
 
 	// Can't use 'this' here due to passing this function to the tile engine
@@ -86,7 +86,7 @@ function SolarSystem(x, y, neighbours) {
 		for (i = 0; i < planetCount; ++i) {
 			var p = self.planets[i];
 			if (x == p.x && y == p.y) {
-				var tile = new ut.Tile("O", p.r, p.g, p.b);
+				var tile = new ut.Tile(p.ch, p.r, p.g, p.b);
 				tile.planet = p; // Attach planet reference
 				return tile;
 			}
