@@ -95,6 +95,8 @@ p {
 .online { color: #0a0; }
 .offline { color: #a00; }
 
+#torpedos { color: #842; }
+
 footer {
 	color: #222;
 	font-size: 50%;

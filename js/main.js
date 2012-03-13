@@ -43,6 +43,7 @@ function onKeyDown(k) {
 	if (k === ut.KEY_ENTER) universe.enter(pl.x, pl.y);
 	if (k === ut.KEY_BACKSPACE) universe.exit();
 	if (k === ut.KEY_TAB) pl.toggleSensors();
+	if (k === ut.KEY_T) pl.launchTorpedo();
 	if (movedir.x !== 0 || movedir.y !== 0) {
 		var warp = ut.isKeyPressed(ut.KEY_SHIFT) ? 5 : 1;
 		pl.x += movedir.x * warp;

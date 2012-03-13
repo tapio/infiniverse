@@ -17,9 +17,25 @@ function Ship(x, y) {
 		this.sensorsOn = !this.sensorsOn;
 	};
 
+	this.launchTorpedo = function() {
+		if (this.torpedos === 0) return;
+		this.torpedos--;
+	};
+
 	this.updateUI = function() {
+		var i, str;
+
 		// Sensorsbox
 		if (this.sensorsOn) $("#sensorstatus").html("ONLINE").attr("class", "online");
 		else $("#sensorstatus").html("OFFLINE").attr("class", "offline");
+
+		// Torpedos
+		if (this.torpedos <= 0) $("#torpedos").html("-");
+		else {
+			str = "";
+			for (i = 0; i < this.torpedos; ++i)
+				str += "|";
+			$("#torpedos").html(str);
+		}
 	};
 }
