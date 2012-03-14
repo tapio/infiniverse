@@ -174,7 +174,7 @@ function Ship(x, y) {
 	};
 
 	this.updateUI = function() {
-		var i, str, len, statusclass;
+		var i, str, len, statusclass, elem;
 		var self = this;
 
 		// Sensorsbox
@@ -193,11 +193,13 @@ function Ship(x, y) {
 				var sty = 'style="color:rgb('+obj.r+','+obj.g+','+obj.b+');">';
 				str += '<li><span ' + sty + obj.ch + ' ' + obj.desc + "</span> - " + dist + dirchar + '</li>';
 			}
-			$("#sensorlist").html(str);
+			elem = $("#sensorlist");
+			elem.html(str);
+			if (!elem.is(":visible")) elem.show("blind", 500);
 			$("#contactstitle").html(len + " contacts:");
 		} else {
 			$("#contactstitle").html("No contacts.");
-			$("#sensorlist").html("");
+			$("#sensorlist").html("").hide();
 		}
 
 		// Beacons
