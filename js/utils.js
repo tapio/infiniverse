@@ -77,6 +77,15 @@ function expFilter(value, cover, sharpness) {
 	return value / 10000;
 }
 
+
+
+function prettyNumber(num) {
+	if (num >= 10000000) return ((num / 1000000)|0) + "M";
+	if (num >= 10000) return ((num / 1000)|0) + "k";
+	return num;
+}
+
+
 function clone(obj) {
 	// Handle the 3 simple types, and null or undefined
 	if (null === obj || "object" != typeof obj) return obj;

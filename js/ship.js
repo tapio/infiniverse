@@ -203,7 +203,7 @@ function Ship(x, y) {
 		if (cond <= 25) statusclass = "bad";
 		else if (cond < 75) statusclass = "warn";
 		$("#hullcond").html(cond+"%").attr("class", statusclass);
-		$("#energy").html(this.energy);
+		$("#energy").html(prettyNumber(this.energy));
 
 		// Devices
 		$("#minerals-energy").html("+" + this.energyCosts.convertMinerals);
