@@ -20,7 +20,7 @@ function Universe(engine) {
 		function neighbours(offsetx, offsety) {
 			offsetx = offsetx || 0;
 			offsety = offsety || 0;
-			return viewLevelStack[viewLevelStack.length-1].getTile(actor.x-offsetx, actor.y-offsety);
+			return viewLevelStack[viewLevelStack.length-1].getTile(actor.x+offsetx, actor.y+offsety);
 		}
 		var newPlace;
 		try {
