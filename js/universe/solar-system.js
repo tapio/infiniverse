@@ -26,7 +26,8 @@ var starTypes = [
 
 var planetTypes = [
 	{ type:"gas", ch:"◌", r:128, g:0, b:0, desc:"Gas giant" },
-	{ type:"rock", ch:"●", r:128, g:128, b:128, desc:"Rock planet" },
+	{ type:"rock", ch:"●", r:100, g:100, b:100, desc:"Rock planet" },
+	{ type:"ice", ch:"●", r:255, g:255, b:255, desc:"Ice planet" },
 	{ type:"ocean", ch:"○", r:128, g:128, b:255, desc:"Ocean planet" },
 	{ type:"gaia", ch:"◍", r:0, g:255, b:0, desc:"Terrestrial" }
 ];

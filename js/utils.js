@@ -56,6 +56,10 @@ function clamp(x, a, b) {
 	return x < a ? a : ( x > b ? b : x );
 }
 
+function clampColor(x) {
+	return x < 0 ? 0 : (x > 255 ? 255 : (x|0));
+}
+
 function mapRange(x, in_min, in_max, out_min, out_max) {
 	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
