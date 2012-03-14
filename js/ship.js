@@ -125,6 +125,8 @@ function Ship(x, y) {
 		}
 		if (!this.useEnergy(this.energyCosts.launchTorpedo)) return;
 		this.torpedos--;
+		var torp = new Torpedo(this.x, this.y, { x: this.x, y: this.y-20 });
+		universe.addActor(torp);
 	};
 
 	this.damage = function(amount) {
@@ -154,9 +156,7 @@ function Ship(x, y) {
 			contactCount += collec.length;
 			for (var i = 0, ret = ""; i < collec.length; ++i) {
 				var obj = collec[i];
-				var dir = getAngle(self.x, obj.y, obj.x, self.y); // Flip y
-				dir = (dir + Math.PI*2 + Math.PI/8) % (Math.PI*2);
-				var dirchar = arrows[~~(dir/(Math.PI/4))];
+				var dirchar = arrows[getAngledCharIndex(self.x, self.y, obj.x, obj.y)];
 				var dist = ~~distance(self.x, self.y, obj.x, obj.y);
 				if ((obj.radius && dist <= obj.radius) || dist < 1)
 					dirchar = "↺";

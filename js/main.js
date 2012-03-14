@@ -34,15 +34,28 @@ function addMessage(msg, msgtype) {
 
 // "Main loop"
 function tick() {
+	var i, a, len, fg, bg, tilex, tiley;
+	universe.updateActors();
 	pl.updateUI();
 	var camx = clamp(pl.x - term.cx, 0, universe.current.size - term.w);
 	var camy = clamp(pl.y - term.cy, 0, universe.current.size - term.h);
-	var plx = pl.x - camx;
-	var ply = pl.y - camy;
 	eng.update(camx + term.cx, camy + term.cy); // Update tiles
+	// Actors
+	len = universe.actors.length;
+	for (i = 0; i < len; ++i) {
+		a = universe.actors[i];
+		if (!a.getTile) continue;
+		tilex = a.x - camx;
+		tiley = a.y - camy;
+		fg = a.getTile(); // Actor tile
+		bg = term.get(tilex, tiley).getBackgroundJSON(); // Background color
+		term.put(new ut.Tile(fg.ch, fg.r, fg.g, fg.b, bg.r, bg.g, bg.b), tilex, tiley);
+	}
 	// Player character
-	var bg = term.get(plx, ply).getBackgroundJSON();
-	term.unsafePut(new ut.Tile("@", 200,200,200, bg.r, bg.g, bg.b), plx, ply);
+	tilex = pl.x - camx;
+	tiley = pl.y - camy;
+	bg = term.get(tilex, tiley).getBackgroundJSON();
+	term.unsafePut(new ut.Tile("@", 200,200,200, bg.r, bg.g, bg.b), tilex, tiley);
 	term.render(); // Render
 }
 
@@ -90,7 +103,7 @@ function onKeyDown(k) {
 }
 
 function onKeyUp(k) {
-	tick(); // Some keyups affect the UI
+	pl.updateUI();
 }
 
 // Initialize stuff

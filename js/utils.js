@@ -37,6 +37,13 @@ function getAngle(x1, y1, x2, y2) {
 	return Math.atan2(y2-y1, x2-x1);
 }
 
+// Returns angle between points as integer [0,7]
+function getAngledCharIndex(x1, y1, x2, y2) {
+	var dir = getAngle(x1, y2, x2, y1); // Flip y
+	dir = (dir + Math.PI*2 + Math.PI/8) % (Math.PI*2);
+	return (dir/(Math.PI/4)) | 0;
+}
+
 function blend(a, b, f) {
 	return a*f + b*(1.0-f);
 }

@@ -4,14 +4,16 @@ function Universe(engine) {
 	var viewLevelStack = [];
 	viewLevelStack.push(new Galaxy());
 	this.current = viewLevelStack[viewLevelStack.length-1];
+	this.actors = [];
 
-	this.update = function() {
+	this.postViewChange = function() {
 		this.current = viewLevelStack[viewLevelStack.length-1];
 		if (this.current.type == "aerial") this.eng.setWorldSize();
 		else this.eng.setWorldSize(this.current.size, this.current.size);
 		this.eng.setTileFunc(this.current.getTile);
+		this.actors = [];
 	};
-	this.update();
+	this.postViewChange();
 
 	// actor: { x, y }
 	this.enter = function(actor) {
@@ -35,7 +37,7 @@ function Universe(engine) {
 			return;
 		}
 		viewLevelStack.push(newPlace);
-		this.update();
+		this.postViewChange();
 		this.current.x = actor.x;
 		this.current.y = actor.y;
 		actor.x = Math.floor(this.current.size / 2);
@@ -51,8 +53,21 @@ function Universe(engine) {
 		actor.x = this.current.x;
 		actor.y = this.current.y;
 		viewLevelStack.pop();
-		this.update();
+		this.postViewChange();
 		addMessage("Exited " + placename + ".");
+	};
+
+	// actor: { x, y, update() }
+	this.addActor = function(actor) {
+		this.actors.push(actor);
+	};
+
+	this.updateActors = function() {
+		var i = 0;
+		while (i < this.actors.length) {
+			if (!this.actors[i].update || this.actors[i].update()) ++i;
+			else this.actors.splice(i,1); // If update returns false, remove the actor
+		}
 	};
 
 	this.getState = function() {
@@ -61,6 +76,6 @@ function Universe(engine) {
 
 	this.setState = function(state) {
 		viewLevelStack = state;
-		this.update();
+		this.postViewChange();
 	};
 }
