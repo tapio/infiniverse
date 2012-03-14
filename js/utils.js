@@ -33,6 +33,11 @@ function distance(x1, y1, x2, y2) {
 	return Math.sqrt(dx*dx + dy*dy);
 }
 
+function distance2(x1, y1, x2, y2) {
+	var dx = x2-x1, dy = y2-y1;
+	return dx*dx + dy*dy;
+}
+
 function getAngle(x1, y1, x2, y2) {
 	return Math.atan2(y2-y1, x2-x1);
 }

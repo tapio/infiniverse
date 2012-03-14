@@ -20,12 +20,21 @@ function Ship(x, y) {
 		convertMinerals: 100, convertRadioactives: 2000, convertAntimatter: 100000,
 		createTorpedo: 200, createBeacon: 5000,
 		drive: 1, warp: 100,
-		sensors: 1,
-		gotoBeacon: 1000,
+		sensors: 100,
+		gotoBeacon: 5000,
 		launchTorpedo: 200
 	};
-
+	var self = this;
 	var scanSettings = [ "Closest", "Artificial", "Celestial" ];
+
+	function sortContacts() {
+		if (!self.contacts.length) return;
+		self.contacts.sort(function(a,b) {
+			var d1 = distance2(self.x, self.y, a.x, a.y);
+			var d2 = distance2(self.x, self.y, b.x, b.y);
+			return d1-d2;
+		});
+	}
 
 	this.move = function(dx, dy, warp) {
 		// TODO: different costs for different view levels
@@ -53,6 +62,10 @@ function Ship(x, y) {
 		this.sensorSetting = (this.sensorSetting + 1) % scanSettings.length;
 	};
 
+	this.clearSensors = function() {
+		this.contacts = [];
+	};
+
 	this.scanSensors = function() {
 		if (!this.useEnergy(this.energyCosts.sensors)) return;
 		this.contacts = [];
@@ -62,6 +75,8 @@ function Ship(x, y) {
 				this.contacts = this.contacts.concat(universe.current.suns);
 			}
 		}
+		sortContacts();
+		this.contacts.length = 9; // Max 9 contacts
 	};
 
 	this.deployBeacon = function() {
@@ -167,6 +182,7 @@ function Ship(x, y) {
 		len = this.contacts.length;
 		if (len) {
 			var arrows = "→↗↑↖←↙↓↘";
+			sortContacts();
 			for (i = 0, str = ""; i < len; ++i) {
 				var obj = this.contacts[i];
 				var dirchar = arrows[getAngledCharIndex(this.x, this.y, obj.x, obj.y)];

@@ -43,6 +43,7 @@ function Universe(engine) {
 		actor.x = Math.floor(this.current.size / 2);
 		actor.y = Math.floor(this.current.size / 2);
 		var placename = this.current.getDescription();
+		if (actor.clearSensors) actor.clearSensors();
 		addMessage("Entered " + placename + ".");
 	};
 
