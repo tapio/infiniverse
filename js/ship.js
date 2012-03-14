@@ -76,7 +76,8 @@ function Ship(x, y) {
 			}
 		}
 		sortContacts();
-		this.contacts.length = 9; // Max 9 contacts
+		if (this.contacts.length > 9)
+			this.contacts.length = 9; // Max 9 contacts
 	};
 
 	this.deployBeacon = function() {
