@@ -85,7 +85,8 @@ function onKeyDown(k) {
 	else if (k === ut.KEY_DOWN || k === ut.KEY_J) movedir.y = 1;
 	if (k === ut.KEY_ENTER) universe.enter(pl);
 	if (k === ut.KEY_BACKSPACE) universe.exit(pl);
-	if (k === ut.KEY_TAB) pl.toggleSensors();
+	if (k === ut.KEY_TAB) pl.scanSensors();
+	if (k === ut.KEY_S) pl.toggleSensors();
 	if (k === ut.KEY_G) toggleMenu("#beacon-menu");
 	if (k === ut.KEY_E) toggleMenu("#energyconverter-menu");
 	if (k === ut.KEY_M) toggleMenu("#massfabricator-menu");

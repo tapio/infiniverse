@@ -6,8 +6,8 @@ function Ship(x, y) {
 	this.maxHull = 100;
 	this.hull = this.maxHull;
 	this.torpedos = 10;
-	this.sensorRange = 100;
-	this.sensorsOn = true;
+	this.sensorSetting = 0;
+	this.contacts = [];
 	this.maxCargo = 30;
 	this.usedCargo = 0;
 	this.beacons = 2;
@@ -25,6 +25,8 @@ function Ship(x, y) {
 		launchTorpedo: 200
 	};
 
+	var scanSettings = [ "Closest", "Artificial", "Celestial" ];
+
 	this.move = function(dx, dy, warp) {
 		// TODO: different costs for different view levels
 		var cost = this.energyCosts.drive;
@@ -37,7 +39,6 @@ function Ship(x, y) {
 			this.x += dx;
 			this.y += dy;
 		}
-		if (this.sensorsOn && !this.useEnergy(this.energyCosts.sensors)) this.sensorsOn = false;
 		var worldsize = universe.current.size;
 		if (universe.current.type == "aerial") {
 			this.x = (this.x + worldsize) % worldsize;
@@ -49,7 +50,18 @@ function Ship(x, y) {
 	};
 
 	this.toggleSensors = function() {
-		this.sensorsOn = !this.sensorsOn;
+		this.sensorSetting = (this.sensorSetting + 1) % scanSettings.length;
+	};
+
+	this.scanSensors = function() {
+		if (!this.useEnergy(this.energyCosts.sensors)) return;
+		this.contacts = [];
+		if (universe.current.type === "solarsystem") {
+			if (this.sensorSetting != 1) {
+				this.contacts = this.contacts.concat(universe.current.planets);
+				this.contacts = this.contacts.concat(universe.current.suns);
+			}
+		}
 	};
 
 	this.deployBeacon = function() {
@@ -150,36 +162,24 @@ function Ship(x, y) {
 		var self = this;
 
 		// Sensorsbox
-		var contactCount = 0;
-		function addContacts(collec) {
+		$("#sensorenergy").html("-" + this.energyCosts.sensors);
+		$("#sensorsetting").html(scanSettings[this.sensorSetting]);
+		len = this.contacts.length;
+		if (len) {
 			var arrows = "→↗↑↖←↙↓↘";
-			contactCount += collec.length;
-			for (var i = 0, ret = ""; i < collec.length; ++i) {
-				var obj = collec[i];
-				var dirchar = arrows[getAngledCharIndex(self.x, self.y, obj.x, obj.y)];
-				var dist = ~~distance(self.x, self.y, obj.x, obj.y);
+			for (i = 0, str = ""; i < len; ++i) {
+				var obj = this.contacts[i];
+				var dirchar = arrows[getAngledCharIndex(this.x, this.y, obj.x, obj.y)];
+				var dist = ~~distance(this.x, this.y, obj.x, obj.y);
 				if ((obj.radius && dist <= obj.radius) || dist < 1)
 					dirchar = "↺";
 				var sty = 'style="color:rgb('+obj.r+','+obj.g+','+obj.b+');">';
-				ret += '<li><span ' + sty + obj.ch + ' ' + obj.desc + "</span> - " + dist + dirchar + '</li>';
-			}
-			return ret;
-		}
-		if (this.sensorsOn) {
-			$("#sensorstatus").html("ONLINE").attr("class", "online");
-			$("#sensorenergy").html("-" + this.energyCosts.sensors);
-			str = "";
-			if (universe.current.type === "solarsystem") {
-				str += addContacts(universe.current.planets);
-				str += addContacts(universe.current.suns);
+				str += '<li><span ' + sty + obj.ch + ' ' + obj.desc + "</span> - " + dist + dirchar + '</li>';
 			}
 			$("#sensorlist").html(str);
-			if (!contactCount) $("#contactstitle").html("No contacts.");
-			else $("#contactstitle").html(contactCount + " contacts:");
+			$("#contactstitle").html(len + " contacts:");
 		} else {
-			$("#sensorstatus").html("OFFLINE").attr("class", "offline");
-			$("#sensorenergy").html("0");
-			$("#contactstitle").html("Enable sensors to scan.");
+			$("#contactstitle").html("No contacts.");
 			$("#sensorlist").html("");
 		}
 
