@@ -14,14 +14,14 @@ var planetMultiples = [
 ];
 
 var starTypes = [
-	{ r:200, g:200, b:255, radius:125, freq:0.00001, desc:"Class O star" },
-	{ r:160, g:160, b:255, radius:75, freq:0.010, desc:"Class B star" },
-	{ r:200, g:200, b:255, radius:40, freq:0.010, desc:"Class A star" },
-	{ r:220, g:220, b:160, radius:25, freq:0.050, desc:"Class F star" },
-	{ r:255, g:255, b:0, radius:22, freq:0.150, desc:"Class G star" },
-	{ r:200, g:100, b:0, radius:20, freq:0.220, desc:"Class K star" },
-	{ r:200, g:0, b:5, radius:10, freq:0.550, desc:"Class M star" },
-	{ r:160, g:160, b:160, radius:4, freq:0.010, desc:"Class D star" }
+	{ ch:"✸", r:200, g:200, b:255, radius:125, freq:0.00001, desc:"Class O star" },
+	{ ch:"✷", r:160, g:160, b:255, radius:75, freq:0.010, desc:"Class B star" },
+	{ ch:"✳", r:200, g:200, b:255, radius:40, freq:0.010, desc:"Class A star" },
+	{ ch:"✶", r:220, g:220, b:160, radius:25, freq:0.050, desc:"Class F star" },
+	{ ch:"☀", r:255, g:255, b:0, radius:22, freq:0.150, desc:"Class G star" },
+	{ ch:"★", r:200, g:100, b:0, radius:20, freq:0.220, desc:"Class K star" },
+	{ ch:"✦", r:200, g:0, b:5, radius:10, freq:0.550, desc:"Class M star" },
+	{ ch:"✧", r:160, g:160, b:160, radius:4, freq:0.010, desc:"Class D star" }
 ];
 
 var planetTypes = [

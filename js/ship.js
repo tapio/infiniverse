@@ -161,7 +161,7 @@ function Ship(x, y) {
 				if ((obj.radius && dist <= obj.radius) || dist < 1)
 					dirchar = "↺";
 				var sty = 'style="color:rgb('+obj.r+','+obj.g+','+obj.b+');">';
-				ret += '<li>' + dirchar + ' <span ' + sty + collec[i].desc + "</span> - " + dist + '</li>';
+				ret += '<li><span ' + sty + obj.ch + ' ' + obj.desc + "</span> - " + dist + dirchar + '</li>';
 			}
 			return ret;
 		}
