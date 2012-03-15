@@ -20,10 +20,10 @@ function Starmap(x, y, neighbours) {
 	var colorscale = 0.03;
 
 	var lo = (this.size*0.2)|0, hi = (this.size*0.8)|0, type;
-	var threshold = rng.random();
+	var npcs = [ "trader", "police", "pirate" ];
 	this.actors = new Array(rand(0,20,rng));
 	for (var i = 0; i < this.actors.length; ++i) {
-		type = (rng.random() > threshold) ? "trader" : "pirate";
+		type = npcs[rand(0, npcs.length-1, rng)];
 		this.actors[i] = new NPCShip(rand(lo,hi,rng), rand(lo,hi,rng), type);
 	}
 
