@@ -114,7 +114,7 @@ function SolarSystem(x, y, neighbours) {
 		for (i = 0; i < planetCount; ++i) {
 			obj = self.planets[i];
 			if (x == obj.x && y == obj.y) {
-				tile = new ut.Tile(obj.ch, obj.r, obj.g, obj.b);
+				tile = obj.tile;
 				tile.planet = obj; // Attach planet reference
 				return tile;
 			}
@@ -123,8 +123,7 @@ function SolarSystem(x, y, neighbours) {
 		for (i = 0; i < stationCount; ++i) {
 			obj = self.stations[i];
 			if (x == obj.x && y == obj.y) {
-				tile = new ut.Tile(obj.ch, obj.r, obj.g, obj.b);
-				return tile;
+				return obj.tile;
 			}
 		}
 		// Suns
@@ -139,9 +138,9 @@ function SolarSystem(x, y, neighbours) {
 				//mask = Max( Min(mask+temp, 255), 0 );
 				mask2 = mask / 256.0;
 				if (mask2 > 1.0) mask2 = 1.0;
-				sunR = sun.r;
-				sunG = sun.g;
-				sunB = sun.b;
+				sunR = sun.tile.r;
+				sunG = sun.tile.g;
+				sunB = sun.tile.b;
 				block = " ";
 				break;
 			}
