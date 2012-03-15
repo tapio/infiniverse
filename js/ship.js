@@ -75,6 +75,9 @@ function Ship(x, y) {
 				this.contacts = this.contacts.concat(universe.current.planets);
 				this.contacts = this.contacts.concat(universe.current.suns);
 			}
+			if (this.sensorSetting != 2) {
+				this.contacts = this.contacts.concat(universe.current.stations);
+			}
 		}
 		sortContacts();
 		if (this.contacts.length > 9)

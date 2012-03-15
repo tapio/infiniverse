@@ -128,3 +128,11 @@ function PlanetAerial(x, y, neighbours) {
 		return this.planet.desc.toLowerCase();
 	};
 }
+
+
+function PlanetProxy(x, y, neighbours) {
+	try {
+		return new SpaceStation(x, y, neighbours);
+	} catch (e) {}
+	return new PlanetAerial(x, y, neighbours);
+}

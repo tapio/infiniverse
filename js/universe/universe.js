@@ -27,7 +27,7 @@ function Universe(engine) {
 			switch (viewLevelStack.length) {
 				case 1: newPlace = new Starmap(actor.x, actor.y, neighbours); break;
 				case 2: newPlace = new SolarSystem(actor.x, actor.y, neighbours); break;
-				case 3: newPlace = new PlanetAerial(actor.x, actor.y, neighbours); break;
+				case 3: newPlace = new PlanetProxy(actor.x, actor.y, neighbours); break;
 				case 4: newPlace = new PlanetDetail(actor.x, actor.y, neighbours); break;
 				default: return;
 			}
@@ -55,6 +55,7 @@ function Universe(engine) {
 		actor.y = this.current.y;
 		viewLevelStack.pop();
 		this.postViewChange();
+		if (actor.clearSensors) actor.clearSensors();
 		addMessage("Exited " + placename + ".");
 	};
 

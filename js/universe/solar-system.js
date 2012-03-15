@@ -32,6 +32,10 @@ var planetTypes = [
 	{ type:"gaia", ch:"◍", r:0, g:255, b:0, desc:"Terrestrial" }
 ];
 
+var stationTypes = [
+	{ ch:"S", r:100, g:100, b:120, desc:"Space station" }
+];
+
 // TODO: Use also upper level coordinates in seeding
 function SolarSystem(x, y, neighbours) {
 	this.size = 256;
@@ -48,14 +52,15 @@ function SolarSystem(x, y, neighbours) {
 	var rnd = new Alea("randomizer", x, y);
 	var starCount = starMultiples[rand(0, starMultiples.length, rnd)];
 	var planetCount = planetMultiples[rand(0, planetMultiples.length, rnd)];
-	var numObjects = starCount + planetCount;
+	var stationCount = rand(0,1,rnd) ? rand(1,3,rnd) : 0;
 
 	this.suns = [];
 	this.planets = [];
+	this.stations = [];
 
-	// Suns
 	var i, j;
 
+	// Suns
 	var ang = rnd.random() * 360;
 	for (i = 0; i < starCount; ++i) {
 		var starProto = starTypes[(rnd.random()*starTypes.length)|0];
@@ -74,8 +79,17 @@ function SolarSystem(x, y, neighbours) {
 		this.planets[i].y = ~~(halfSize - sind(ang) * randf(30, halfSize*0.6, rnd));
 	}
 
+	// Space stations
+	for (i = 0; i < stationCount; ++i) {
+		this.stations.push(clone(stationTypes[0]));
+		ang = rnd.random() * 360;
+		this.stations[i].x = ~~(halfSize + cosd(ang) * randf(30, halfSize*0.5, rnd));
+		this.stations[i].y = ~~(halfSize - sind(ang) * randf(30, halfSize*0.5, rnd));
+	}
+
 	// Can't use 'this' here due to passing this function to the tile engine
 	this.getTile = function(x, y) {
+		var i, obj, tile;
 		// Background stars
 		var star = convertNoise(simplex_bgstars.noise(x*10, y*10));
 		var block = " ";
@@ -85,10 +99,18 @@ function SolarSystem(x, y, neighbours) {
 		}
 		// Planets
 		for (i = 0; i < planetCount; ++i) {
-			var p = self.planets[i];
-			if (x == p.x && y == p.y) {
-				var tile = new ut.Tile(p.ch, p.r, p.g, p.b);
-				tile.planet = p; // Attach planet reference
+			obj = self.planets[i];
+			if (x == obj.x && y == obj.y) {
+				tile = new ut.Tile(obj.ch, obj.r, obj.g, obj.b);
+				tile.planet = obj; // Attach planet reference
+				return tile;
+			}
+		}
+		// Stations
+		for (i = 0; i < stationCount; ++i) {
+			obj = self.stations[i];
+			if (x == obj.x && y == obj.y) {
+				tile = new ut.Tile(obj.ch, obj.r, obj.g, obj.b);
 				return tile;
 			}
 		}
