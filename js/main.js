@@ -109,7 +109,7 @@ function onKeyUp(k) {
 
 // Initialize stuff
 function init() {
-	term = new ut.Viewport(document.getElementById("game"), 55, 31);
+	term = new ut.Viewport(document.getElementById("game"), 37, 37, "auto", true);
 	eng = new ut.Engine(term);
 	universe = new Universe(eng); // Also sets the tile function to Engine
 	universe.enter(pl);
