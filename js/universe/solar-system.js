@@ -14,26 +14,26 @@ var planetMultiples = [
 ];
 
 var starTypes = [
-	{ ch:"✸", r:200, g:200, b:255, radius:125, freq:0.00001, desc:"Class O star" },
-	{ ch:"✷", r:160, g:160, b:255, radius:75, freq:0.010, desc:"Class B star" },
-	{ ch:"✳", r:200, g:200, b:255, radius:40, freq:0.010, desc:"Class A star" },
-	{ ch:"✶", r:220, g:220, b:160, radius:25, freq:0.050, desc:"Class F star" },
-	{ ch:"☀", r:255, g:255, b:0, radius:22, freq:0.150, desc:"Class G star" },
-	{ ch:"★", r:200, g:100, b:0, radius:20, freq:0.220, desc:"Class K star" },
-	{ ch:"✦", r:200, g:0, b:5, radius:10, freq:0.550, desc:"Class M star" },
-	{ ch:"✧", r:160, g:160, b:160, radius:4, freq:0.010, desc:"Class D star" }
+	{ tile: new ut.Tile("✸", 200, 200, 255), radius:125, freq:0.00001, desc:"Class O star" },
+	{ tile: new ut.Tile("✷", 160, 160, 255), radius:75, freq:0.010, desc:"Class B star" },
+	{ tile: new ut.Tile("✳", 200, 200, 255), radius:40, freq:0.010, desc:"Class A star" },
+	{ tile: new ut.Tile("✶", 220, 220, 160), radius:25, freq:0.050, desc:"Class F star" },
+	{ tile: new ut.Tile("☀", 255, 255, 0), radius:22, freq:0.150, desc:"Class G star" },
+	{ tile: new ut.Tile("★", 200, 100, 0), radius:20, freq:0.220, desc:"Class K star" },
+	{ tile: new ut.Tile("✦", 200, 0, 5), radius:10, freq:0.550, desc:"Class M star" },
+	{ tile: new ut.Tile("✧", 160, 160, 160), radius:4, freq:0.010, desc:"Class D star" }
 ];
 
 var planetTypes = [
-	{ type:"gas", ch:"◌", r:128, g:0, b:0, desc:"Gas giant" },
-	{ type:"rock", ch:"●", r:100, g:100, b:100, desc:"Rock planet" },
-	{ type:"ice", ch:"●", r:255, g:255, b:255, desc:"Ice planet" },
-	{ type:"ocean", ch:"○", r:128, g:128, b:255, desc:"Ocean planet" },
-	{ type:"gaia", ch:"◍", r:0, g:255, b:0, desc:"Terrestrial" }
+	{ type:"gas", tile: new ut.Tile("◌", 128, 0, 0), desc:"Gas giant" },
+	{ type:"rock", tile: new ut.Tile("●", 100, 100, 100), desc:"Rock planet" },
+	{ type:"ice", tile: new ut.Tile("●", 255, 255, 255), desc:"Ice planet" },
+	{ type:"ocean", tile: new ut.Tile("○", 128, 128, 255), desc:"Ocean planet" },
+	{ type:"gaia", tile: new ut.Tile("◍", 0, 255, 0), desc:"Terrestrial" }
 ];
 
 var stationTypes = [
-	{ ch:"S", r:100, g:100, b:120, desc:"Space station" }
+	{ tile: new ut.Tile("S", 100, 100, 120), desc:"Space station" }
 ];
 
 // TODO: Use also upper level coordinates in seeding

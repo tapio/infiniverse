@@ -196,8 +196,8 @@ function Ship(x, y) {
 				var dist = ~~distance(this.x, this.y, obj.x, obj.y);
 				if ((obj.radius && dist <= obj.radius) || dist < 1)
 					dirchar = "↺";
-				var sty = 'style="color:rgb('+obj.r+','+obj.g+','+obj.b+');">';
-				str += '<li><span ' + sty + obj.ch + ' ' + obj.desc + "</span> - " + dist + dirchar + '</li>';
+				var sty = 'style="color:' + obj.tile.getColorRGB() + ';">';
+				str += '<li><span ' + sty + obj.tile.ch + ' ' + obj.desc + "</span> - " + dist + dirchar + '</li>';
 			}
 			elem = $("#sensorlist");
 			elem.html(str);

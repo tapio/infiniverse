@@ -5,8 +5,8 @@ function Animal(x, y, tile) {
 	this.x = x;
 	this.y = y;
 	this.tile = tile;
+	this.desc = "Animal";
 	this.hp = 100;
-	this.ch = "d"; // FIXME;
 }
 
 Animal.prototype.damage = function(amount) {
@@ -32,7 +32,6 @@ function NPCShip(x, y, type) {
 	this.x = x;
 	this.y = y;
 	this.type = type;
-	this.ch = "@"; // Needed for sensors
 	this.hp = 100;
 	if (type === "pirate") {
 		this.tile = new ut.Tile("@", 255, 0, 0);

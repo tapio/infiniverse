@@ -93,6 +93,7 @@ function prettyNumber(num) {
 
 // Object utils
 
+// If an object has clone() function, it is assumed to return a copy.
 function clone(obj) {
 	// Handle the 3 simple types, and null or undefined
 	if (null === obj || "object" != typeof obj) return obj;
@@ -115,6 +116,8 @@ function clone(obj) {
 
 	// Handle Object
 	if (obj instanceof Object) {
+		if (obj.clone && "function" === typeof obj.clone)
+			return obj.clone();
 		copy = {};
 		for (var attr in obj)
 			if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
