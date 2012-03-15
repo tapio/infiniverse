@@ -15,11 +15,13 @@ header h1 {
 }
 
 h2 {
+	font-size: 13pt;
 	color: rgb(35,54,255);
 	margin: 5px 5px 5px 0px;
 }
 
 h3 {
+	font-size: 12pt;
 	color: rgb(178,140,0);
 	margin: 0px 15px 3px 0px;
 }
@@ -47,9 +49,9 @@ p {
 .infobox {
 	color: gray;
 	background-color: rgba(50, 50, 60, 0.6);
-	width: 200px;
+	width: 210px;
 	padding: 10px;
-	font-size: 10pt;
+	font-size: 9pt;
 	margin: 0px auto 5px auto;
 	border-radius: 10px;
 }

@@ -20,6 +20,7 @@ function Ship(x, y) {
 		convertMinerals: 100, convertRadioactives: 2000, convertAntimatter: 100000,
 		createTorpedo: 200, createBeacon: 5000,
 		drive: 1, warp: 100,
+		enter: 100, exit: 1000,
 		sensors: 100,
 		gotoBeacon: 5000,
 		launchTorpedo: 200
@@ -239,6 +240,8 @@ function Ship(x, y) {
 		if (ut.isKeyPressed(ut.KEY_SHIFT)) $("#warpdrives span").first().attr("class", "online");
 		else $("#warpdrives span").first().attr("class", "");
 		$("#warpdrives").children(".energy").html("-" + this.energyCosts.warp);
+		$("#enter").children(".energy").html("-" + this.energyCosts.enter);
+		$("#exit").children(".energy").html("-" + this.energyCosts.exit);
 
 		// Torpedos
 		$("#torpedos").html(this.torpedos);
