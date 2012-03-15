@@ -8,6 +8,7 @@ function Starmap(x, y, neighbours) {
 	var simplex_b = new SimplexNoise(new Alea('starmap_b', x, y));
 	var simplex_star = new SimplexNoise(new Alea('starmap_star', x, y));
 	var simplex_startype = new SimplexNoise(new Alea('starmap_startype', x, y));
+	var rng = new Alea('starmap_npc', x, y);
 	var STARS = [ "✦", "★", "☀", "✶", "✳", "✷", "✸" ]; // ·✧✦☼☀✳☆★✶✷✸
 
 	var tile = neighbours(0,0);
@@ -17,6 +18,14 @@ function Starmap(x, y, neighbours) {
 	var coverage = 0.3 + 0.5 * fogfactor;
 	var nebulascale = 0.02 + 0.02 * fogfactor;
 	var colorscale = 0.03;
+
+	var lo = (this.size*0.2)|0, hi = (this.size*0.8)|0, type;
+	var threshold = rng.random();
+	this.actors = new Array(rand(0,20,rng));
+	for (var i = 0; i < this.actors.length; ++i) {
+		type = (rng.random() > threshold) ? "trader" : "pirate";
+		this.actors[i] = new NPCShip(rand(lo,hi,rng), rand(lo,hi,rng), type);
+	}
 
 	this.getTile = function(x, y) {
 		var star = simplex_star.noise(x*10,y*10);

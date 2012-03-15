@@ -11,7 +11,7 @@ function Universe(engine) {
 		if (this.current.type == "aerial") this.eng.setWorldSize();
 		else this.eng.setWorldSize(this.current.size, this.current.size);
 		this.eng.setTileFunc(this.current.getTile);
-		this.actors = [];
+		this.actors = this.current.actors ? this.current.actors : [];
 	};
 	this.postViewChange();
 

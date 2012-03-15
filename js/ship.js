@@ -79,6 +79,8 @@ function Ship(x, y) {
 				this.contacts = this.contacts.concat(universe.current.stations);
 			}
 		}
+		if (this.sensorSetting != 2)
+			this.contacts = this.contacts.concat(universe.actors);
 		sortContacts();
 		if (this.contacts.length > 9)
 			this.contacts.length = 9; // Max 9 contacts
