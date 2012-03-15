@@ -3,6 +3,7 @@ function Ship(x, y) {
 	this.x = x || 0;
 	this.y = y || 0;
 	this.tile = new ut.Tile("@", 255, 255, 255);
+	this.desc = "Player";
 	this.energy = 10000;
 	this.maxHull = 100;
 	this.hull = this.maxHull;
@@ -82,6 +83,10 @@ function Ship(x, y) {
 		}
 		if (this.sensorSetting != 2)
 			this.contacts = this.contacts.concat(universe.actors);
+		// Remove self
+		for (var i = 0; i < this.contacts.length; ++i) {
+			if (this.contacts[i] === this) { this.contacts.splice(i,1); break; }
+		}
 		sortContacts();
 		if (this.contacts.length > 9)
 			this.contacts.length = 9; // Max 9 contacts
