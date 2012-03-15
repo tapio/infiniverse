@@ -51,11 +51,6 @@ function tick() {
 		bg = term.get(tilex, tiley).getBackgroundJSON(); // Background color
 		term.put(new ut.Tile(fg.ch, fg.r, fg.g, fg.b, bg.r, bg.g, bg.b), tilex, tiley);
 	}
-	// Player character
-	tilex = pl.x - camx;
-	tiley = pl.y - camy;
-	bg = term.get(tilex, tiley).getBackgroundJSON();
-	term.unsafePut(new ut.Tile("@", 200,200,200, bg.r, bg.g, bg.b), tilex, tiley);
 	term.render(); // Render
 }
 

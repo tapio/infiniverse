@@ -2,6 +2,7 @@
 function Ship(x, y) {
 	this.x = x || 0;
 	this.y = y || 0;
+	this.tile = new ut.Tile("@", 255, 255, 255);
 	this.energy = 10000;
 	this.maxHull = 100;
 	this.hull = this.maxHull;
@@ -179,6 +180,11 @@ function Ship(x, y) {
 		return true;
 	};
 
+	this.update = function() {
+		//if (this.hull <= 0) return false;
+		return true;
+	};
+
 	this.updateUI = function() {
 		var i, str, len, statusclass, elem;
 		var self = this;
@@ -284,3 +290,8 @@ function Ship(x, y) {
 		$("#cargostatus").html(this.usedCargo + "/" + this.maxCargo).attr("class", statusclass);
 	};
 }
+
+
+Ship.prototype.getTile = function() {
+	return this.tile;
+};
