@@ -49,10 +49,11 @@ function SolarSystem(x, y, neighbours) {
 		throw "Nothing interesting there, just empty space.";
 	var nebColor = tile.getBackgroundJSON();
 
-	var rnd = new Alea("randomizer", x, y);
-	var starCount = starMultiples[rand(0, starMultiples.length, rnd)];
-	var planetCount = planetMultiples[rand(0, planetMultiples.length, rnd)];
-	var stationCount = rand(0,1,rnd) ? rand(1,3,rnd) : 0;
+	var rng = new Alea("solar-system-randomizer", x, y);
+	var fullRandom = new Alea();
+	var starCount = starMultiples[rand(0, starMultiples.length, rng)];
+	var planetCount = planetMultiples[rand(0, planetMultiples.length, rng)];
+	var stationCount = rand(0,1,rng) ? rand(1,3,rng) : 0;
 
 	this.suns = [];
 	this.planets = [];
@@ -61,30 +62,42 @@ function SolarSystem(x, y, neighbours) {
 	var i, j;
 
 	// Suns
-	var ang = rnd.random() * 360;
+	var ang = rng.random() * 360;
 	for (i = 0; i < starCount; ++i) {
-		var starProto = starTypes[(rnd.random()*starTypes.length)|0];
+		var starProto = starTypes[(rng.random()*starTypes.length)|0];
 		this.suns.push(clone(starProto));
 		ang += i * (360.0 / starCount);
-		this.suns[i].x = ~~(halfSize + cosd(ang) * randf(starProto.radius, halfSize, rnd));
-		this.suns[i].y = ~~(halfSize - sind(ang) * randf(starProto.radius, halfSize, rnd));
+		this.suns[i].x = ~~(halfSize + cosd(ang) * randf(starProto.radius, halfSize, rng));
+		this.suns[i].y = ~~(halfSize - sind(ang) * randf(starProto.radius, halfSize, rng));
 	}
 
 	// Planets
 	for (i = 0; i < planetCount; ++i) {
-		var planetProto = planetTypes[(rnd.random()*planetTypes.length)|0];
+		var planetProto = planetTypes[(rng.random()*planetTypes.length)|0];
 		this.planets.push(clone(planetProto));
-		ang = rnd.random() * 360;
-		this.planets[i].x = ~~(halfSize + cosd(ang) * randf(30, halfSize*0.6, rnd));
-		this.planets[i].y = ~~(halfSize - sind(ang) * randf(30, halfSize*0.6, rnd));
+		ang = rng.random() * 360;
+		this.planets[i].x = ~~(halfSize + cosd(ang) * randf(30, halfSize*0.6, rng));
+		this.planets[i].y = ~~(halfSize - sind(ang) * randf(30, halfSize*0.6, rng));
 	}
 
 	// Space stations
 	for (i = 0; i < stationCount; ++i) {
 		this.stations.push(clone(stationTypes[0]));
-		ang = rnd.random() * 360;
-		this.stations[i].x = ~~(halfSize + cosd(ang) * randf(30, halfSize*0.5, rnd));
-		this.stations[i].y = ~~(halfSize - sind(ang) * randf(30, halfSize*0.5, rnd));
+		ang = rng.random() * 360;
+		this.stations[i].x = ~~(halfSize + cosd(ang) * randf(30, halfSize*0.5, rng));
+		this.stations[i].y = ~~(halfSize - sind(ang) * randf(30, halfSize*0.5, rng));
+	}
+
+	// Actors
+	if (rand(0,5,rng) === 0) {
+		var lo = (this.size*0.2)|0, hi = (this.size*0.8)|0, npctype;
+		var hostile = (rand(0,3,rng) === 0);
+		var npcs = [ "trader", "police" ];
+		this.actors = new Array(rand(1, 20, fullRandom));
+		for (i = 0; i < this.actors.length; ++i) {
+			npctype = hostile ? "pirate" : npcs[rand(0, npcs.length-1, fullRandom)];
+			this.actors[i] = new NPCShip(rand(lo,hi,fullRandom), rand(lo,hi,fullRandom), npctype);
+		}
 	}
 
 	// Can't use 'this' here due to passing this function to the tile engine
