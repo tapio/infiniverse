@@ -22,6 +22,10 @@ function randf(lo, hi, rng) {
 	return lo + (hi - lo) * (rng.random());
 }
 
+function randchar(str, rng) {
+	return str[rand(0, str.length-1, rng)];
+}
+
 function sign(num) { return ((num > 0) ? 1 : ((num < 0) ? -1 : 0)); }
 
 function fract(num) {
@@ -40,6 +44,10 @@ function distance2(x1, y1, x2, y2) {
 
 function getAngle(x1, y1, x2, y2) {
 	return Math.atan2(y2-y1, x2-x1);
+}
+
+function between(x, a, b) {
+	return (x < a || x > b) ? false : true;
 }
 
 // Returns angle between points as integer [0,7]

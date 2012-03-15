@@ -1,11 +1,11 @@
 
 var animalRNG = new Alea();
 
-function Animal(x, y, tile) {
+function Animal(x, y, tile, name) {
 	this.x = x;
 	this.y = y;
 	this.tile = tile;
-	this.desc = "Animal";
+	this.desc = name || "Animal";
 	this.hp = 100;
 }
 
