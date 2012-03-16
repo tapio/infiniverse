@@ -181,6 +181,18 @@ function Ship(x, y) {
 			addMessage("Out of torpedos.", "error");
 			return;
 		}
+		if (!this.contacts.length) {
+			addMessage("No targets available, use sensors to scan.", "error");
+			return;
+		}
+		var i, targets = [];
+		for (i = 0; i < this.contacts.length; ++i) {
+			if (this.contacts[i].targetable) targets.push(this.contacts[i]);
+		}
+		if (!targets.length) {
+			addMessage("No suitable targets, use sensors to rescan.", "error");
+			return;
+		}
 		if (!this.useEnergy(this.energyCosts.launchTorpedo)) return;
 		this.torpedos--;
 		var torp = new Torpedo(this.x, this.y, { x: this.x, y: this.y-20 });

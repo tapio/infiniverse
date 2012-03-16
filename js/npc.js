@@ -7,6 +7,7 @@ function Animal(x, y, tile, name) {
 	this.tile = tile;
 	this.desc = name || "Animal";
 	this.hp = 100;
+	this.targetable = true;
 }
 
 Animal.prototype.damage = function(amount) {
@@ -33,6 +34,7 @@ function NPCShip(x, y, type) {
 	this.y = y;
 	this.type = type;
 	this.hp = 100;
+	this.targetable = true;
 	if (type === "pirate") {
 		this.tile = new ut.Tile("@", 255, 0, 0);
 		this.desc = "Pirate ship";
