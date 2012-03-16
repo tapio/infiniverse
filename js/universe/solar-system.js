@@ -87,6 +87,7 @@ function SolarSystem(x, y, neighbours) {
 	for (i = 0; i < planetCount; ++i) {
 		var planetProto = planetTypes[(rng.random()*planetTypes.length)|0];
 		this.planets.push(clone(planetProto));
+		this.planets[i].tile.desc = planetProto.desc;
 		ang = rng.random() * 360;
 		this.planets[i].x = ~~(halfSize + cosd(ang) * randf(30, halfSize*0.6, rng));
 		this.planets[i].y = ~~(halfSize - sind(ang) * randf(30, halfSize*0.6, rng));
@@ -95,6 +96,7 @@ function SolarSystem(x, y, neighbours) {
 	// Space stations
 	for (i = 0; i < stationCount; ++i) {
 		this.stations.push(clone(stationTypes[0]));
+		this.stations[i].tile.desc = this.stations[i].desc;
 		ang = rng.random() * 360;
 		this.stations[i].x = ~~(halfSize + cosd(ang) * randf(30, halfSize*0.5, rng));
 		this.stations[i].y = ~~(halfSize - sind(ang) * randf(30, halfSize*0.5, rng));
@@ -115,6 +117,7 @@ function SolarSystem(x, y, neighbours) {
 	// Can't use 'this' here due to passing this function to the tile engine
 	this.getTile = function(x, y) {
 		var i, obj, tile;
+		var desc = "Empty space";
 		// Background stars
 		var star = convertNoise(simplex_bgstars.noise(x*10, y*10));
 		var block = " ";
@@ -154,6 +157,7 @@ function SolarSystem(x, y, neighbours) {
 				sunG = sun.tile.g;
 				sunB = sun.tile.b;
 				block = " ";
+				desc = sun.desc;
 				break;
 			}
 		}
@@ -168,8 +172,9 @@ function SolarSystem(x, y, neighbours) {
 		r = blend(sunR, r, mask/255.0) | 0;
 		g = blend(sunG, g, mask/255.0) | 0;
 		b = blend(sunB, b, mask/255.0) | 0;
-
-		return new ut.Tile(block, star,star,star, r, g, b);
+		tile = new ut.Tile(block, star,star,star, r, g, b);
+		tile.desc = desc;
+		return tile;
 	};
 
 	this.getShortDescription = function() {

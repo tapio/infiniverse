@@ -17,8 +17,8 @@ function SpaceStation(x, y, neighbours) {
 		buffer[i] = new Array(this.size);
 
 	var tileProtos = {
-		wall: new ut.Tile("#", 100, 100, 100),
-		floor: new ut.Tile(".", 140, 140, 140)
+		wall: new ut.Tile("#", 100, 100, 100, 20, 20, 20),
+		floor: new ut.Tile(".", 140, 140, 140, 20, 20, 20)
 	};
 	tileProtos.wall.desc = "Wall";
 	tileProtos.floor.desc = "Floor";

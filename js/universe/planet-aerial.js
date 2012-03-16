@@ -129,7 +129,9 @@ function PlanetAerial(x, y, neighbours) {
 
 	this.getGasTile = function(x, y) {
 		var gas = convertNoise(simplex_height.noise(x*0.03, y*0.03));
-		return new ut.Tile("▒", 200,200,200, gas,gas,gas);
+		var tile = new ut.Tile("▒", 200,200,200, gas,gas,gas);
+		tile.desc = "Gas";
+		return tile;
 	};
 
 	this.getTile = function(x, y) {
