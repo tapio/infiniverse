@@ -23,6 +23,7 @@ function addVariance(t, amount, rng) {
 	t.br = clampColor(t.br + rand(-amount, amount, rng));
 	t.bg = clampColor(t.bg + rand(-amount, amount, rng));
 	t.bb = clampColor(t.bb + rand(-amount, amount, rng));
+	return t;
 }
 
 function PlanetAerial(x, y, neighbours) {
@@ -123,6 +124,7 @@ function PlanetAerial(x, y, neighbours) {
 		x = x % self.size;
 		y = y % self.size;
 		if (planetType == "gas") return self.getGasTile(x, y);
+		var rng = new Alea(x, y);
 		var i, basetile;
 		// Get the tile based on height
 		var h = simplex_height.noise(x*0.05, y*0.05);
@@ -134,10 +136,10 @@ function PlanetAerial(x, y, neighbours) {
 		// Handle water
 		if (self.waterLevel && h <= self.waterLevel) {
 			// TODO: Animate wind etc.
-			return modtile;
+			return addVariance(modtile, 7, rng);
 		}
 		// Nothing grows on non-gaia worlds, nor at high altitudes
-		if (planetType !== "gaia" || h > 0.7) return modtile;
+		if (planetType !== "gaia" || h > 0.7) return addVariance(modtile, 7, rng);
 		// Determine vegetation parameters
 		var vegetation = simplex_vegetation.noise(x*0.06, y*0.06);
 		var rainfall = simplex_rainfall.noise(x*0.03, y*0.03);
@@ -167,7 +169,7 @@ function PlanetAerial(x, y, neighbours) {
 		modtile.br = gndtile.r;
 		modtile.bg = gndtile.g;
 		modtile.bb = gndtile.b;
-		return modtile;
+		return addVariance(modtile, 5, rng);
 	};
 
 	this.getShortDescription = function() {
