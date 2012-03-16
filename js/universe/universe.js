@@ -33,10 +33,10 @@ function Universe(engine) {
 				case 4: newPlace = new PlanetDetail(actor.x, actor.y, neighbours); break;
 				default: return;
 			}
-			if (!newPlace) return;
+			if (!newPlace) return false;
 		} catch (err) {
 			addMessage(err, "error");
-			return;
+			return false;
 		}
 		viewLevelStack.push(newPlace);
 		this.postViewChange();
@@ -47,6 +47,7 @@ function Universe(engine) {
 		var placename = this.current.getDescription();
 		if (actor.clearSensors) actor.clearSensors();
 		addMessage("Entered " + placename + ".");
+		return true;
 	};
 
 	// actor: { x, y }

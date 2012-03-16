@@ -60,6 +60,20 @@ function Ship(x, y) {
 		}
 	};
 
+	this.enter = function() {
+		var cost = this.energyCosts.enterFactor * universe.current.getDescendEnergy();
+		if (cost < 0) return;
+		if (!this.useEnergy(cost)) return;
+		if (!universe.enter(this)) this.energy += cost; // Refund if unsuccessful
+	};
+
+	this.exit = function() {
+		var cost = this.energyCosts.exitFactor * universe.current.getAscendEnergy();
+		if (cost < 0) return;
+		if (!this.useEnergy(cost)) return;
+		universe.exit(this);
+	};
+
 	this.toggleSensors = function() {
 		this.sensorSetting = (this.sensorSetting + 1) % scanSettings.length;
 	};
