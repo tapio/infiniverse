@@ -48,6 +48,7 @@ function PlanetDetail(x, y, neighbours) {
 				buffer[y][x].ch = ",";
 			}
 		}
+		addVariance(buffer[y][x], 5, rng);
 	}
 
 	freqs = [ {t:tiles[4]}, {t:tiles[7]}, {t:tiles[3]}, {t:tiles[6]} ];
@@ -96,11 +97,6 @@ function PlanetDetail(x, y, neighbours) {
 			buffer[j][i] = highestFreqTile().clone();
 			//if (Str(buffer[j][i].tex1) <> Str(gr.tex1) && ( Rnd < .333 || Perlin(i,j,1024,1024,noiseSize,8) < noiseTol )) buffer[j][i] = gr
 			addRoughness(i,j);
-		}
-	}
-	for (j = 0; j < this.size; ++j) {
-		for (i = 0; i < this.size; ++i) {
-			//AddVariance(buffer[j][i],35)
 		}
 	}
 
