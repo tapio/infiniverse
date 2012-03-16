@@ -83,6 +83,18 @@ function Galaxy() {
 		return buffer[y][x];
 	};
 
+	this.getMovementEnergy = function(x, y) {
+		return 100000;
+	};
+
+	this.getDescendEnergy = function() {
+		return 1000;
+	};
+
+	this.getAscendEnergy = function() {
+		return -1;
+	};
+
 	this.getShortDescription = function() {
 		return "galaxy";
 	};

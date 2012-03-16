@@ -34,6 +34,18 @@ function SpaceStation(x, y, neighbours) {
 		return buffer[y][x];
 	};
 
+	this.getMovementEnergy = function(x, y) {
+		return 0;
+	};
+
+	this.getDescendEnergy = function() {
+		return -1;
+	};
+
+	this.getAscendEnergy = function() {
+		return 20;
+	};
+
 	this.getShortDescription = function() {
 		return "space station";
 	};

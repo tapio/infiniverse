@@ -177,6 +177,18 @@ function SolarSystem(x, y, neighbours) {
 		return tile;
 	};
 
+	this.getMovementEnergy = function(x, y) {
+		return 5;
+	};
+
+	this.getDescendEnergy = function() {
+		return 50;
+	};
+
+	this.getAscendEnergy = function() {
+		return 1000;
+	};
+
 	this.getShortDescription = function() {
 		return "solar system";
 	};

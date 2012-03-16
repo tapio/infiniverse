@@ -21,8 +21,8 @@ function Ship(x, y) {
 	this.energyCosts = {
 		convertMinerals: 100, convertRadioactives: 2000, convertAntimatter: 100000,
 		createTorpedo: 200, createBeacon: 5000,
-		drive: 1, warp: 100,
-		enter: 100, exit: 1000,
+		driveFactor: 1, warpFactor: 30,
+		enterFactor: 1, exitFactor: 1,
 		sensors: 100,
 		gotoBeacon: 5000,
 		launchTorpedo: 200
@@ -40,13 +40,12 @@ function Ship(x, y) {
 	}
 
 	this.move = function(dx, dy, warp) {
-		// TODO: different costs for different view levels
-		var cost = this.energyCosts.drive;
+		var cost = universe.current.getMovementEnergy(this.x, this.y);
 		if (warp) {
 			dx *= 5;
 			dy *= 5;
-			cost = this.energyCosts.warp;
-		}
+			cost *= this.energyCosts.warpFactor;
+		} else cost *= this.energyCosts.driveFactor;
 		if (this.useEnergy(cost)) {
 			this.x += dx;
 			this.y += dy;
@@ -192,12 +191,14 @@ function Ship(x, y) {
 
 	this.updateUI = function() {
 		var i, str, len, statusclass, elem;
+		var ec = this.energyCosts;
+		var u = universe.current;
 		var self = this;
 
 		// Sensorsbox
 		var t = universe.current.getTile(this.x, this.y);
 		$("#tiledesc").html(t && t.desc && t.desc.length ? t.desc : "n/a");
-		$("#sensorenergy").html("-" + this.energyCosts.sensors);
+		$("#sensorenergy").html("-" + ec.sensors);
 		$("#sensorsetting").html(scanSettings[this.sensorSetting]);
 		len = this.contacts.length;
 		if (len) {
@@ -230,7 +231,7 @@ function Ship(x, y) {
 			str = "";
 			for (i = 0; i < len; ++i)
 				str += "<li>["+(i+1)+"] " + this.activeBeacons[i].title +
-					' <span class="energy">-' + this.energyCosts.gotoBeacon + '</span>';
+					' <span class="energy">-' + ec.gotoBeacon + '</span>';
 			$("#beacon-menu").html(str);
 		}
 
@@ -244,22 +245,27 @@ function Ship(x, y) {
 		$("#energy").html(prettyNumber(this.energy));
 
 		// Devices
-		$("#minerals-energy").html("+" + this.energyCosts.convertMinerals);
-		$("#radioactives-energy").html("+" + this.energyCosts.convertRadioactives);
-		$("#antimatter-energy").html("+" + this.energyCosts.convertAntimatter);
-		$("#torpedo-cost").html("-" + this.energyCosts.createTorpedo);
-		$("#beacon-cost").html("-" + this.energyCosts.createBeacon);
+		$("#minerals-energy").html("+" + ec.convertMinerals);
+		$("#radioactives-energy").html("+" + ec.convertRadioactives);
+		$("#antimatter-energy").html("+" + ec.convertAntimatter);
+		$("#torpedo-cost").html("-" + ec.createTorpedo);
+		$("#beacon-cost").html("-" + ec.createBeacon);
 		var movkeys = [ ut.KEY_LEFT, ut.KEY_RIGHT, ut.KEY_UP, ut.KEY_DOWN, ut.KEY_H, ut.KEY_J, ut.KEY_K, ut.KEY_L ];
 		for (i = 0; i < movkeys.length; ++i)
 			if (ut.isKeyPressed(movkeys[i])) { $("#drives span").first().attr("class", "online"); break; }
 		if (i >= movkeys.length) $("#drives span").first().attr("class", "");
-		$("#drives").children(".energy").html("-" + this.energyCosts.drive);
+		var movEne = u.getMovementEnergy(this.x, this.y);
+		$("#drives").children(".energy").html("-" + this.energyCosts.driveFactor * movEne);
 
 		if (ut.isKeyPressed(ut.KEY_SHIFT)) $("#warpdrives span").first().attr("class", "online");
 		else $("#warpdrives span").first().attr("class", "");
-		$("#warpdrives").children(".energy").html("-" + this.energyCosts.warp);
-		$("#enter").children(".energy").html("-" + this.energyCosts.enter);
-		$("#exit").children(".energy").html("-" + this.energyCosts.exit);
+		$("#warpdrives").children(".energy").html("-" + ec.warpFactor * movEne);
+		if (u.getDescendEnergy() >= 0)
+			$("#enter").show().children(".energy").html("-" + ec.enterFactor * u.getDescendEnergy());
+		else $("#enter").hide();
+		if (u.getAscendEnergy() >= 0)
+			$("#exit").show().children(".energy").html("-" + ec.exitFactor * u.getAscendEnergy());
+		else $("#exit").hide();
 
 		// Torpedos
 		$("#torpedos").html(this.torpedos);

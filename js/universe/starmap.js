@@ -43,7 +43,6 @@ function Starmap(x, y, neighbours) {
 
 		var mask = simplex_exp.noise(x * nebulascale, y * nebulascale);
 		mask = expFilter(mask, coverage, 0.9999);
-		if (!desc.length && mask > 0.1) desc = "Nebula";
 		x *= colorscale;
 		y *= colorscale;
 		var br = convertNoise(simplex_r.noise(x,y) * mask);
@@ -53,8 +52,25 @@ function Starmap(x, y, neighbours) {
 		star = Math.min(star + minneb, 255);
 
 		var tile = new ut.Tile(block, star, star, star, br, bg, bb);
-		tile.desc = desc.length ? desc : "Vast empty space";
+		if (mask > 0.1) tile.nebula = true;
+		if (tile.nebula && !desc.length) tile.desc = "Nebula";
+		else if (desc.length) tile.desc = desc;
+		else tile.desc = "Vast empty space";
 		return tile;
+	};
+
+	this.getMovementEnergy = function(x, y) {
+		var tile = this.getTile(x, y);
+		if (tile.nebula) return 120;
+		return 100;
+	};
+
+	this.getDescendEnergy = function() {
+		return 300;
+	};
+
+	this.getAscendEnergy = function() {
+		return 10000;
 	};
 
 	this.getShortDescription = function() {

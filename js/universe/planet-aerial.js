@@ -192,6 +192,18 @@ function PlanetAerial(x, y, neighbours) {
 		return addVariance(modtile, 5, rng);
 	};
 
+	this.getMovementEnergy = function(x, y) {
+		return 2;
+	};
+
+	this.getDescendEnergy = function() {
+		return 10;
+	};
+
+	this.getAscendEnergy = function() {
+		return 200;
+	};
+
 	this.getShortDescription = function() {
 		return this.planet.desc.toLowerCase();
 	};
