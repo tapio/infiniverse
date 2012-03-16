@@ -10,6 +10,7 @@ function Ship(x, y) {
 	this.torpedos = 10;
 	this.sensorSetting = 0;
 	this.contacts = [];
+	this.targets = [];
 	this.maxCargo = 30;
 	this.usedCargo = 0;
 	this.beacons = 2;
@@ -31,9 +32,10 @@ function Ship(x, y) {
 
 	this.sortContacts = function() {
 		if (!this.contacts.length) return;
+		var self = this;
 		this.contacts.sort(function(a,b) {
-			var d1 = distance2(this.x, this.y, a.x, a.y);
-			var d2 = distance2(this.x, this.y, b.x, b.y);
+			var d1 = distance2(self.x, self.y, a.x, a.y);
+			var d2 = distance2(self.x, self.y, b.x, b.y);
 			return d1-d2;
 		});
 	};
@@ -44,6 +46,7 @@ function Ship(x, y) {
 
 	this.clearSensors = function() {
 		this.contacts = [];
+		this.targets = [];
 	};
 
 	this.scanSensors = function() {
@@ -67,6 +70,8 @@ function Ship(x, y) {
 		this.sortContacts();
 		if (this.contacts.length > 9)
 			this.contacts.length = 9; // Max 9 contacts
+		if (!this.contacts.length)
+			addMessage("Scan came out empty.");
 	};
 
 	this.getPrettyContact = function(obj) {
@@ -185,27 +190,41 @@ function Ship(x, y) {
 		}
 	};
 
-	this.launchTorpedo = function() {
+	this.prepareTorpedo = function() {
+		if (this.targets.length) {
+			this.targets = [];
+			addMessage("Cancelled torpedo launch.");
+			return false;
+		}
 		if (this.torpedos === 0) {
 			addMessage("Out of torpedos.", "error");
-			return;
+			return false;
 		}
 		if (!this.contacts.length) {
 			addMessage("No targets available, use sensors to scan.", "error");
-			return;
+			return false;
 		}
-		var i, targets = [];
+		this.targets = [];
+		var i;
+		//for (i = this.contacts.length-1; i >= 0; --i) {
 		for (i = 0; i < this.contacts.length; ++i) {
-			if (this.contacts[i].targetable) targets.push(this.contacts[i]);
+			if (this.contacts[i].targetable) this.targets.push(this.contacts[i]);
 		}
-		if (!targets.length) {
+		if (!this.targets.length) {
 			addMessage("No suitable targets, use sensors to rescan.", "error");
-			return;
+			return false;
 		}
+		return true;
+	};
+
+	this.launchTorpedo = function(num) {
 		if (!this.useEnergy(this.energyCosts.launchTorpedo)) return;
+		if (num >= this.targets.length) return;
+		if (this.torpedos === 0) return; // This should not happen ever
 		this.torpedos--;
-		var torp = new Torpedo(this.x, this.y, { x: this.x, y: this.y-20 });
+		var torp = new Torpedo(this.x, this.y, this.targets[num]);
 		universe.addActor(torp);
+		this.targets = [];
 	};
 
 	this.damage = function(amount) {

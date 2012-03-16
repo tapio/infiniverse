@@ -69,6 +69,9 @@ function toggleMenu(menuid) {
 	}
 	if (activeMenu === menuid) activeMenu = "";
 	else activeMenu = menuid;
+	// Trigger targetlist closing
+	if (menuid !== "#targetlist") pl.targets = [];
+	else activeMenu = "#targetlist";
 }
 
 // Key press handler - movement & collision handling
@@ -86,13 +89,16 @@ function onKeyDown(k) {
 	if (k === ut.KEY_E) toggleMenu("#energyconverter-menu");
 	if (k === ut.KEY_M) toggleMenu("#massfabricator-menu");
 	if (k === ut.KEY_B) pl.deployBeacon();
-	if (k === ut.KEY_T) pl.launchTorpedo();
-	if (k === ut.KEY_R) term.setRenderer(term.getRendererString() === "dom" ? "canvas" : "dom");
+	if (k === ut.KEY_T) {
+		if (pl.prepareTorpedo()) toggleMenu("#targetlist");
+	}
 	if (k >= ut.KEY_1 && k <= ut.KEY_9) {
-		if (activeMenu === "#beacon-menu") pl.gotoBeacon(k - ut.KEY_1);
+		if (activeMenu === "#targetlist") pl.launchTorpedo(k - ut.KEY_1);
+		else if (activeMenu === "#beacon-menu") pl.gotoBeacon(k - ut.KEY_1);
 		else if (activeMenu === "#energyconverter-menu") pl.createEnergy(k - ut.KEY_1 + 1);
 		else if (activeMenu === "#massfabricator-menu") pl.createMass(k - ut.KEY_1 + 1);
 	}
+	if (k === ut.KEY_R) term.setRenderer(term.getRendererString() === "dom" ? "canvas" : "dom");
 	if (movedir.x !== 0 || movedir.y !== 0)
 		pl.move(movedir.x, movedir.y, ut.isKeyPressed(ut.KEY_SHIFT));
 	tick();

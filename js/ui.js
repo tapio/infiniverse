@@ -11,17 +11,17 @@ Ship.prototype.updateUI = function() {
 	$("#sensorenergy").html("-" + ec.sensors);
 	$("#sensorsetting").html(this.scanSettings[this.sensorSetting]);
 	len = this.contacts.length;
-	if (len) {
+	elem = $("#sensorlist");
+	if (len && !this.targets.length) {
 		this.sortContacts();
 		for (i = 0, str = ""; i < len; ++i)
 			str += '<li>' + this.getPrettyContact(this.contacts[i]) + '</li>';
-		elem = $("#sensorlist");
 		elem.html(str);
 		if (!elem.is(":visible")) elem.show("blind", 500);
 		$("#contactstitle").html(len + " contacts:");
 	} else {
-		$("#contactstitle").html("No contacts.");
-		$("#sensorlist").html("").hide();
+		$("#contactstitle").html(this.targets.length ? "Targeting..." : "No contacts.");
+		elem.html("").hide();
 	}
 
 	// Beacons
@@ -72,6 +72,16 @@ Ship.prototype.updateUI = function() {
 	// Torpedos
 	$("#torpedos").html(this.torpedos);
 	$("#torpedos").siblings(".energy").html("-" + this.energyCosts.launchTorpedo);
+	elem = $("#targetlist");
+	if (this.targets.length) {
+		str = "";
+		for (i = 0; i < this.targets.length; ++i) {
+			str += '<li>[' + (i+1) + '] ' + this.getPrettyContact(this.targets[i]) + '</li>';
+		}
+		elem.html(str);
+		if (!elem.is(":visible")) elem.show("blind", 500);
+	} else elem.html("").hide();
+
 	/*if (this.torpedos <= 0) $("#torpedos").html("-");
 	else {
 		str = "";

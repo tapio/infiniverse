@@ -87,6 +87,7 @@ p {
 	white-space: nowrap;
 }
 
+#targetlist { display: none; }
 #beacon-menu { display: none; }
 #energyconverter-menu { display: none; }
 #massfabricator-menu { display: none; }
