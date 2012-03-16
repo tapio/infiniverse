@@ -152,8 +152,12 @@ function PlanetAerial(x, y, neighbours) {
 			// TODO: Animate waves etc.
 			return addVariance(modtile, 7, rng);
 		}
-		// Nothing grows on non-gaia worlds, nor at high altitudes
-		if (planetType !== "gaia" || h > 0.7) return addVariance(modtile, 7, rng);
+		// High altitudes as is
+		if (h > 0.7) return addVariance(modtile, 7, rng);
+		// Icy ground for ice planets
+		if (planetType === "ice") return addVariance(clone(groundTextures.cold), 7, rng);
+		// Nothing grows on non-gaia worlds
+		if (planetType !== "gaia") return addVariance(modtile, 7, rng);
 		// Determine vegetation parameters
 		var vegetation = simplex_vegetation.noise(x*0.06, y*0.06);
 		var rainfall = simplex_rainfall.noise(x*0.03, y*0.03);
