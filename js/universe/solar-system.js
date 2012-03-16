@@ -78,8 +78,9 @@ function SolarSystem(x, y, neighbours) {
 			if (starTypeChooser < starTypes[j].freq) { starProto = starTypes[j]; break; }
 		this.suns.push(clone(starProto));
 		ang += i * (360.0 / starCount);
-		this.suns[i].x = ~~(halfSize + cosd(ang) * randf(starProto.radius, halfSize, rng));
-		this.suns[i].y = ~~(halfSize - sind(ang) * randf(starProto.radius, halfSize, rng));
+		var minDist = Math.min(starProto.radius*2, halfSize-5);
+		this.suns[i].x = ~~(halfSize + cosd(ang) * randf(minDist, halfSize, rng));
+		this.suns[i].y = ~~(halfSize - sind(ang) * randf(minDist, halfSize, rng));
 	}
 
 	// Planets
