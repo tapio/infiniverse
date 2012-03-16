@@ -69,6 +69,16 @@ function Ship(x, y) {
 			this.contacts.length = 9; // Max 9 contacts
 	};
 
+	this.getPrettyContact = function(obj) {
+		var arrows = "→↗↑↖←↙↓↘";
+		var dirchar = arrows[getAngledCharIndex(this.x, this.y, obj.x, obj.y)];
+		var dist = ~~distance(this.x, this.y, obj.x, obj.y);
+		if ((obj.radius && dist <= obj.radius) || dist < 1)
+			dirchar = "↺";
+		var sty = 'style="color:' + obj.tile.getColorRGB() + ';">';
+		return '<span ' + sty + obj.tile.ch + ' ' + obj.desc + "</span> - " + dist + dirchar;
+	};
+
 	this.move = function(dx, dy, warp) {
 		var cost = universe.current.getMovementEnergy(this.x, this.y);
 		if (warp && universe.current.type !== "station") {

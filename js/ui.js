@@ -12,17 +12,9 @@ Ship.prototype.updateUI = function() {
 	$("#sensorsetting").html(this.scanSettings[this.sensorSetting]);
 	len = this.contacts.length;
 	if (len) {
-		var arrows = "→↗↑↖←↙↓↘";
 		this.sortContacts();
-		for (i = 0, str = ""; i < len; ++i) {
-			var obj = this.contacts[i];
-			var dirchar = arrows[getAngledCharIndex(this.x, this.y, obj.x, obj.y)];
-			var dist = ~~distance(this.x, this.y, obj.x, obj.y);
-			if ((obj.radius && dist <= obj.radius) || dist < 1)
-				dirchar = "↺";
-			var sty = 'style="color:' + obj.tile.getColorRGB() + ';">';
-			str += '<li><span ' + sty + obj.tile.ch + ' ' + obj.desc + "</span> - " + dist + dirchar + '</li>';
-		}
+		for (i = 0, str = ""; i < len; ++i)
+			str += '<li>' + this.getPrettyContact(this.contacts[i]) + '</li>';
 		elem = $("#sensorlist");
 		elem.html(str);
 		if (!elem.is(":visible")) elem.show("blind", 500);
