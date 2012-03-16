@@ -10,7 +10,8 @@ function PlanetDetail(x, y, neighbours) {
 		throw "Gas planet has no surface to land on.";
 
 	var i,j;
-	var rng = new Alea("planet-detail", x, y);
+	var simplex_bare = new SimplexNoise(new Alea('planet-detail-noise', x, y));
+	var rng = new Alea('planet-detail', x, y);
 	var buffer = new Array(this.size);
 	for (i = 0; i < this.size; ++i)
 		buffer[i] = new Array(this.size);
@@ -27,6 +28,9 @@ function PlanetDetail(x, y, neighbours) {
 		neighbours( 1, -1)
 	];
 
+	var gr = tile.bare;
+	var bs = 0.06;
+	var noiseTol = 0.333;
 	var hs = this.size * 0.50;
 	var fs = this.size * 0.75;
 	var sqr2 = Math.SQRT2;
@@ -59,7 +63,8 @@ function PlanetDetail(x, y, neighbours) {
 			freqs[2].f = (Math.abs(i-hs) / fs) + randf(0,0.333,rng);
 			freqs[3].f = (distance(i,j,hs,hs) / (fs*sqr2)) + randf(0,0.333,rng);
 			buffer[j][i] = highestFreqTile().clone();
-			//if (Str(buffer[j][i].tex1) <> Str(gr.tex1) && ( Rnd < .333 || Perlin(i,j,1024,1024,noiseSize,8) < noiseTol )) buffer[j][i] = gr
+			if (gr && buffer[j][i].ch !== gr.ch && (rng.random() < 0.333 || simplex_bare.noise(i*bs,j*bs) < noiseTol))
+				buffer[j][i] = gr.clone();
 			addRoughness(i,j);
 		}
 	}
@@ -71,7 +76,8 @@ function PlanetDetail(x, y, neighbours) {
 			freqs[2].f = (Math.abs(i-hs) / fs) + randf(0,0.333,rng);
 			freqs[3].f = (distance(i,j,hs,hs) / (fs*sqr2)) + randf(0,0.333,rng);
 			buffer[j][i] = highestFreqTile().clone();
-			//if (Str(buffer[j][i].tex1) <> Str(gr.tex1) && ( Rnd < .333 || Perlin(i,j,1024,1024,noiseSize,8) < noiseTol )) buffer[j][i] = gr
+			if (gr && buffer[j][i].ch !== gr.ch && (rng.random() < 0.333 || simplex_bare.noise(i*bs,j*bs) < noiseTol))
+				buffer[j][i] = gr.clone();
 			addRoughness(i,j);
 		}
 	}
@@ -83,7 +89,8 @@ function PlanetDetail(x, y, neighbours) {
 			freqs[2].tile = tiles[3]; freqs[2].f = (Math.abs(i-hs) / fs) + randf(0,0.333,rng);
 			freqs[3].tile = tiles[0]; freqs[3].f = (distance(i,j,hs,hs) / (fs*sqr2)) + randf(0,0.333,rng);
 			buffer[j][i] = highestFreqTile().clone();
-			//if (Str(buffer[j][i].tex1) <> Str(gr.tex1) && ( Rnd < .333 || Perlin(i,j,1024,1024,noiseSize,8) < noiseTol )) buffer[j][i] = gr
+			if (gr && buffer[j][i].ch !== gr.ch && (rng.random() < 0.333 || simplex_bare.noise(i*bs,j*bs) < noiseTol))
+				buffer[j][i] = gr.clone();
 			addRoughness(i,j);
 		}
 	}
@@ -95,7 +102,8 @@ function PlanetDetail(x, y, neighbours) {
 			freqs[2].f = (Math.abs(i-hs) / fs) + randf(0,0.333,rng);
 			freqs[3].f = (distance(i,j,hs,hs) / (fs*sqr2)) + randf(0,0.333,rng);
 			buffer[j][i] = highestFreqTile().clone();
-			//if (Str(buffer[j][i].tex1) <> Str(gr.tex1) && ( Rnd < .333 || Perlin(i,j,1024,1024,noiseSize,8) < noiseTol )) buffer[j][i] = gr
+			if (gr && buffer[j][i].ch !== gr.ch && (rng.random() < 0.333 || simplex_bare.noise(i*bs,j*bs) < noiseTol))
+				buffer[j][i] = gr.clone();
 			addRoughness(i,j);
 		}
 	}

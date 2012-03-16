@@ -141,8 +141,9 @@ function PlanetAerial(x, y, neighbours) {
 		// Determine vegetation parameters
 		var vegetation = simplex_vegetation.noise(x*0.06, y*0.06);
 		var rainfall = simplex_rainfall.noise(x*0.03, y*0.03);
-		var temperature = (1-(Math.abs(self.size/2-y)*2 / self.size))*4 + (1.0-h);
-		temperature += simplex_temperature.noise(x*0.5, y*0.5) / 6;
+		var temperature = (1-(Math.abs(self.size/2-y)*2 / self.size))*7 + (1.0-h)*2;
+		temperature += simplex_temperature.noise(x*0.07, y*0.07);
+		temperature /= 10;
 		// Get special ground
 		var gndtile = modtile.clone();
 		if (temperature > 0.7 && rainfall < 0.4) gndtile = groundTextures.warm;
