@@ -155,9 +155,9 @@ function SolarSystem(x, y, neighbours) {
 				//mask = Max( Min(mask+temp, 255), 0 );
 				mask2 = mask / 256.0;
 				if (mask2 > 1.0) mask2 = 1.0;
-				sunR = sun.tile.r;
-				sunG = sun.tile.g;
-				sunB = sun.tile.b;
+				sunR = clampColor(sun.tile.r + rand(-20, 20, rng));
+				sunG = clampColor(sun.tile.g + rand(-20, 20, rng));
+				sunB = clampColor(sun.tile.b + rand(-20, 20, rng));
 				block = " ";
 				desc = sun.desc;
 				break;
