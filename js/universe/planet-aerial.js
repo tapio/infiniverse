@@ -14,12 +14,12 @@ function pickBackground(t, rng) {
 }
 
 function addVariance(t, amount, rng) {
-	if (t.r) {
+	if (t.r !== undefined) {
 		t.r = clampColor(t.r + rand(-amount, amount, rng));
 		t.g = clampColor(t.g + rand(-amount, amount, rng));
 		t.b = clampColor(t.b + rand(-amount, amount, rng));
 	}
-	if (!t.br) return;
+	if (t.br === undefined) return t;
 	t.br = clampColor(t.br + rand(-amount, amount, rng));
 	t.bg = clampColor(t.bg + rand(-amount, amount, rng));
 	t.bb = clampColor(t.bb + rand(-amount, amount, rng));
