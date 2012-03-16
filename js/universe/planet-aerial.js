@@ -128,8 +128,19 @@ function PlanetAerial(x, y, neighbours) {
 	}
 
 	this.getGasTile = function(x, y) {
-		var gas = convertNoise(simplex_height.noise(x*0.03, y*0.03));
-		var tile = new ut.Tile("▒", 200,200,200, gas,gas,gas);
+		var gas1 = convertNoise(simplex_height.noise(x*0.03, y*0.03));
+		var gas2 = convertNoise(simplex_temperature.noise(x*0.03, y*0.03));
+		var gas3 = convertNoise(simplex_rainfall.noise(x*0.03, y*0.03));
+		var r = 0, g = 0, b = 0;
+		switch (self.planet.gasType) {
+			case 0: r = gas1; g = gas2; break;
+			case 1: r = gas1; b = gas3; break;
+			case 2: g = gas2; b = gas3; break;
+			case 3: r = gas1; g = gas1; b = gas3; break;
+			case 4: r = gas1; g = gas2; b = gas1; break;
+			case 5: r = gas1; g = gas2; b = gas2; break;
+		}
+		var tile = new ut.Tile("▒", r,g,b, clampColor(r*0.6), clampColor(g*0.6), clampColor(b*0.6));
 		tile.desc = "Gas";
 		return tile;
 	};
