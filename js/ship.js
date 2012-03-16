@@ -195,8 +195,8 @@ function Ship(x, y) {
 		var self = this;
 
 		// Sensorsbox
-		str = universe.current.getTile(this.x, this.y).desc;
-		$("#tiledesc").html(str ? str : "n/a");
+		var t = universe.current.getTile(this.x, this.y);
+		$("#tiledesc").html(t && t.desc && t.desc.length ? t.desc : "n/a");
 		$("#sensorenergy").html("-" + this.energyCosts.sensors);
 		$("#sensorsetting").html(scanSettings[this.sensorSetting]);
 		len = this.contacts.length;

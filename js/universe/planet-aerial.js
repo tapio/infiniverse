@@ -149,7 +149,7 @@ function PlanetAerial(x, y, neighbours) {
 		var modtile = clone(basetile.tile);
 		// Handle water
 		if (self.waterLevel && h <= self.waterLevel) {
-			// TODO: Animate wind etc.
+			// TODO: Animate waves etc.
 			return addVariance(modtile, 7, rng);
 		}
 		// Nothing grows on non-gaia worlds, nor at high altitudes
