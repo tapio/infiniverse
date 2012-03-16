@@ -53,7 +53,9 @@ function PlanetAerial(x, y, neighbours) {
 			r = c(0,255); g = c(0,255); b = c(0,255);
 		} while (r+g+b > 384 && b > r && b > g);
 		groundTextures.warm = pickBackground(new ut.Tile(".", r,g,b), rng);
+		groundTextures.warm.desc = "Desert";
 		groundTextures.cold = pickBackground(new ut.Tile(".", c(200,255), c(200,255), c(200,255)), rng);
+		groundTextures.cold.desc = "Icy ground";
 
 		var curH = 0;
 		if (this.waterLevel) {
@@ -61,6 +63,7 @@ function PlanetAerial(x, y, neighbours) {
 				tile: pickBackground(new ut.Tile("≋", c(0,64),c(0,128),100+c(0,155)), rng),
 				minh: 0
 			});
+			last(this.heightTextures).tile.desc = "Water";
 			curH = this.waterLevel;
 		}
 		do { r = c(0,255); g = c(0,255); b = c(0,255); } while (r+g+b > 384);
@@ -68,12 +71,14 @@ function PlanetAerial(x, y, neighbours) {
 			tile: pickBackground(new ut.Tile(".", r,g,b), rng),
 			minh: curH
 		});
+		last(this.heightTextures).tile.desc = "Ground";
 		curH += (1.0 - curH) * 0.5;
 		if (curH > 0.95) return;
 		this.heightTextures.push({
 			tile: pickBackground(new ut.Tile("▴", r,g,b), rng),
 			minh: curH
 		});
+		last(this.heightTextures).tile.desc = "Hills";
 		curH += (1.0 - curH) * 0.5;
 		if (curH > 0.95) return;
 		function avg(a,b) { return ((a+b)/2)|0; }
@@ -81,12 +86,14 @@ function PlanetAerial(x, y, neighbours) {
 			tile: pickBackground(new ut.Tile("▲", avg(groundTextures.cold.r, r), avg(groundTextures.cold.g, g), avg(groundTextures.cold.b, b)), rng),
 			minh: curH
 		});
+		last(this.heightTextures).tile.desc = "Mountains";
 		curH += (1.0 - curH) * 0.5;
 		if (curH > 0.95) return;
 		this.heightTextures.push({
 			tile: pickBackground(new ut.Tile("▲", groundTextures.cold.r, groundTextures.cold.g, groundTextures.cold.b), rng),
 			minh: curH
 		});
+		last(this.heightTextures).tile.desc = "High peaks";
 	};
 
 	this.generateClutterTextures = function() {
@@ -102,6 +109,11 @@ function PlanetAerial(x, y, neighbours) {
 		vegeTextures.base_humid = new ut.Tile(randchar(treeChars, rng), c(0,255), c(0,255), c(0,255));
 		vegeTextures.warm = new ut.Tile(randchar(treeChars, rng), c(0,255), c(0,255), c(0,255));
 		vegeTextures.warm_humid = new ut.Tile(randchar(treeChars, rng), c(0,255), c(0,255), c(0,255));
+		vegeTextures.cold.desc = "Tundra";
+		vegeTextures.base.desc = "Forest";
+		vegeTextures.base_humid.desc = "Swamp";
+		vegeTextures.warm.desc = "Savannah";
+		vegeTextures.warm_humid.desc = "Jungle";
 	};
 
 	if (planetType === "ocean") this.waterLevel = randf(0.8, 1.0, rng);
@@ -132,7 +144,7 @@ function PlanetAerial(x, y, neighbours) {
 			basetile = self.heightTextures[i];
 			if (h > basetile.minh) break;
 		}
-		var modtile = basetile.tile.clone();
+		var modtile = clone(basetile.tile);
 		// Handle water
 		if (self.waterLevel && h <= self.waterLevel) {
 			// TODO: Animate wind etc.
@@ -147,7 +159,7 @@ function PlanetAerial(x, y, neighbours) {
 		temperature += simplex_temperature.noise(x*0.07, y*0.07);
 		temperature /= 10;
 		// Get special ground
-		var gndtile = modtile.clone();
+		var gndtile = clone(modtile);
 		if (temperature > 0.7 && rainfall < 0.4) gndtile = groundTextures.warm;
 		if (temperature < 0.3) gndtile = groundTextures.cold;
 		// Vegetation?
@@ -159,16 +171,18 @@ function PlanetAerial(x, y, neighbours) {
 			else if (between(temperature,0.07,0.30) && rainfall > 0.15) veg = vegeTextures.cold;
 			else if (between(temperature,0.63,0.80) && between(rainfall,0.15,0.30)) veg = vegeTextures.warm;
 		}
+		modtile.bare = gndtile;
+		modtile.desc = gndtile.desc;
+		modtile.br = gndtile.r;
+		modtile.bg = gndtile.g;
+		modtile.bb = gndtile.b;
 		if (veg) {
 			modtile.ch = veg.ch;
 			modtile.r = veg.r;
 			modtile.g = veg.g;
 			modtile.b = veg.b;
+			modtile.desc = veg.desc;
 		}
-		modtile.bare = gndtile;
-		modtile.br = gndtile.r;
-		modtile.bg = gndtile.g;
-		modtile.bb = gndtile.b;
 		return addVariance(modtile, 5, rng);
 	};
 

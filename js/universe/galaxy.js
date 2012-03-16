@@ -75,6 +75,7 @@ function Galaxy() {
 			var star = Math.min(100 + buffer[j][i] * 20, 255);
 			block = isNaN(star) ? " " : STARS[~~mapRange(star, 100, 255, 0, STARS.length-1)];
 			buffer[j][i] = new ut.Tile(block, star,star,star, bg,bg,bg);
+			buffer[j][i].desc = "Millions of stars";
 		}
 	}
 

@@ -2,7 +2,7 @@
 function Ship(x, y) {
 	this.x = x || 0;
 	this.y = y || 0;
-	this.tile = new ut.Tile("@", 255, 255, 255);
+	this.tile = new ut.Tile("@", 100, 100, 100);
 	this.desc = "Player";
 	this.energy = 10000;
 	this.maxHull = 100;
@@ -195,6 +195,8 @@ function Ship(x, y) {
 		var self = this;
 
 		// Sensorsbox
+		str = universe.current.getTile(this.x, this.y).desc;
+		$("#tiledesc").html(str ? str : "n/a");
 		$("#sensorenergy").html("-" + this.energyCosts.sensors);
 		$("#sensorsetting").html(scanSettings[this.sensorSetting]);
 		len = this.contacts.length;

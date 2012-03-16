@@ -17,14 +17,16 @@ function SpaceStation(x, y, neighbours) {
 		buffer[i] = new Array(this.size);
 
 	var tileProtos = {
-		wall: new ut.Tile("#", 100,100,100),
+		wall: new ut.Tile("#", 100, 100, 100),
 		floor: new ut.Tile(".", 140, 140, 140)
 	};
+	tileProtos.wall.desc = "Wall";
+	tileProtos.floor.desc = "Floor";
 	for (j = 0; j < this.size; ++j) {
 		for (i = 0; i < this.size; ++i) {
 			if (i === 0 || i == this.size-1 || j === 0 || j == this.size-1)
-				buffer[j][i] = tileProtos.wall.clone();
-			else buffer[j][i] = tileProtos.floor.clone();
+				buffer[j][i] = clone(tileProtos.wall);
+			else buffer[j][i] = clone(tileProtos.floor);
 		}
 	}
 

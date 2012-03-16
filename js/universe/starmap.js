@@ -30,10 +30,12 @@ function Starmap(x, y, neighbours) {
 	this.getTile = function(x, y) {
 		var star = simplex_star.noise(x*10,y*10);
 		var block = " ";
+		var desc = "";
 		if (star > starthreshold) {
 			star = convertNoise(simplex_startype.noise(x*100,y*100));
 			block = STARS[(star / 256 * STARS.length)|0];
 			star = Math.min(star+30, 255);
+			desc = "Solar system";
 		} else if (star > starthreshold * 0.9) {
 			block = "·";
 			star = 30;
@@ -41,6 +43,7 @@ function Starmap(x, y, neighbours) {
 
 		var mask = simplex_exp.noise(x * nebulascale, y * nebulascale);
 		mask = expFilter(mask, coverage, 0.9999);
+		if (!desc.length && mask > 0.1) desc = "Nebula";
 		x *= colorscale;
 		y *= colorscale;
 		var br = convertNoise(simplex_r.noise(x,y) * mask);
@@ -48,7 +51,10 @@ function Starmap(x, y, neighbours) {
 		var bb = convertNoise(simplex_b.noise(x,y) * mask);
 		var minneb = Math.max(Math.max(br, bg), bb);
 		star = Math.min(star + minneb, 255);
-		return new ut.Tile(block, star, star, star, br, bg, bb);
+
+		var tile = new ut.Tile(block, star, star, star, br, bg, bb);
+		tile.desc = desc.length ? desc : "Vast empty space";
+		return tile;
 	};
 
 	this.getShortDescription = function() {

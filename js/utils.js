@@ -99,6 +99,11 @@ function prettyNumber(num) {
 }
 
 
+// Array utils
+
+function last(arr) { return arr[arr.length-1]; }
+
+
 // Object utils
 
 // If an object has clone() function, it is assumed to return a copy.
@@ -124,9 +129,8 @@ function clone(obj) {
 
 	// Handle Object
 	if (obj instanceof Object) {
-		if (obj.clone && "function" === typeof obj.clone)
-			return obj.clone();
-		copy = {};
+		if (obj.constructor) copy = new obj.constructor();
+		else copy = {};
 		for (var attr in obj)
 			if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
 		return copy;

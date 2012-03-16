@@ -48,6 +48,7 @@ function PlanetDetail(x, y, neighbours) {
 			var rndvalue = rng.random();
 			if (rndvalue > 0.95) {
 				buffer[y][x].ch = "o";
+				buffer[y][x].desc = "Rock";
 			} else if (rndvalue > 0.7) {
 				buffer[y][x].ch = ",";
 			}
@@ -62,9 +63,9 @@ function PlanetDetail(x, y, neighbours) {
 			freqs[1].f = (Math.abs(j-hs) / fs) + randf(0,0.333,rng);
 			freqs[2].f = (Math.abs(i-hs) / fs) + randf(0,0.333,rng);
 			freqs[3].f = (distance(i,j,hs,hs) / (fs*sqr2)) + randf(0,0.333,rng);
-			buffer[j][i] = highestFreqTile().clone();
+			buffer[j][i] = clone(highestFreqTile());
 			if (gr && buffer[j][i].ch !== gr.ch && (rng.random() < 0.333 || simplex_bare.noise(i*bs,j*bs) < noiseTol))
-				buffer[j][i] = gr.clone();
+				buffer[j][i] = clone(gr);
 			addRoughness(i,j);
 		}
 	}
@@ -75,9 +76,9 @@ function PlanetDetail(x, y, neighbours) {
 			freqs[1].f = (Math.abs(j-hs) / fs) + randf(0,0.333,rng);
 			freqs[2].f = (Math.abs(i-hs) / fs) + randf(0,0.333,rng);
 			freqs[3].f = (distance(i,j,hs,hs) / (fs*sqr2)) + randf(0,0.333,rng);
-			buffer[j][i] = highestFreqTile().clone();
+			buffer[j][i] = clone(highestFreqTile());
 			if (gr && buffer[j][i].ch !== gr.ch && (rng.random() < 0.333 || simplex_bare.noise(i*bs,j*bs) < noiseTol))
-				buffer[j][i] = gr.clone();
+				buffer[j][i] = clone(gr);
 			addRoughness(i,j);
 		}
 	}
@@ -88,9 +89,9 @@ function PlanetDetail(x, y, neighbours) {
 			freqs[1].tile = tiles[1]; freqs[1].f = (Math.abs(j-hs) / fs) + randf(0,0.333,rng);
 			freqs[2].tile = tiles[3]; freqs[2].f = (Math.abs(i-hs) / fs) + randf(0,0.333,rng);
 			freqs[3].tile = tiles[0]; freqs[3].f = (distance(i,j,hs,hs) / (fs*sqr2)) + randf(0,0.333,rng);
-			buffer[j][i] = highestFreqTile().clone();
+			buffer[j][i] = clone(highestFreqTile());
 			if (gr && buffer[j][i].ch !== gr.ch && (rng.random() < 0.333 || simplex_bare.noise(i*bs,j*bs) < noiseTol))
-				buffer[j][i] = gr.clone();
+				buffer[j][i] = clone(gr);
 			addRoughness(i,j);
 		}
 	}
@@ -101,9 +102,9 @@ function PlanetDetail(x, y, neighbours) {
 			freqs[1].f = (Math.abs(j-hs) / fs) + randf(0,0.333,rng);
 			freqs[2].f = (Math.abs(i-hs) / fs) + randf(0,0.333,rng);
 			freqs[3].f = (distance(i,j,hs,hs) / (fs*sqr2)) + randf(0,0.333,rng);
-			buffer[j][i] = highestFreqTile().clone();
+			buffer[j][i] = clone(highestFreqTile());
 			if (gr && buffer[j][i].ch !== gr.ch && (rng.random() < 0.333 || simplex_bare.noise(i*bs,j*bs) < noiseTol))
-				buffer[j][i] = gr.clone();
+				buffer[j][i] = clone(gr);
 			addRoughness(i,j);
 		}
 	}
