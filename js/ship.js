@@ -41,11 +41,12 @@ function Ship(x, y) {
 
 	this.move = function(dx, dy, warp) {
 		var cost = universe.current.getMovementEnergy(this.x, this.y);
-		if (warp) {
+		if (warp && universe.current.type !== "station") {
 			dx *= 5;
 			dy *= 5;
 			cost *= this.energyCosts.warpFactor;
 		} else cost *= this.energyCosts.driveFactor;
+		var oldx = this.x, oldy = this.y;
 		if (this.useEnergy(cost)) {
 			this.x += dx;
 			this.y += dy;
@@ -57,6 +58,10 @@ function Ship(x, y) {
 		} else {
 			this.x = clamp(this.x, 0, worldsize-1);
 			this.y = clamp(this.y, 0, worldsize-1);
+		}
+		var checktile = universe.current.getTile(this.x, this.y);
+		if (checktile.blocks) {
+			this.x = oldx; this.y = oldy;
 		}
 	};
 
