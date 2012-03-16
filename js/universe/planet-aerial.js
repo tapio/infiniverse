@@ -1,9 +1,15 @@
 
 function pickBackground(t, rng) {
-	var amount = 20;
-	t.br = clampColor(t.r + rand(-amount, amount, rng));
-	t.bg = clampColor(t.g + rand(-amount, amount, rng));
-	t.bb = clampColor(t.b + rand(-amount, amount, rng));
+	var dir, lo, hi;
+	var colorSum = t.br + t.bg + t.bb;
+	if (colorSum > 660) dir = 0;
+	else if (colorSum < 200) dir = 1;
+	else dir = rand(0, 1, rng);
+	if (dir === 0) { lo = -40; hi = -25; }
+	else if (dir === 1) { lo = 25; hi = 40; }
+	t.br = clampColor(t.r + rand(lo, hi, rng));
+	t.bg = clampColor(t.g + rand(lo, hi, rng));
+	t.bb = clampColor(t.b + rand(lo, hi, rng));
 	return t;
 }
 
@@ -20,7 +26,7 @@ function addVariance(t, amount, rng) {
 }
 
 function PlanetAerial(x, y, neighbours) {
-	this.size = 64;
+	this.size = 128;
 	this.type = "aerial";
 	var self = this;
 	var tile = neighbours(0,0);
@@ -46,7 +52,7 @@ function PlanetAerial(x, y, neighbours) {
 			r = c(0,255); g = c(0,255); b = c(0,255);
 		} while (r+g+b > 384 && b > r && b > g);
 		groundTextures.warm = pickBackground(new ut.Tile(".", r,g,b), rng);
-		groundTextures.cold = new ut.Tile(".", c(200,255), c(200,255), c(200,255), c(200,255), c(200,255), c(200,255));
+		groundTextures.cold = pickBackground(new ut.Tile(".", c(200,255), c(200,255), c(200,255)), rng);
 
 		var curH = 0;
 		if (this.waterLevel) {
@@ -124,18 +130,18 @@ function PlanetAerial(x, y, neighbours) {
 			basetile = self.heightTextures[i];
 			if (h > basetile.minh) break;
 		}
-		// Handle water
-		if (self.waterLevel && tile.altitude <= self.waterLevel) {
-			// TODO: Animate wind etc.
-			return basetile.tile;
-		}
 		var modtile = basetile.tile.clone();
+		// Handle water
+		if (self.waterLevel && h <= self.waterLevel) {
+			// TODO: Animate wind etc.
+			return modtile;
+		}
 		// Nothing grows on non-gaia worlds, nor at high altitudes
 		if (planetType !== "gaia" || h > 0.7) return modtile;
 		// Determine vegetation parameters
 		var vegetation = simplex_vegetation.noise(x*0.06, y*0.06);
 		var rainfall = simplex_rainfall.noise(x*0.03, y*0.03);
-		var temperature = (1-(Math.Abs(self.size/2-y)*2 / self.size))*4 + (1.0-height);
+		var temperature = (1-(Math.abs(self.size/2-y)*2 / self.size))*4 + (1.0-h);
 		temperature += simplex_temperature.noise(x*0.5, y*0.5) / 6;
 		// Get special ground
 		var gndtile = modtile.clone();
@@ -155,12 +161,12 @@ function PlanetAerial(x, y, neighbours) {
 			modtile.r = veg.r;
 			modtile.g = veg.g;
 			modtile.b = veg.b;
-			modtile.br = gndtile.r;
-			modtile.bg = gndtile.g;
-			modtile.bb = gndtile.b;
-			modtile.bare = gndtile;
 		}
-		return gndtile;
+		modtile.bare = gndtile;
+		modtile.br = gndtile.r;
+		modtile.bg = gndtile.g;
+		modtile.bb = gndtile.b;
+		return modtile;
 	};
 
 	this.getShortDescription = function() {
