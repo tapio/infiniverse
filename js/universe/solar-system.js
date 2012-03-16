@@ -3,7 +3,7 @@ var starMultiples = [
 	1,1,1,1,1,1,1,1,
 	1,1,1,1,1,1,1,1,
 	1,1,2,2,2,2,2,2,
-	3,3,3,3,4,4,5,6
+	2,3,3,3,3,4,4,5
 ];
 
 var planetMultiples = [
@@ -14,15 +14,23 @@ var planetMultiples = [
 ];
 
 var starTypes = [
-	{ tile: new ut.Tile("✸", 200, 200, 255), radius:125, freq:0.00001, desc:"Class O star" },
-	{ tile: new ut.Tile("✷", 160, 160, 255), radius:75, freq:0.010, desc:"Class B star" },
-	{ tile: new ut.Tile("✳", 200, 200, 255), radius:40, freq:0.010, desc:"Class A star" },
-	{ tile: new ut.Tile("✶", 220, 220, 160), radius:25, freq:0.050, desc:"Class F star" },
-	{ tile: new ut.Tile("☀", 255, 255, 0), radius:22, freq:0.150, desc:"Class G star" },
-	{ tile: new ut.Tile("★", 200, 100, 0), radius:20, freq:0.220, desc:"Class K star" },
-	{ tile: new ut.Tile("✦", 200, 0, 5), radius:10, freq:0.550, desc:"Class M star" },
-	{ tile: new ut.Tile("✧", 160, 160, 160), radius:4, freq:0.010, desc:"Class D star" }
+	{ tile: new ut.Tile("✸", 200, 200, 255), radius:125, freq:1, desc:"Class O star" },
+	{ tile: new ut.Tile("✷", 160, 160, 255), radius:75, freq:100, desc:"Class B star" },
+	{ tile: new ut.Tile("✳", 200, 200, 255), radius:40, freq:100, desc:"Class A star" },
+	{ tile: new ut.Tile("✶", 220, 220, 160), radius:25, freq:500, desc:"Class F star" },
+	{ tile: new ut.Tile("☀", 255, 255, 0), radius:22, freq:1500, desc:"Class G star" },
+	{ tile: new ut.Tile("★", 200, 100, 0), radius:20, freq:2200, desc:"Class K star" },
+	{ tile: new ut.Tile("✦", 200, 0, 5), radius:10, freq:4500, desc:"Class M star" },
+	{ tile: new ut.Tile("✧", 160, 160, 160), radius:4, freq:100, desc:"Class D star" }
 ];
+(function() {
+	// Calculate cumulative frequencies
+	var starTotalFreq = 0;
+	for (var i = 0; i < starTypes.length; ++i) {
+		starTypes[i].freq += starTotalFreq;
+		starTotalFreq = starTypes[i].freq;
+	}
+})();
 
 var planetTypes = [
 	{ type:"gas", tile: new ut.Tile("◌", 128, 0, 0), desc:"Gas giant" },
@@ -64,7 +72,10 @@ function SolarSystem(x, y, neighbours) {
 	// Suns
 	var ang = rng.random() * 360;
 	for (i = 0; i < starCount; ++i) {
-		var starProto = starTypes[(rng.random()*starTypes.length)|0];
+		var starTypeChooser = rand(0, starTypes[starTypes.length-1].freq, rng);
+		var starProto;
+		for (j = 0; j < starTypes.length; ++j)
+			if (starTypeChooser < starTypes[j].freq) { starProto = starTypes[j]; break; }
 		this.suns.push(clone(starProto));
 		ang += i * (360.0 / starCount);
 		this.suns[i].x = ~~(halfSize + cosd(ang) * randf(starProto.radius, halfSize, rng));
