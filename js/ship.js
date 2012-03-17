@@ -16,14 +16,14 @@ function Ship(x, y) {
 	this.activeBeacons = [];
 	this.maxActiveBeacons = 8;
 	this.energyCosts = {
-		createTorpedo: 200, createBeacon: 5000,
+		createMissile: 200, createBeacon: 5000,
 		driveFactor: 1, warpFactor: 30,
 		enterFactor: 1, exitFactor: 1,
 		sensors: 100,
 		gotoBeacon: 5000,
-		launchTorpedo: 200
+		launchMissile: 200
 	};
-	this.cargo = { torpedo: 5, navbeacon: 2, metals: 2, hydrogen: 4, radioactives: 2, antimatter: 1 };
+	this.cargo = { missile: 5, navbeacon: 2, metals: 2, hydrogen: 4, radioactives: 2, antimatter: 1 };
 	this.scanSettings = [ "Closest", "Artificial", "Celestial" ];
 
 	this.sortContacts = function() {
@@ -191,8 +191,8 @@ function Ship(x, y) {
 	this.createMass = function(button) {
 		switch (button) {
 			case 1:
-				if (this.hasCargoSpace() && this.useEnergy(this.energyCosts.createTorpedo))
-					this.cargo.torpedo++;
+				if (this.hasCargoSpace() && this.useEnergy(this.energyCosts.createMissile))
+					this.cargo.missile++;
 				break;
 			case 2:
 				if (this.hasCargoSpace() && this.useEnergy(this.energyCosts.createBeacon))
@@ -201,14 +201,14 @@ function Ship(x, y) {
 		}
 	};
 
-	this.prepareTorpedo = function() {
+	this.prepareMissile = function() {
 		if (this.targets.length) {
 			this.targets = [];
-			addMessage("Cancelled torpedo launch.");
+			addMessage("Cancelled missile launch.");
 			return false;
 		}
-		if (this.cargo.torpedo === 0) {
-			addMessage("Out of torpedos.", "error");
+		if (this.cargo.missile === 0) {
+			addMessage("Out of missiles.", "error");
 			return false;
 		}
 		if (!this.contacts.length) {
@@ -228,12 +228,12 @@ function Ship(x, y) {
 		return true;
 	};
 
-	this.launchTorpedo = function(num) {
-		if (!this.useEnergy(this.energyCosts.launchTorpedo)) return;
+	this.launchMissile = function(num) {
+		if (!this.useEnergy(this.energyCosts.launchMissile)) return;
 		if (num >= this.targets.length) return;
-		if (this.cargo.torpedo === 0) return; // This should not happen ever
-		this.cargo.torpedo--;
-		var torp = new Torpedo(this.x, this.y, this.targets[num]);
+		if (this.cargo.missile === 0) return; // This should not happen ever
+		this.cargo.missile--;
+		var torp = new Missile(this.x, this.y, this.targets[num]);
 		universe.addActor(torp);
 		this.targets = [];
 	};

@@ -133,9 +133,9 @@ UniverseItems.antimatter.desc = "Antimatter";
 UniverseItems.antimatter.item = "antimatter";
 UniverseItems.antimatter.energy = 100000;
 
-UniverseItems.torpedo = new ut.Tile("|", 136, 68, 34);
-UniverseItems.torpedo.desc = "Torpedo";
-UniverseItems.torpedo.item = "torpedo";
+UniverseItems.missile = new ut.Tile("|", 136, 68, 34);
+UniverseItems.missile.desc = "Missile";
+UniverseItems.missile.item = "missile";
 
 UniverseItems.navbeacon = new ut.Tile("b", 170, 0, 221);
 UniverseItems.navbeacon.desc = "Navbeacon";

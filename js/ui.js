@@ -50,7 +50,7 @@ Ship.prototype.updateUI = function() {
 	$("#hydrogen-energy").html("+" + UniverseItems.hydrogen.energy);
 	$("#radioactives-energy").html("+" + UniverseItems.radioactives.energy);
 	$("#antimatter-energy").html("+" + UniverseItems.antimatter.energy);
-	$("#torpedo-cost").html("-" + ec.createTorpedo);
+	$("#missile-cost").html("-" + ec.createMissile);
 	$("#beacon-cost").html("-" + ec.createBeacon);
 	var movkeys = [ ut.KEY_LEFT, ut.KEY_RIGHT, ut.KEY_UP, ut.KEY_DOWN, ut.KEY_H, ut.KEY_J, ut.KEY_K, ut.KEY_L ];
 	for (i = 0; i < movkeys.length; ++i)
@@ -69,9 +69,9 @@ Ship.prototype.updateUI = function() {
 		$("#exit").show().children(".energy").html("-" + ec.exitFactor * u.getAscendEnergy());
 	else $("#exit").hide();
 
-	// Torpedos
-	$("#torpedos").html(this.cargo.torpedos);
-	$("#torpedos").siblings(".energy").html("-" + this.energyCosts.launchTorpedo);
+	// Weapons
+	$("#missiles").html(this.cargo.missile);
+	$("#missiles").siblings(".energy").html("-" + this.energyCosts.launchMissile);
 	elem = $("#targetlist");
 	if (this.targets.length) {
 		str = "";
@@ -82,12 +82,12 @@ Ship.prototype.updateUI = function() {
 		if (!elem.is(":visible")) elem.show("blind", 500);
 	} else elem.html("").hide();
 
-	/*if (this.cargo.torpedos <= 0) $("#torpedos").html("-");
+	/*if (this.cargo.missiles <= 0) $("#missiles").html("-");
 	else {
 		str = "";
-		for (i = 0; i < this.cargo.torpedos; ++i)
+		for (i = 0; i < this.cargo.missiles; ++i)
 			str += "| ";
-		$("#torpedos").html(str);
+		$("#missiles").html(str);
 	}*/
 
 	// Cargo

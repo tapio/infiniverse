@@ -99,7 +99,7 @@ p {
 .itemstring { word-spacing: -0.6em; }
 
 /* Cargo colors */
-.torpedo { color: #842; }
+.missile { color: #842; }
 .energy { color: #70d; }
 .navbeacon { color: #a0d; }
 .metals { color: #779; }
