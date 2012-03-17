@@ -56,7 +56,7 @@ function PlanetAerial(x, y, neighbours) {
 
 	// Create collectables
 	var cnt;
-	if (universe.getItems(this.hash) === undefined) {
+	if (planetType === "gas" && universe.getItems(this.hash) === undefined) {
 		cnt = rand(0,10,rng);
 		for (i = 0; i < cnt; ++i) {
 			universe.addItem({
@@ -67,7 +67,7 @@ function PlanetAerial(x, y, neighbours) {
 		}
 		cnt = rand(0,3,rng);
 		for (i = 0; i < cnt; ++i) {
-			universe.addItem.push({
+			universe.addItem({
 				tile: clone(UniverseItems.radioactives),
 				x: rand(0, this.size-1, rng),
 				y: rand(0, this.size-1, rng)
