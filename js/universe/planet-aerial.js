@@ -170,9 +170,6 @@ function PlanetAerial(x, y, neighbours) {
 		}
 		var tile = new ut.Tile("▒", r,g,b, clampColor(r*0.6), clampColor(g*0.6), clampColor(b*0.6));
 		tile.desc = "Gas";
-
-		var item = universe.getItem(x, y, this.hash);
-		if (item) return replaceBackground(item, tile);
 		return tile;
 	};
 

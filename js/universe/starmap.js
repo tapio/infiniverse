@@ -12,6 +12,7 @@ function Starmap(x, y, neighbours) {
 	this.hash = ((rng.random() * 100000000000)|0).toString(16) + "map";
 	var fullRandom = new Alea();
 	var STARS = [ "✦", "★", "☀", "✶", "✳", "✷", "✸" ]; // ·✧✦☼☀✳☆★✶✷✸
+	var self = this;
 
 	var tile = neighbours(0,0);
 	var bright = (!tile.ch.length || tile.ch === " ") ? 0 : tile.r;
@@ -55,10 +56,6 @@ function Starmap(x, y, neighbours) {
 
 		var tile = new ut.Tile(block, star, star, star, br, bg, bb);
 		if (mask > 0.1) tile.nebula = true;
-
-		var item = universe.getItem(x, y, this.hash);
-		if (item) return replaceBackground(item, tile);
-
 		if (tile.nebula && !desc.length) tile.desc = "Nebula";
 		else if (desc.length) tile.desc = desc;
 		else tile.desc = "Vast empty space";

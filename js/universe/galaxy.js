@@ -3,7 +3,6 @@ function Galaxy() {
 	this.size = 60;
 	this.type = "galaxy";
 	this.nebulaFade = 0.333;
-	var self = this;
 	var NUMHUB   = 2000; // Number of stars in the core (Example: 2000)
 	var NUMDISK  = 4000; // Number of stars in the disk (Example: 4000)
 	var DISKRAD  = 90.0; // Radius of the disk (Example: 90.0)
@@ -81,8 +80,6 @@ function Galaxy() {
 	}
 
 	this.getTile = function(x, y) {
-		var item = universe.getItem(x, y, this.hash);
-		if (item) return replaceBackground(item, buffer[y][x]);
 		return buffer[y][x];
 	};
 

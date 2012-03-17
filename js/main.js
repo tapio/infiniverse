@@ -34,12 +34,23 @@ function addMessage(msg, msgtype) {
 
 // "Main loop"
 function tick() {
-	var i, a, len, fg, bg, tilex, tiley;
+	var i, a, item, len, fg, bg, tilex, tiley;
 	universe.updateActors();
 	pl.updateUI();
 	var camx = clamp(pl.x - term.cx, 0, universe.current.size - term.w);
 	var camy = clamp(pl.y - term.cy, 0, universe.current.size - term.h);
 	eng.update(camx + term.cx, camy + term.cy); // Update tiles
+	// Collectables
+	var items = universe.getItems();
+	len = items ? items.length : 0;
+	for (i = 0; i < len; ++i) {
+		item = items[i];
+		tilex = item.x - camx;
+		tiley = item.y - camy;
+		fg = item.tile;
+		bg = term.get(tilex, tiley).getBackgroundJSON(); // Background color
+		term.put(new ut.Tile(fg.ch, fg.r, fg.g, fg.b, bg.r, bg.g, bg.b), tilex, tiley);
+	}
 	// Actors
 	len = universe.actors.length;
 	for (i = 0; i < len; ++i) {

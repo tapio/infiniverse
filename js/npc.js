@@ -53,8 +53,13 @@ function NPCShip(x, y, type) {
 }
 
 NPCShip.prototype.damage = function(amount) {
+	if (this.dead) return;
 	this.hp -= amount;
-	if (this.hp <= 0) this.dead = true;
+	if (this.hp <= 0) {
+		var loot = { tile: clone(UniverseItems.metals), x: this.x, y: this.y };
+		universe.addItem(loot);
+		this.dead = true;
+	}
 };
 
 NPCShip.prototype.update = function() {

@@ -42,8 +42,6 @@ function SpaceStation(x, y, neighbours) {
 	}
 
 	this.getTile = function(x, y) {
-		var item = universe.getItem(x, y, this.hash);
-		if (item) return replaceBackground(item, buffer[y][x]);
 		return buffer[y][x];
 	};
 

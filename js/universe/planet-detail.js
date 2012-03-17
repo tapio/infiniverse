@@ -134,21 +134,7 @@ function PlanetDetail(x, y, neighbours) {
 	}
 
 	this.getTile = function(x, y) {
-		var item = universe.getItem(x, y, this.hash);
-		if (item) return replaceBackground(item, buffer[y][x]);
 		return buffer[y][x];
-	};
-
-	this.collect = function(x, y) {
-		for (var i = 0; i < collectables.length; ++i) {
-			if (x === collectables[i].x && y === collectables[i].y) {
-				var item = collectables[i].tile.item;
-				collectables.splice(i,1);
-				universe.saveInfo(uniqueid, { "collectables": collectables });
-				return item;
-			}
-		}
-		return "";
 	};
 
 	this.getMovementEnergy = function(x, y) {

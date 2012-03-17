@@ -108,17 +108,6 @@ function Universe(engine) {
 		return this.items[owner];
 	};
 
-	this.getItem = function(x, y, owner) {
-		owner = owner || this.current.hash;
-		var coll = this.items[owner];
-		if (!coll || !coll.length) return undefined;
-		for (var i = 0; i < coll.length; ++i) {
-			if (x === coll[i].x && y === coll[i].y)
-				return coll[i].tile;
-		}
-		return undefined;
-	};
-
 	this.removeItem = function(x, y, owner) {
 		owner = owner || this.current.hash;
 		var coll = this.items[owner];

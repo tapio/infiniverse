@@ -60,8 +60,8 @@ function SolarSystem(x, y, neighbours) {
 	var rng = new Alea("solar-system-randomizer", x, y);
 	this.hash = ((rng.random() * 100000000000)|0).toString(16) + "sol";
 	var fullRandom = new Alea();
-	var starCount = starMultiples[rand(0, starMultiples.length, rng)];
-	var planetCount = planetMultiples[rand(0, planetMultiples.length, rng)];
+	var starCount = starMultiples[rand(0, starMultiples.length-1, rng)];
+	var planetCount = planetMultiples[rand(0, planetMultiples.length-1, rng)];
 	var stationCount = rand(0,1,rng) ? rand(1,3,rng) : 0;
 
 	this.suns = [];
@@ -119,9 +119,6 @@ function SolarSystem(x, y, neighbours) {
 
 	// Can't use 'this' here due to passing this function to the tile engine
 	this.getTile = function(x, y) {
-		var item = universe.getItem(x, y, this.hash);
-		if (item) return item;
-
 		var i, obj, tile;
 		var desc = "Empty space";
 		// Background stars
