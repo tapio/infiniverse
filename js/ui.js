@@ -45,7 +45,7 @@ Ship.prototype.updateUI = function() {
 	if (cond <= 25) statusclass = "bad";
 	else if (cond < 75) statusclass = "warn";
 	$("#hullcond").html(cond+"%").attr("class", statusclass);
-	$("#energy").html(prettyNumber(this.energy));
+	$("#energy").html(echar + prettyNumber(this.energy));
 
 	// Devices
 	$("#hydrogen-energy").html("+" + echar + UniverseItems.hydrogen.energy);

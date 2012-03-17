@@ -103,8 +103,6 @@ function Ship(x, y) {
 		var checktile = universe.current.getTile(this.x, this.y);
 		if (checktile.blocks) {
 			this.x = oldx; this.y = oldy;
-		} else if (checktile.item && checktile.item.length) {
-			addMessage("Collect " + checktile.desc.toLowerCase() + " with [Space].");
 		}
 	};
 

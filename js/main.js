@@ -50,6 +50,9 @@ function tick() {
 		fg = item.tile;
 		bg = term.get(tilex, tiley).getBackgroundJSON(); // Background color
 		term.put(new ut.Tile(fg.ch, fg.r, fg.g, fg.b, bg.r, bg.g, bg.b), tilex, tiley);
+		if (item.x === pl.x && item.y === pl.y) {
+			addMessage("Collect " + item.tile.desc.toLowerCase() + " with [Space].");
+		}
 	}
 	// Actors
 	len = universe.actors.length;
