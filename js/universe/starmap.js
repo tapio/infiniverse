@@ -8,6 +8,8 @@ function Starmap(x, y, neighbours) {
 	var simplex_b = new SimplexNoise(new Alea('starmap_b', x, y));
 	var simplex_star = new SimplexNoise(new Alea('starmap_star', x, y));
 	var simplex_startype = new SimplexNoise(new Alea('starmap_startype', x, y));
+	var rng = new Alea("starmap", x, y);
+	this.hash = ((rng.random() * 100000000000)|0).toString(16) + "map";
 	var fullRandom = new Alea();
 	var STARS = [ "✦", "★", "☀", "✶", "✳", "✷", "✸" ]; // ·✧✦☼☀✳☆★✶✷✸
 

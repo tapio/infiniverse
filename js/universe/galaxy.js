@@ -14,6 +14,7 @@ function Galaxy() {
 	var FUZZ     = 25; // 25.0 // Maximum outlier distance from arms (Example: 25.0)
 
 	var rnd = new Alea('galaxy');
+	this.hash = ((rnd.random() * 100000000000)|0).toString(16) + "gal";
 
 	var i, j, sx, sy;
 	var buffer = new Array(this.size);

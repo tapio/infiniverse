@@ -58,6 +58,7 @@ function SolarSystem(x, y, neighbours) {
 	var nebColor = tile.getBackgroundJSON();
 
 	var rng = new Alea("solar-system-randomizer", x, y);
+	this.hash = ((rng.random() * 100000000000)|0).toString(16) + "sol";
 	var fullRandom = new Alea();
 	var starCount = starMultiples[rand(0, starMultiples.length, rng)];
 	var planetCount = planetMultiples[rand(0, planetMultiples.length, rng)];

@@ -131,9 +131,8 @@ function Ship(x, y) {
 	};
 
 	this.collect = function() {
-		if (!universe.current.collect) return;
 		if (!this.hasCargoSpace()) return;
-		var item = universe.current.collect(this.x, this.y);
+		var item = universe.removeItem(this.x, this.y);
 		if (!item || !item.length) return;
 		this.cargo[item] += 1;
 		addMessage("Collected " + UniverseItems[item].desc.toLowerCase() + ".");

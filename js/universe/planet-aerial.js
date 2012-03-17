@@ -52,31 +52,28 @@ function PlanetAerial(x, y, neighbours) {
 	var vegeTextures = {};
 	var groundTextures = {};
 
-	var uniqueid = ((rng.random() * 100000000000)|0).toString();
+	this.hash = ((rng.random() * 100000000000)|0).toString(16) + "pla";
 
 	// Create collectables
-	var collectables = universe.getInfo(uniqueid).collectables;
 	var cnt;
-	if (collectables === undefined) {
-		collectables = [];
+	if (universe.getItems(this.hash) === undefined) {
 		cnt = rand(0,10,rng);
 		for (i = 0; i < cnt; ++i) {
-			collectables.push({
+			universe.addItem({
 				tile: clone(UniverseItems.hydrogen),
 				x: rand(0, this.size-1, rng),
 				y: rand(0, this.size-1, rng)
-			});
+			}, this.hash);
 		}
 		cnt = rand(0,3,rng);
 		for (i = 0; i < cnt; ++i) {
-			collectables.push({
+			universe.addItem.push({
 				tile: clone(UniverseItems.radioactives),
 				x: rand(0, this.size-1, rng),
 				y: rand(0, this.size-1, rng)
-			});
+			}, this.hash);
 		}
 	}
-	universe.saveInfo(uniqueid, { "collectables": collectables });
 
 	this.generateGroundTextures = function() {
 		var r,g,b;
@@ -174,11 +171,8 @@ function PlanetAerial(x, y, neighbours) {
 		var tile = new ut.Tile("▒", r,g,b, clampColor(r*0.6), clampColor(g*0.6), clampColor(b*0.6));
 		tile.desc = "Gas";
 
-		for (var i = 0; i < collectables.length; ++i) {
-			if (x === collectables[i].x && y === collectables[i].y)
-				return replaceBackground(collectables[i].tile, tile);
-		}
-
+		var item = universe.getItem(x, y, this.hash);
+		if (item) return replaceBackground(item, tile);
 		return tile;
 	};
 
@@ -238,18 +232,6 @@ function PlanetAerial(x, y, neighbours) {
 			modtile.desc = veg.desc;
 		}
 		return addVariance(modtile, 5, rng);
-	};
-
-	this.collect = function(x, y) {
-		for (var i = 0; i < collectables.length; ++i) {
-			if (x === collectables[i].x && y === collectables[i].y) {
-				var item = collectables[i].tile.item;
-				collectables.splice(i,1);
-				universe.saveInfo(uniqueid, { "collectables": collectables });
-				return item;
-			}
-		}
-		return "";
 	};
 
 	this.getMovementEnergy = function(x, y) {

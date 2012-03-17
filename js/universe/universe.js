@@ -7,6 +7,7 @@ function Universe(engine) {
 	this.current = viewLevelStack[viewLevelStack.length-1];
 	this.actors = [];
 	this.persistentStore = {};
+	this.items = {};
 
 	this.postViewChange = function() {
 		this.current = viewLevelStack[viewLevelStack.length-1];
@@ -94,6 +95,42 @@ function Universe(engine) {
 		if (this.persistentStore.hasOwnProperty(hash))
 			return this.persistentStore[hash];
 		else return {};
+	};
+
+	this.addItem = function(item, owner) {
+		owner = owner || this.current.hash;
+		if (!this.items[owner]) this.items[owner] = [];
+		this.items[owner].push(item);
+	};
+
+	this.getItems = function(owner) {
+		owner = owner || this.current.hash;
+		return this.items[owner];
+	};
+
+	this.getItem = function(x, y, owner) {
+		owner = owner || this.current.hash;
+		var coll = this.items[owner];
+		if (!coll || !coll.length) return undefined;
+		for (var i = 0; i < coll.length; ++i) {
+			if (x === coll[i].x && y === coll[i].y)
+				return coll[i].tile;
+		}
+		return undefined;
+	};
+
+	this.removeItem = function(x, y, owner) {
+		owner = owner || this.current.hash;
+		var coll = this.items[owner];
+		if (!coll || !coll.length) return "";
+		for (var i = 0; i < coll.length; ++i) {
+			if (x === coll[i].x && y === coll[i].y) {
+				var item = coll[i].tile.item;
+				coll.splice(i,1);
+				return item;
+			}
+		}
+		return "";
 	};
 
 	this.getState = function() {

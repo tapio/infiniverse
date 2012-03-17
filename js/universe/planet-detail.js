@@ -16,7 +16,7 @@ function PlanetDetail(x, y, neighbours) {
 	for (i = 0; i < this.size; ++i)
 		buffer[i] = new Array(this.size);
 
-	var uniqueid = ((rng.random() * 100000000000)|0).toString();
+	this.hash = ((rng.random() * 100000000000)|0).toString(16) + "det";
 
 	tiles = [
 		neighbours(-1,  1),
@@ -112,35 +112,30 @@ function PlanetDetail(x, y, neighbours) {
 	}
 
 	// Create collectables
-	var collectables = universe.getInfo(uniqueid).collectables;
-	if (collectables === undefined) {
-		collectables = [];
+	if (universe.getItems(this.hash) === undefined) {
 		if (rand(0,2,rng) === 0) {
 			var cnt = rand(0,3,rng) === 0 ? rand(3,10,rng) : rand(1,3,rng);
 			for (i = 0; i < cnt; ++i) {
-				collectables.push({
+				universe.addItem({
 					tile: clone(UniverseItems.metals),
 					x: rand(0, this.size-1, rng),
 					y: rand(0, this.size-1, rng)
-				});
+				}, this.hash);
 			}
 			cnt = rand(0,3,rng) === 0 ? rand(1,3,rng) : 0;
 			for (i = 0; i < cnt; ++i) {
-				collectables.push({
+				universe.addItem({
 					tile: clone(UniverseItems.radioactives),
 					x: rand(0, this.size-1, rng),
 					y: rand(0, this.size-1, rng)
-				});
+				}, this.hash);
 			}
 		}
 	}
-	universe.saveInfo(uniqueid, { "collectables": collectables });
 
 	this.getTile = function(x, y) {
-		for (var i = 0; i < collectables.length; ++i) {
-			if (x === collectables[i].x && y === collectables[i].y)
-				return replaceBackground(collectables[i].tile, buffer[y][x]);
-		}
+		var item = universe.getItem(x, y, this.hash);
+		if (item) return replaceBackground(item, buffer[y][x]);
 		return buffer[y][x];
 	};
 
