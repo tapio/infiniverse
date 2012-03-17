@@ -119,6 +119,9 @@ function SolarSystem(x, y, neighbours) {
 
 	// Can't use 'this' here due to passing this function to the tile engine
 	this.getTile = function(x, y) {
+		var item = universe.getItem(x, y, this.hash);
+		if (item) return item;
+
 		var i, obj, tile;
 		var desc = "Empty space";
 		// Background stars
