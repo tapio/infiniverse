@@ -18,7 +18,9 @@ function Missile(x, y, target) {
 	this.target = target;
 	this.dead = false;
 	this.energy = 30;
-	this.tileId = getAngledCharIndex(x, y, target.x, target.y);
+	this.targetable = true;
+	this.tile = missileTiles[getAngledCharIndex(x, y, target.x, target.y)];
+	this.desc = "Missile";
 }
 
 Missile.prototype.damage = function(amount) {
@@ -39,9 +41,9 @@ Missile.prototype.update = function() {
 		this.dead = true;
 		return;
 	}
-	this.tileId = getAngledCharIndex(this.x, this.y, this.target.x, this.target.y);
+	this.tile = missileTiles[getAngledCharIndex(this.x, this.y, this.target.x, this.target.y)];
 };
 
 Missile.prototype.getTile = function() {
-	return missileTiles[this.tileId];
+	return this.tile;
 };
