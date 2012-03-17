@@ -140,6 +140,7 @@ function Ship(x, y) {
 			title: navname, x: this.x, y: this.y,
 			universeState: universe.getState()
 		});
+		addMessage("Navbeacon deployed.");
 	};
 
 	this.gotoBeacon = function(index) {
@@ -148,6 +149,7 @@ function Ship(x, y) {
 		universe.setState(this.activeBeacons[index].universeState);
 		this.x = this.activeBeacons[index].x;
 		this.y = this.activeBeacons[index].y;
+		addMessage("Jump to navbeacon completed.");
 	};
 
 	this.createEnergy = function(button) {
