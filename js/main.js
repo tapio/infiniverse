@@ -95,32 +95,36 @@ function toggleMenu(menuid) {
 // Key press handler - movement & collision handling
 function onKeyDown(k) {
 	var movedir = { x: 0, y: 0 }; // Movement vector
+	var doTick = false;
 	if (k === ut.KEY_LEFT || k === ut.KEY_H) movedir.x = -1;
 	else if (k === ut.KEY_RIGHT || k === ut.KEY_L) movedir.x = 1;
 	else if (k === ut.KEY_UP || k === ut.KEY_K) movedir.y = -1;
 	else if (k === ut.KEY_DOWN || k === ut.KEY_J) movedir.y = 1;
-	if (k === ut.KEY_ENTER) pl.enter();
-	if (k === ut.KEY_SPACE) pl.collect();
-	if (k === ut.KEY_BACKSPACE) pl.exit();
-	if (k === ut.KEY_TAB) pl.scanSensors();
+	if (k === ut.KEY_ENTER) { pl.enter(); doTick = true; }
+	if (k === ut.KEY_BACKSPACE) { pl.exit(); doTick = true; }
+	if (k === ut.KEY_SPACE) { pl.collect(); doTick = true; }
+	if (k === ut.KEY_TAB) { pl.scanSensors(); doTick = true; }
 	if (k === ut.KEY_S) pl.toggleSensors();
 	if (k === ut.KEY_G) toggleMenu("#beacon-menu");
 	if (k === ut.KEY_E) toggleMenu("#energyconverter-menu");
 	if (k === ut.KEY_F) toggleMenu("#massfabricator-menu");
-	if (k === ut.KEY_B) pl.deployBeacon();
+	if (k === ut.KEY_B) { pl.deployBeacon(); doTick = true; }
 	if (k === ut.KEY_M) {
 		if (pl.prepareMissile()) toggleMenu("#targetlist");
 	}
 	if (k >= ut.KEY_1 && k <= ut.KEY_9) {
-		if (activeMenu === "#targetlist") pl.launchMissile(k - ut.KEY_1);
-		else if (activeMenu === "#beacon-menu") pl.gotoBeacon(k - ut.KEY_1);
-		else if (activeMenu === "#energyconverter-menu") pl.createEnergy(k - ut.KEY_1 + 1);
-		else if (activeMenu === "#massfabricator-menu") pl.createMass(k - ut.KEY_1 + 1);
+		if (activeMenu === "#targetlist") { pl.launchMissile(k - ut.KEY_1); doTick = true; }
+		else if (activeMenu === "#beacon-menu") { pl.gotoBeacon(k - ut.KEY_1); doTick = true; }
+		else if (activeMenu === "#energyconverter-menu") { pl.createEnergy(k - ut.KEY_1 + 1); doTick = true; }
+		else if (activeMenu === "#massfabricator-menu") { pl.createMass(k - ut.KEY_1 + 1); doTick = true; }
 	}
 	if (k === ut.KEY_R) term.setRenderer(term.getRendererString() === "dom" ? "canvas" : "dom");
-	if (movedir.x !== 0 || movedir.y !== 0)
+	if (movedir.x !== 0 || movedir.y !== 0) {
 		pl.move(movedir.x, movedir.y, ut.isKeyPressed(ut.KEY_SHIFT));
-	tick();
+		doTick = true;
+	}
+	if (doTick) tick();
+	else pl.updateUI();
 }
 
 function onKeyUp(k) {
