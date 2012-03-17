@@ -44,17 +44,27 @@
 			<section id="statusbox" class="infobox">
 				<h3>Ship Status</h3>
 				<ul>
-					<li>Hull condition: <span id="hullcond">n/a</span></li>
-					<li>Energy: <span id="energy" class="energy">n/a</span></li>
+					<li>Hull condition: <span id="hullcond">n/a</span>
+						<div class="help">Ship condition, don't let it drop to zero.</div>
+					</li>
+					<li>Energy: <span id="energy" class="energy">n/a</span>
+						<div class="help">Currently available energy. You need this for everything.</div>
+					</li>
 				</ul>
 			</section>
 
 			<section id="sensorbox" class="infobox">
 				<h3>Sensors</h3>
 				<ul>
-					<li>Vicinity: <span id="tiledesc">n/a</span></li>
-					<li>[Tab] Scan <span id="sensorenergy" class="energy">n/a</span></li>
-					<li>[S] Setting: <span id="sensorsetting">n/a</span></li>
+					<li>Vicinity: <span id="tiledesc">n/a</span>
+						<div class="help">What's underneath you.</div>
+					</li>
+					<li>[Tab] Scan <span id="sensorenergy" class="energy">n/a</span>
+						<div class="help">Check what objects there are in the current area.</div>
+					</li>
+					<li>[S] Setting: <span id="sensorsetting">n/a</span>
+						<div class="help">What kind of targets should be displayed after scan.</div>
+					</li>
 					<li><span id="contactstitle">n/a</span>
 						<ul id="sensorlist" class="submenu">
 						</ul>
@@ -64,10 +74,13 @@
 
 			<section id="weaponbox" class="infobox">
 				<h3>Weapon Systems</h3>
+				<div class="help">You need a target for the missiles, so use scanner first.</div>
 				<ul>
 					<li>[M] Missiles: <span id="missiles" class="missile">n/a</span> <span class="energy">n/a</span></li>
 					<li><ul id="targetlist" class="submenu">
-					</ul></li>
+					</ul>
+					<div class="help">Pick the target by pressing the number next to it in this list.</div>
+					</li>
 				</ul>
 			</section>
 		</div>
@@ -77,32 +90,52 @@
 				<h3>Devices</h3>
 				<ul id="devicelist">
 					<li>[E] <span>Energy converter</span>
+						<span class="help">Convert matter into energy.</span>
 						<ul id="energyconverter-menu" class="submenu">
 							<li>[1] Convert <span class="hydrogen" title="Hydrogen">H</span>
-								<span id="hydrogen-energy" class="energy">n/a</span></li>
+								<span id="hydrogen-energy" class="energy">n/a</span>
+								<div class="help">Hydrogen gives you a little energy.</div>
+								</li>
 							<li>[2] Convert <span class="radioactives" title="Radioactives">R</span>
-								<span id="radioactives-energy" class="energy">n/a</span></li>
+								<span id="radioactives-energy" class="energy">n/a</span>
+								<div class="help">Radioactives are a good energy source.</div>
+								</li>
 							<li>[3] Convert <span class="antimatter" title="Antimatter">A</span>
-								<span id="antimatter-energy" class="energy">n/a</span></li>
+								<span id="antimatter-energy" class="energy">n/a</span>
+								<div class="help">Antimatter is the best energy source.</div>
+								</li>
 						</ul>
 					</li>
 					<li>[F] <span>Mass fabricator</span>
 						<ul id="massfabricator-menu" class="submenu">
 							<li>[1] Create <span class="missile" title="Missile">T</span>
-								<span id="missile-cost" class="energy">n/a</span></li>
+								<span id="missile-cost" class="energy">n/a</span>
+								<div class="help">Missile.</div>
+								</li>
 							<li>[2] Create <span class="navbeacon" title="Navbeacon">B</span>
-								<span id="beacon-cost" class="energy">n/a</span></li>
+								<span id="beacon-cost" class="energy">n/a</span>
+								<div class="help">Navbeacon.</div>
+								</li>
 						</ul>
 					</li>
-					<li id="drives">[←↓↑→] <span>Engines</span> <span class="energy">n/a</span></li>
-					<li id="warpdrives">[⇧ ] <span>Warp drives</span> <span class="energy">n/a</span></li>
-					<li id="enter">[ ↲] <span>Descent device</span> <span class="energy">n/a</span></li>
-					<li id="exit">[⇦ ] <span>Ascension engine</span> <span class="energy">n/a</span></li>
+					<li id="drives">[←↓↑→] <span>Engines</span> <span class="energy">n/a</span>
+						<div class="help">Use arrow keys to move around.</div>
+					</li>
+					<li id="warpdrives">[⇧ ] <span>Warp drives</span> <span class="energy">n/a</span>
+						<div class="help">Hold shift while moving to cover distance faster.</div>
+					</li>
+					<li id="enter">[ ↲] <span>Descent device</span> <span class="energy">n/a</span>
+						<div class="help">Enter the location underneath you with Return key.</div>
+					</li>
+					<li id="exit">[⇦ ] <span>Ascension engine</span> <span class="energy">n/a</span>
+						<div class="help">Press backspace to exit the current location and ascend to the higher level.</div>
+					</li>
 				</ul>
 			</section>
 
 			<section id="navbeaconbox" class="infobox">
 				<h3>Navbeacons</h3>
+				<div class="help">Navbeacons allow you to "bookmark" your location and teleport back from anywhere.</div>
 				<ul>
 					<li>[B] Deployable: <span id="beaconstatus" class="navbeacon"></span></li>
 					<li>[G] <span>Active:</span> <span id="activebeacons" class="navbeacon"></span>
@@ -115,6 +148,7 @@
 
 			<section id="cargobox" class="infobox">
 				<h3>Cargo</h3>
+				<div class="help">Shows the items in your cargo hold.</div>
 				<p>Space used: <span id="cargostatus">n/a</span></p>
 				<div id="cargo" class="itemstring">
 				</div>

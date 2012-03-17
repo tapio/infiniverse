@@ -221,7 +221,7 @@ function Ship(x, y) {
 			addMessage("No suitable targets, use sensors to rescan.", "error");
 			return false;
 		}
-		addMessage("Press target's number to launch, [T] to cancel.", "action");
+		addMessage("Press target's number to launch, [M] to cancel.", "action");
 		return true;
 	};
 

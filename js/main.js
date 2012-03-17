@@ -105,6 +105,7 @@ function onKeyDown(k) {
 	if (k === ut.KEY_SPACE) { pl.collect(); doTick = true; }
 	if (k === ut.KEY_TAB) { pl.scanSensors(); doTick = true; }
 	if (k === ut.KEY_S) pl.toggleSensors();
+	if (k === ut.KEY_F1) $(".help").toggle("blind", 500);
 	if (k === ut.KEY_G) toggleMenu("#beacon-menu");
 	if (k === ut.KEY_E) toggleMenu("#energyconverter-menu");
 	if (k === ut.KEY_F) toggleMenu("#massfabricator-menu");

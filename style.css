@@ -87,6 +87,13 @@ p {
 	white-space: nowrap;
 }
 
+.help {
+	display: none;
+	color: #660;
+	font-size: 85%;
+	margin-left: 8px;
+}
+
 #targetlist { display: none; }
 #beacon-menu { display: none; }
 #energyconverter-menu { display: none; }
