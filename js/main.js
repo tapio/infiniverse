@@ -17,7 +17,7 @@ function addMessage(msg, msgtype) {
 	else messages.push({ text: msg, type: msgtype, count: 1 });
 	if (messages.length > maxMessages) messages.splice(0, messages.length - maxMessages);
 	var msgs = "", last = messages.length-1, color, fadefactor, r, g, b, mult;
-	var colors = { info: {r:80,g:80,b:255}, error: {r:255,g:80,b:80} };
+	var colors = { info: {r:80,g:80,b:255}, action: {r:150,g:0,b:250}, error: {r:255,g:80,b:80} };
 	for (var i = last; i >= 0; --i) {
 		color = colors[messages[i].type];
 		fadefactor = (last-i)/3 + 1;
@@ -72,6 +72,10 @@ function toggleMenu(menuid) {
 	// Trigger targetlist closing
 	if (menuid !== "#targetlist") pl.targets = [];
 	else activeMenu = "#targetlist";
+	// Add help message
+	if (menuid === "#beacon-menu") addMessage("Press a number to jump to that navbeacon.", "action");
+	if (menuid === "#energyconverter-menu") addMessage("Press a number to convert the corresponding mass to energy.", "action");
+	if (menuid === "#massfabricator-menu") addMessage("Press a number to create the corresponding item.", "action");
 }
 
 // Key press handler - movement & collision handling

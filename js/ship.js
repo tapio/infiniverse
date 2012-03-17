@@ -4,7 +4,7 @@ function Ship(x, y) {
 	this.y = y || 0;
 	this.tile = new ut.Tile("@", 100, 100, 100);
 	this.desc = "Player";
-	this.energy = 10000;
+	this.energy = 10000000;
 	this.maxHull = 100;
 	this.hull = this.maxHull;
 	this.torpedos = 10;
@@ -206,7 +206,6 @@ function Ship(x, y) {
 		}
 		this.targets = [];
 		var i;
-		//for (i = this.contacts.length-1; i >= 0; --i) {
 		for (i = 0; i < this.contacts.length; ++i) {
 			if (this.contacts[i].targetable) this.targets.push(this.contacts[i]);
 		}
@@ -214,6 +213,7 @@ function Ship(x, y) {
 			addMessage("No suitable targets, use sensors to rescan.", "error");
 			return false;
 		}
+		addMessage("Press target's number to launch, [T] to cancel.", "action");
 		return true;
 	};
 
