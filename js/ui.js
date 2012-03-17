@@ -25,7 +25,7 @@ Ship.prototype.updateUI = function() {
 	}
 
 	// Beacons
-	$("#beaconstatus").html(this.beacons);
+	$("#beaconstatus").html(this.cargo.navbeacon);
 	len = this.activeBeacons.length;
 	$("#activebeacons").html(len + "/" + this.maxActiveBeacons);
 	if (len === 0) $("#beacon-menu").html("<li>No active beacons.</li>");
@@ -47,9 +47,9 @@ Ship.prototype.updateUI = function() {
 	$("#energy").html(prettyNumber(this.energy));
 
 	// Devices
-	$("#minerals-energy").html("+" + ec.convertMinerals);
-	$("#radioactives-energy").html("+" + ec.convertRadioactives);
-	$("#antimatter-energy").html("+" + ec.convertAntimatter);
+	$("#hydrogen-energy").html("+" + UniverseItems.hydrogen.energy);
+	$("#radioactives-energy").html("+" + UniverseItems.radioactives.energy);
+	$("#antimatter-energy").html("+" + UniverseItems.antimatter.energy);
 	$("#torpedo-cost").html("-" + ec.createTorpedo);
 	$("#beacon-cost").html("-" + ec.createBeacon);
 	var movkeys = [ ut.KEY_LEFT, ut.KEY_RIGHT, ut.KEY_UP, ut.KEY_DOWN, ut.KEY_H, ut.KEY_J, ut.KEY_K, ut.KEY_L ];
@@ -70,7 +70,7 @@ Ship.prototype.updateUI = function() {
 	else $("#exit").hide();
 
 	// Torpedos
-	$("#torpedos").html(this.torpedos);
+	$("#torpedos").html(this.cargo.torpedos);
 	$("#torpedos").siblings(".energy").html("-" + this.energyCosts.launchTorpedo);
 	elem = $("#targetlist");
 	if (this.targets.length) {
@@ -82,10 +82,10 @@ Ship.prototype.updateUI = function() {
 		if (!elem.is(":visible")) elem.show("blind", 500);
 	} else elem.html("").hide();
 
-	/*if (this.torpedos <= 0) $("#torpedos").html("-");
+	/*if (this.cargo.torpedos <= 0) $("#torpedos").html("-");
 	else {
 		str = "";
-		for (i = 0; i < this.torpedos; ++i)
+		for (i = 0; i < this.cargo.torpedos; ++i)
 			str += "| ";
 		$("#torpedos").html(str);
 	}*/
@@ -100,11 +100,12 @@ Ship.prototype.updateUI = function() {
 	}
 	this.usedCargo = 0;
 	str = "";
-	if (this.beacons > 0) str += cargoTypeHTML("B", "beacon", "Navbeacon", this.beacons);
-	if (this.torpedos > 0) str += cargoTypeHTML("T", "torpedo", "Torpedo", this.torpedos);
-	if (this.minerals > 0) str += cargoTypeHTML("M", "minerals", "Minerals", this.minerals);
-	if (this.radioactives > 0) str += cargoTypeHTML("R", "radioactives", "Radioactives", this.radioactives);
-	if (this.antimatter > 0) str += cargoTypeHTML("A", "antimatter", "Antimatter", this.antimatter);
+	for (var cargotype in this.cargo) {
+		if (this.cargo[cargotype]) {
+			var protoitem = UniverseItems[cargotype];
+			str += cargoTypeHTML(protoitem.ch, cargotype, protoitem.desc, this.cargo[cargotype]);
+		}
+	}
 	var emptySpace = this.maxCargo - this.usedCargo;
 	if (emptySpace > 0) str += cargoTypeHTML("-", "empty", "Free space", emptySpace);
 	$("#cargo").html(str);

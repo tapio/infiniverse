@@ -106,3 +106,32 @@ function Universe(engine) {
 		}
 	};
 }
+
+var UniverseItems = {};
+
+UniverseItems.metals = new ut.Tile("M", 119, 119, 153);
+UniverseItems.metals.desc = "Metals";
+UniverseItems.metals.item = "metals";
+
+UniverseItems.hydrogen = new ut.Tile("H", 0, 119, 255);
+UniverseItems.hydrogen.desc = "Hydrogen";
+UniverseItems.hydrogen.item = "hydrogen";
+UniverseItems.hydrogen.energy = 100;
+
+UniverseItems.radioactives = new ut.Tile("R", 0, 255, 0);
+UniverseItems.radioactives.desc = "Radioactives";
+UniverseItems.radioactives.item = "radioactives";
+UniverseItems.radioactives.energy = 2000;
+
+UniverseItems.antimatter = new ut.Tile("A", 255, 255, 255);
+UniverseItems.antimatter.desc = "Antimatter";
+UniverseItems.antimatter.item = "antimatter";
+UniverseItems.antimatter.energy = 100000;
+
+UniverseItems.torpedo = new ut.Tile("|", 136, 68, 34);
+UniverseItems.torpedo.desc = "Torpedo";
+UniverseItems.torpedo.item = "torpedo";
+
+UniverseItems.navbeacon = new ut.Tile("b", 170, 0, 221);
+UniverseItems.navbeacon.desc = "Navbeacon";
+UniverseItems.navbeacon.item = "navbeacon";

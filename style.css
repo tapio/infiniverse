@@ -101,8 +101,9 @@ p {
 /* Cargo colors */
 .torpedo { color: #842; }
 .energy { color: #70d; }
-.beacon { color: #a0d; }
-.minerals { color: #07f; }
+.navbeacon { color: #a0d; }
+.metals { color: #779; }
+.hydrogen { color: #07f; }
 .radioactives { color: #0f0; }
 .antimatter { color: #fff; }
 .empty { color: #666; }

@@ -112,12 +112,6 @@ function PlanetDetail(x, y, neighbours) {
 	}
 
 	// Create collectables
-	var mineralsTile = new ut.Tile("M", 0, 119, 255);
-	mineralsTile.item = "minerals";
-	mineralsTile.desc = "Minerals";
-	var radioactivesTile = new ut.Tile("R", 0, 255, 0);
-	radioactivesTile.item = "radioactives";
-	radioactivesTile.desc = "Radioactives";
 	var collectables = universe.getInfo(uniqueid).collectables;
 	if (collectables === undefined) {
 		collectables = [];
@@ -125,7 +119,7 @@ function PlanetDetail(x, y, neighbours) {
 			var cnt = rand(0,3,rng) === 0 ? rand(3,10,rng) : rand(1,3,rng);
 			for (i = 0; i < cnt; ++i) {
 				collectables.push({
-					tile: mineralsTile,
+					tile: clone(UniverseItems.metals),
 					x: rand(0, this.size-1, rng),
 					y: rand(0, this.size-1, rng)
 				});
@@ -133,7 +127,7 @@ function PlanetDetail(x, y, neighbours) {
 			cnt = rand(0,3,rng) === 0 ? rand(1,3,rng) : 0;
 			for (i = 0; i < cnt; ++i) {
 				collectables.push({
-					tile: radioactivesTile,
+					tile: clone(UniverseItems.radioactives),
 					x: rand(0, this.size-1, rng),
 					y: rand(0, this.size-1, rng)
 				});

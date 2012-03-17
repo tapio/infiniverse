@@ -4,23 +4,17 @@ function Ship(x, y) {
 	this.y = y || 0;
 	this.tile = new ut.Tile("@", 100, 100, 100);
 	this.desc = "Player";
-	this.energy = 10000000;
+	this.energy = 1000000;
 	this.maxHull = 100;
 	this.hull = this.maxHull;
-	this.torpedos = 10;
 	this.sensorSetting = 0;
 	this.contacts = [];
 	this.targets = [];
 	this.maxCargo = 30;
 	this.usedCargo = 0;
-	this.beacons = 2;
 	this.activeBeacons = [];
 	this.maxActiveBeacons = 8;
-	this.minerals = 6;
-	this.radioactives = 3;
-	this.antimatter = 1;
 	this.energyCosts = {
-		convertMinerals: 100, convertRadioactives: 2000, convertAntimatter: 100000,
 		createTorpedo: 200, createBeacon: 5000,
 		driveFactor: 1, warpFactor: 30,
 		enterFactor: 1, exitFactor: 1,
@@ -28,6 +22,7 @@ function Ship(x, y) {
 		gotoBeacon: 5000,
 		launchTorpedo: 200
 	};
+	this.cargo = { torpedo: 5, navbeacon: 2, metals: 2, hydrogen: 4, radioactives: 2, antimatter: 1 };
 	this.scanSettings = [ "Closest", "Artificial", "Celestial" ];
 
 	this.sortContacts = function() {
@@ -108,7 +103,7 @@ function Ship(x, y) {
 		if (checktile.blocks) {
 			this.x = oldx; this.y = oldy;
 		} else if (checktile.item && checktile.item.length) {
-			addMessage("Collect " + checktile.desc + " with [Space].");
+			addMessage("Collect " + checktile.desc.toLowerCase() + " with [Space].");
 		}
 	};
 
@@ -139,15 +134,12 @@ function Ship(x, y) {
 		if (!this.hasCargoSpace()) return;
 		var item = universe.current.collect(this.x, this.y);
 		if (!item || !item.length) return;
-		switch (item) {
-			case "minerals": this.minerals++; addMessage("Collected minerals."); break;
-			case "radioactives": this.radioactives++; addMessage("Collected radioactives."); break;
-			case "antimatter": this.radioactives++; addMessage("Collected antimatter."); break;
-		}
+		this.cargo[item] += 1;
+		addMessage("Collected " + UniverseItems[item].desc.toLowerCase() + ".");
 	};
 
 	this.deployBeacon = function() {
-		if (this.beacons === 0) {
+		if (this.cargo.navbeacon === 0) {
 			addMessage("Out of navbeacons.", "error");
 			return;
 		}
@@ -155,7 +147,7 @@ function Ship(x, y) {
 			addMessage("Maximum number of active navbeacons reached.", "error");
 			return;
 		}
-		this.beacons--;
+		this.cargo.navbeacon--;
 		var navname = "", rnd = new Alea();
 		for (var i = 0; i < 10; ++i) navname += (~~(rnd.random()*16)).toString(16);
 		this.activeBeacons.push({
@@ -175,37 +167,35 @@ function Ship(x, y) {
 	};
 
 	this.createEnergy = function(button) {
+		var matter;
 		switch (button) {
-			case 1:
-				if (this.minerals > 0) {
-					this.minerals--;
-					this.energy += this.energyCosts.convertMinerals;
-				} else addMessage("Not enough minerals.", "error");
-				break;
-			case 2:
-				if (this.radioactives > 0) {
-					this.radioactives--;
-					this.energy += this.energyCosts.convertRadioactives;
-				} else addMessage("Not enough radioactives.", "error");
-				break;
-			case 3:
-				if (this.antimatter > 0) {
-					this.antimatter--;
-					this.energy += this.energyCosts.convertAntimatter;
-				} else addMessage("Not enough antimatter.", "error");
-				break;
+			case 1: matter = "hydrogen"; break;
+			case 2: matter = "radioactives"; break;
+			case 3: matter = "antimatter"; break;
 		}
+		if (!matter) return;
+		var protoitem = UniverseItems[matter];
+		if (this.cargo[matter] <= 0) {
+			addMessage("Not enough " + protoitem.desc.toLowerCase() + ".", "error");
+			return;
+		}
+		if (!protoitem.energy) {
+			addMessage("Cannot convert " + protoitem.desc.toLowerCase() + " to energy.", "error");
+			return;
+		}
+		this.cargo[matter] -= 1;
+		this.energy += protoitem.energy;
 	};
 
 	this.createMass = function(button) {
 		switch (button) {
 			case 1:
 				if (this.hasCargoSpace() && this.useEnergy(this.energyCosts.createTorpedo))
-					this.torpedos++;
+					this.cargo.torpedo++;
 				break;
 			case 2:
 				if (this.hasCargoSpace() && this.useEnergy(this.energyCosts.createBeacon))
-					this.beacons++;
+					this.cargo.navbeacon++;
 				break;
 		}
 	};
@@ -216,7 +206,7 @@ function Ship(x, y) {
 			addMessage("Cancelled torpedo launch.");
 			return false;
 		}
-		if (this.torpedos === 0) {
+		if (this.cargo.torpedo === 0) {
 			addMessage("Out of torpedos.", "error");
 			return false;
 		}
@@ -240,8 +230,8 @@ function Ship(x, y) {
 	this.launchTorpedo = function(num) {
 		if (!this.useEnergy(this.energyCosts.launchTorpedo)) return;
 		if (num >= this.targets.length) return;
-		if (this.torpedos === 0) return; // This should not happen ever
-		this.torpedos--;
+		if (this.cargo.torpedo === 0) return; // This should not happen ever
+		this.cargo.torpedo--;
 		var torp = new Torpedo(this.x, this.y, this.targets[num]);
 		universe.addActor(torp);
 		this.targets = [];
