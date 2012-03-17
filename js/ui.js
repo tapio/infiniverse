@@ -1,5 +1,6 @@
 
 Ship.prototype.updateUI = function() {
+	var echar = "↯";
 	var i, str, len, statusclass, elem;
 	var ec = this.energyCosts;
 	var u = universe.current;
@@ -8,7 +9,7 @@ Ship.prototype.updateUI = function() {
 	// Sensorsbox
 	var t = universe.current.getTile(this.x, this.y);
 	$("#tiledesc").html(t && t.desc && t.desc.length ? t.desc : "n/a");
-	$("#sensorenergy").html("-" + ec.sensors);
+	$("#sensorenergy").html(echar + ec.sensors);
 	$("#sensorsetting").html(this.scanSettings[this.sensorSetting]);
 	len = this.contacts.length;
 	elem = $("#sensorlist");
@@ -33,7 +34,7 @@ Ship.prototype.updateUI = function() {
 		str = "";
 		for (i = 0; i < len; ++i)
 			str += "<li>["+(i+1)+"] " + this.activeBeacons[i].title +
-				' <span class="energy">-' + ec.gotoBeacon + '</span>';
+				' <span class="energy">' + echar + ec.gotoBeacon + '</span>';
 		$("#beacon-menu").html(str);
 	}
 
@@ -47,31 +48,31 @@ Ship.prototype.updateUI = function() {
 	$("#energy").html(prettyNumber(this.energy));
 
 	// Devices
-	$("#hydrogen-energy").html("+" + UniverseItems.hydrogen.energy);
-	$("#radioactives-energy").html("+" + UniverseItems.radioactives.energy);
-	$("#antimatter-energy").html("+" + UniverseItems.antimatter.energy);
-	$("#missile-cost").html("-" + ec.createMissile);
-	$("#beacon-cost").html("-" + ec.createBeacon);
+	$("#hydrogen-energy").html("+" + echar + UniverseItems.hydrogen.energy);
+	$("#radioactives-energy").html("+" + echar + UniverseItems.radioactives.energy);
+	$("#antimatter-energy").html("+" + echar + UniverseItems.antimatter.energy);
+	$("#missile-cost").html(echar + ec.createMissile);
+	$("#beacon-cost").html(echar + ec.createBeacon);
 	var movkeys = [ ut.KEY_LEFT, ut.KEY_RIGHT, ut.KEY_UP, ut.KEY_DOWN, ut.KEY_H, ut.KEY_J, ut.KEY_K, ut.KEY_L ];
 	for (i = 0; i < movkeys.length; ++i)
 		if (ut.isKeyPressed(movkeys[i])) { $("#drives span").first().attr("class", "online"); break; }
 	if (i >= movkeys.length) $("#drives span").first().attr("class", "");
 	var movEne = u.getMovementEnergy(this.x, this.y);
-	$("#drives").children(".energy").html("-" + this.energyCosts.driveFactor * movEne);
+	$("#drives").children(".energy").html(echar + this.energyCosts.driveFactor * movEne);
 
 	if (ut.isKeyPressed(ut.KEY_SHIFT)) $("#warpdrives span").first().attr("class", "online");
 	else $("#warpdrives span").first().attr("class", "");
-	$("#warpdrives").children(".energy").html("-" + ec.warpFactor * movEne);
+	$("#warpdrives").children(".energy").html(echar + ec.warpFactor * movEne);
 	if (u.getDescendEnergy() >= 0)
-		$("#enter").show().children(".energy").html("-" + ec.enterFactor * u.getDescendEnergy());
+		$("#enter").show().children(".energy").html(echar + ec.enterFactor * u.getDescendEnergy());
 	else $("#enter").hide();
 	if (u.getAscendEnergy() >= 0)
-		$("#exit").show().children(".energy").html("-" + ec.exitFactor * u.getAscendEnergy());
+		$("#exit").show().children(".energy").html(echar + ec.exitFactor * u.getAscendEnergy());
 	else $("#exit").hide();
 
 	// Weapons
 	$("#missiles").html(this.cargo.missile);
-	$("#missiles").siblings(".energy").html("-" + this.energyCosts.launchMissile);
+	$("#missiles").siblings(".energy").html(echar + this.energyCosts.launchMissile);
 	elem = $("#targetlist");
 	if (this.targets.length) {
 		str = "";
