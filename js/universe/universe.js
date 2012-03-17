@@ -75,9 +75,14 @@ function Universe(engine) {
 
 	this.updateActors = function() {
 		var i = 0;
+		// Update
+		for (i = 0; i< this.actors.length; ++i)
+			this.actors[i].update();
+		// Reap the dead
+		i = 0;
 		while (i < this.actors.length) {
-			if (!this.actors[i].update || this.actors[i].update()) ++i;
-			else this.actors.splice(i,1); // If update returns false, remove the actor
+			if (this.actors[i].dead !== true) ++i;
+			else this.actors.splice(i,1);
 		}
 	};
 

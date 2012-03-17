@@ -7,6 +7,7 @@ function Ship(x, y) {
 	this.energy = 1000000;
 	this.maxHull = 100;
 	this.hull = this.maxHull;
+	this.dead = false;
 	this.sensorSetting = 0;
 	this.contacts = [];
 	this.targets = [];
@@ -240,6 +241,7 @@ function Ship(x, y) {
 	this.damage = function(amount) {
 		this.hull -= amount;
 		if (this.hull <= 0) {
+			this.dead = true;
 			addMessage("Ship destroyed!", "error");
 		}
 	};
@@ -254,8 +256,7 @@ function Ship(x, y) {
 	};
 
 	this.update = function() {
-		//if (this.hull <= 0) return false;
-		return true;
+		//if (this.dead) return;
 	};
 }
 
