@@ -8,13 +8,15 @@ function Universe(engine) {
 	this.actors = [];
 
 	this.postViewChange = function() {
-		this.current.actors = [];
 		this.current = viewLevelStack[viewLevelStack.length-1];
 		if (this.current.type == "aerial") this.eng.setWorldSize();
 		else this.eng.setWorldSize(this.current.size, this.current.size);
 		this.eng.setTileFunc(this.current.getTile);
 		this.actors = this.current.actors ? this.current.actors : [];
-		this.actors.push(pl);
+		var i;
+		for (i = 0; i < this.actors.length; ++i)
+			if (this.actors[i] === pl) break;
+		if (i >= this.actors.length) this.actors.push(pl);
 	};
 	this.postViewChange();
 
