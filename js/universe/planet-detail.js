@@ -1,6 +1,6 @@
 
 function PlanetDetail(x, y, neighbours) {
-	this.size = 64;
+	this.size = 50;
 	this.type = "detail";
 
 	var tile = neighbours(0,0);
@@ -15,6 +15,8 @@ function PlanetDetail(x, y, neighbours) {
 	var buffer = new Array(this.size);
 	for (i = 0; i < this.size; ++i)
 		buffer[i] = new Array(this.size);
+
+	var uniqueid = ((rng.random() * 100000000000)|0).toString();
 
 	tiles = [
 		neighbours(-1,  1),
@@ -109,8 +111,55 @@ function PlanetDetail(x, y, neighbours) {
 		}
 	}
 
+	// Create collectables
+	var mineralsTile = new ut.Tile("M", 0, 119, 255);
+	mineralsTile.item = "minerals";
+	mineralsTile.desc = "Minerals";
+	var radioactivesTile = new ut.Tile("R", 0, 255, 0);
+	radioactivesTile.item = "radioactives";
+	radioactivesTile.desc = "Radioactives";
+	var collectables = universe.getInfo(uniqueid).collectables;
+	if (collectables === undefined) {
+		collectables = [];
+		if (rand(0,2,rng) === 0) {
+			var cnt = rand(0,3,rng) === 0 ? rand(3,10,rng) : rand(1,3,rng);
+			for (i = 0; i < cnt; ++i) {
+				collectables.push({
+					tile: mineralsTile,
+					x: rand(0, this.size-1, rng),
+					y: rand(0, this.size-1, rng)
+				});
+			}
+			cnt = rand(0,3,rng) === 0 ? rand(1,3,rng) : 0;
+			for (i = 0; i < cnt; ++i) {
+				collectables.push({
+					tile: radioactivesTile,
+					x: rand(0, this.size-1, rng),
+					y: rand(0, this.size-1, rng)
+				});
+			}
+		}
+	}
+	universe.saveInfo(uniqueid, { "collectables": collectables });
+
 	this.getTile = function(x, y) {
+		for (var i = 0; i < collectables.length; ++i) {
+			if (x === collectables[i].x && y === collectables[i].y)
+				return collectables[i].tile;
+		}
 		return buffer[y][x];
+	};
+
+	this.collect = function(x, y) {
+		for (var i = 0; i < collectables.length; ++i) {
+			if (x === collectables[i].x && y === collectables[i].y) {
+				var item = collectables[i].tile.item;
+				collectables.splice(i,1);
+				universe.saveInfo(uniqueid, { "collectables": collectables });
+				return item;
+			}
+		}
+		return "";
 	};
 
 	this.getMovementEnergy = function(x, y) {

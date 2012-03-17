@@ -6,6 +6,7 @@ function Universe(engine) {
 	viewLevelStack.push(new Galaxy());
 	this.current = viewLevelStack[viewLevelStack.length-1];
 	this.actors = [];
+	this.persistentStore = {};
 
 	this.postViewChange = function() {
 		this.current = viewLevelStack[viewLevelStack.length-1];
@@ -78,6 +79,16 @@ function Universe(engine) {
 			if (!this.actors[i].update || this.actors[i].update()) ++i;
 			else this.actors.splice(i,1); // If update returns false, remove the actor
 		}
+	};
+
+	this.saveInfo = function(hash, info) {
+		this.persistentStore[hash] = info;
+	};
+
+	this.getInfo = function(hash) {
+		if (this.persistentStore.hasOwnProperty(hash))
+			return this.persistentStore[hash];
+		else return {};
 	};
 
 	this.getState = function() {

@@ -107,6 +107,8 @@ function Ship(x, y) {
 		var checktile = universe.current.getTile(this.x, this.y);
 		if (checktile.blocks) {
 			this.x = oldx; this.y = oldy;
+		} else if (checktile.item && checktile.item.length) {
+			addMessage("Collect " + checktile.desc + " with [Space].");
 		}
 	};
 
@@ -122,6 +124,26 @@ function Ship(x, y) {
 		if (cost < 0) return;
 		if (!this.useEnergy(cost)) return;
 		universe.exit(this);
+	};
+
+	this.hasCargoSpace = function() {
+		if (this.usedCargo >= this.maxCargo) {
+			addMessage("Not enough cargo space.", "error");
+			return false;
+		}
+		return true;
+	};
+
+	this.collect = function() {
+		if (!universe.current.collect) return;
+		if (!this.hasCargoSpace()) return;
+		var item = universe.current.collect(this.x, this.y);
+		if (!item || !item.length) return;
+		switch (item) {
+			case "minerals": this.minerals++; addMessage("Collected minerals."); break;
+			case "radioactives": this.radioactives++; addMessage("Collected radioactives."); break;
+			case "antimatter": this.radioactives++; addMessage("Collected antimatter."); break;
+		}
 	};
 
 	this.deployBeacon = function() {
@@ -178,15 +200,11 @@ function Ship(x, y) {
 	this.createMass = function(button) {
 		switch (button) {
 			case 1:
-				if (this.usedCargo >= this.maxCargo)
-					addMessage("Not enough cargo space.", "error");
-				else if (this.useEnergy(this.energyCosts.createTorpedo))
+				if (this.hasCargoSpace() && this.useEnergy(this.energyCosts.createTorpedo))
 					this.torpedos++;
 				break;
 			case 2:
-				if (this.usedCargo >= this.maxCargo)
-					addMessage("Not enough cargo space.", "error");
-				else if (this.useEnergy(this.energyCosts.createBeacon))
+				if (this.hasCargoSpace() && this.useEnergy(this.energyCosts.createBeacon))
 					this.beacons++;
 				break;
 		}
