@@ -1,6 +1,7 @@
 
 function Universe(engine) {
 	this.eng = engine;
+	var locationStack = [];
 	var viewLevelStack = [];
 	viewLevelStack.push(new Galaxy());
 	this.current = viewLevelStack[viewLevelStack.length-1];
@@ -39,6 +40,7 @@ function Universe(engine) {
 			return false;
 		}
 		viewLevelStack.push(newPlace);
+		locationStack.push({ x: actor.x, y: actor.y });
 		this.postViewChange();
 		this.current.x = actor.x;
 		this.current.y = actor.y;
@@ -57,6 +59,7 @@ function Universe(engine) {
 		actor.x = this.current.x;
 		actor.y = this.current.y;
 		viewLevelStack.pop();
+		locationStack.pop();
 		this.postViewChange();
 		if (actor.clearSensors) actor.clearSensors();
 		addMessage("Exited " + placename + ".");
@@ -76,11 +79,17 @@ function Universe(engine) {
 	};
 
 	this.getState = function() {
-		return clone(viewLevelStack);
+		return clone(locationStack);
 	};
 
 	this.setState = function(state) {
-		viewLevelStack = state;
+		locationStack = [];
+		while (viewLevelStack.length > 1) {
+			viewLevelStack.pop();
+		}
 		this.postViewChange();
+		for (var i = 0; i < state.length; ++i) {
+			this.enter(clone(state[i]));
+		}
 	};
 }
