@@ -139,7 +139,7 @@ function PlanetDetail(x, y, neighbours) {
 	this.getTile = function(x, y) {
 		for (var i = 0; i < collectables.length; ++i) {
 			if (x === collectables[i].x && y === collectables[i].y)
-				return collectables[i].tile;
+				return replaceBackground(collectables[i].tile, buffer[y][x]);
 		}
 		return buffer[y][x];
 	};
