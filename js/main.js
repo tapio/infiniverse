@@ -96,10 +96,15 @@ function toggleMenu(menuid) {
 function onKeyDown(k) {
 	var movedir = { x: 0, y: 0 }; // Movement vector
 	var doTick = false;
-	if (k === ut.KEY_LEFT || k === ut.KEY_H) movedir.x = -1;
-	else if (k === ut.KEY_RIGHT || k === ut.KEY_L) movedir.x = 1;
-	else if (k === ut.KEY_UP || k === ut.KEY_K) movedir.y = -1;
-	else if (k === ut.KEY_DOWN || k === ut.KEY_J) movedir.y = 1;
+	if (k === ut.KEY_LEFT || k === ut.KEY_H || k === ut.KEY_NUMPAD4) movedir.x = -1;
+	else if (k === ut.KEY_RIGHT || k === ut.KEY_L || k === ut.KEY_NUMPAD6) movedir.x = 1;
+	else if (k === ut.KEY_UP || k === ut.KEY_K || k === ut.KEY_NUMPAD8) movedir.y = -1;
+	else if (k === ut.KEY_DOWN || k === ut.KEY_J || k === ut.KEY_NUMPAD2) movedir.y = 1;
+	else if (k === ut.KEY_Y || k === ut.KEY_NUMPAD7) { movedir.x = -1; movedir.y = -1; }
+	else if (k === ut.KEY_U || k === ut.KEY_NUMPAD9) { movedir.x = 1; movedir.y = -1; }
+	else if (k === ut.KEY_B || k === ut.KEY_NUMPAD1) { movedir.x = -1; movedir.y = 1; }
+	else if (k === ut.KEY_N || k === ut.KEY_NUMPAD3) { movedir.x = 1; movedir.y = 1; }
+	if (k === ut.KEY_PERIOD) { tick(); return; }
 	if (k === ut.KEY_ENTER) { pl.enter(); doTick = true; }
 	if (k === ut.KEY_BACKSPACE) { pl.exit(); doTick = true; }
 	if (k === ut.KEY_SPACE) { pl.collect(); doTick = true; }
@@ -109,7 +114,7 @@ function onKeyDown(k) {
 	if (k === ut.KEY_G) toggleMenu("#beacon-menu");
 	if (k === ut.KEY_E) toggleMenu("#energyconverter-menu");
 	if (k === ut.KEY_F) toggleMenu("#massfabricator-menu");
-	if (k === ut.KEY_B) { pl.deployBeacon(); doTick = true; }
+	if (k === ut.KEY_D) { pl.deployBeacon(); doTick = true; }
 	if (k === ut.KEY_M) {
 		if (pl.prepareMissile()) toggleMenu("#targetlist");
 	}
