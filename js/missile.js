@@ -12,10 +12,11 @@ var missileTiles = [
 ];
 
 // target: { x, y, damage() }
-function Missile(x, y, target) {
+function Missile(x, y, target, owner) {
 	this.x = x || 0;
 	this.y = y || 0;
 	this.target = target;
+	this.owner = owner;
 	this.dead = false;
 	this.energy = 30;
 	this.targetable = true;
@@ -37,7 +38,7 @@ Missile.prototype.update = function() {
 	this.x += dx;
 	this.y += dy;
 	if (this.x === this.target.x && this.y === this.target.y) {
-		if (this.target.damage) this.target.damage(50);
+		if (this.target.damage) this.target.damage(50, this.owner);
 		this.dead = true;
 		return;
 	}

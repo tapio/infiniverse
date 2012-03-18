@@ -274,7 +274,7 @@ function Ship(x, y) {
 		if (num >= this.targets.length) return;
 		if (this.cargo.missile === 0) return; // This should not happen ever
 		this.cargo.missile--;
-		var m = new Missile(this.x, this.y, this.targets[num]);
+		var m = new Missile(this.x, this.y, this.targets[num], this);
 		universe.addActor(m);
 		this.targets = [];
 		addMessage("Missile launched.");

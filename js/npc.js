@@ -52,12 +52,24 @@ function NPCShip(x, y, type) {
 	}
 }
 
-NPCShip.prototype.damage = function(amount) {
+NPCShip.prototype.damage = function(amount, attacker) {
 	if (this.dead) return;
 	this.hp -= amount;
+	if (attacker && attacker === pl) {
+		if (this.type == "police") {
+			addMessage("Attacking a police caused a fine to be deducted from your credits.", "action");
+			attacker.credits = Math.max(attacker.credits - 50, 0);
+		}
+	}
 	if (this.hp <= 0) {
 		var loot = { tile: clone(UniverseItems.metals), x: this.x, y: this.y };
 		universe.addItem(loot);
+		if (attacker && attacker === pl) {
+			if (this.type == "pirate") {
+				addMessage("You got a reward for destroying a pirate ship.", "action");
+				attacker.credits += rand(5, 15, Math);
+			}
+		}
 		this.dead = true;
 	}
 };
