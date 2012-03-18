@@ -84,3 +84,63 @@ function Starmap(x, y, neighbours) {
 		return "star cluster";
 	};
 }
+
+
+function Winverse(x, y, neighbours) {
+	this.size = 40;
+	this.type = "winverse";
+
+	var i,j,r,g,b,neb,tile;
+	var simplex_neb = new SimplexNoise(new Alea('win-noise', x, y));
+	var rng = new Alea('win', x, y);
+	var buffer = new Array(this.size);
+	for (i = 0; i < this.size; ++i)
+		buffer[i] = new Array(this.size);
+
+	this.hash = ((rng.random() * 100000000000)|0).toString(16) + "win";
+
+	var nebColor = { r:255, g:0, b:255 };
+	for (j = 0; j < this.size; ++j) {
+		for (i = 0; i < this.size; ++i) {
+			// Nebula
+			neb = convertNoise(simplex_neb.noise(i*0.05, j*0.05));
+			r = blendMul(nebColor.r, neb);
+			g = blendMul(nebColor.g, neb);
+			b = blendMul(nebColor.b, neb);
+			// Blend sun and background
+			tile = new ut.Tile(" ", 0, 0, 0, r, g, b);
+			tile.desc = "Nebula of Knowledge";
+			buffer[j][i] = tile;
+		}
+	}
+
+	this.getTile = function(x, y) {
+		return buffer[y][x];
+	};
+
+	this.getMovementEnergy = function(x, y) {
+		return 0;
+	};
+
+	this.getDescendEnergy = function() {
+		return -1;
+	};
+
+	this.getAscendEnergy = function() {
+		return -1;
+	};
+
+	this.getShortDescription = function() {
+		return "Parallel Universe";
+	};
+
+	this.getDescription = function() {
+		return "Parallel Universe of Knowledge";
+	};
+}
+
+
+function StarmapProxy(x, y, neighbours) {
+	if (neighbours(0,0).win) return new Winverse(x, y, neighbours);
+	else return new Starmap(x, y, neighbours);
+}

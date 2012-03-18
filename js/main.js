@@ -147,7 +147,7 @@ function init() {
 	ut.initInput(onKeyDown, onKeyUp);
 	tick();
 	addMessage("");
-	addMessage("Locate the ancient alien knowledge.");
+	addMessage("Locate and get to the ancient alien knowledge.");
 	addMessage("Welcome to Infiniverse. Press F1 for help.");
 	$("#wrap").fadeIn(500);
 	$("#starthelp").fadeOut(5000);

@@ -32,7 +32,7 @@ function Universe(engine) {
 		var newPlace;
 		try {
 			switch (viewLevelStack.length) {
-				case 1: newPlace = new Starmap(actor.x, actor.y, neighbours); break;
+				case 1: newPlace = StarmapProxy(actor.x, actor.y, neighbours); break;
 				case 2: newPlace = new SolarSystem(actor.x, actor.y, neighbours); break;
 				case 3: newPlace = new PlanetProxy(actor.x, actor.y, neighbours); break;
 				case 4: newPlace = new PlanetDetail(actor.x, actor.y, neighbours); break;
