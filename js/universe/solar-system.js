@@ -45,20 +45,20 @@ var stationTypes = [
 ];
 
 // TODO: Use also upper level coordinates in seeding
-function SolarSystem(x, y, neighbours) {
+function SolarSystem(x, y, neighbours, hash) {
 	this.size = 256;
 	this.type = "solarsystem";
 	var self = this;
+	var rng = new Alea("solar-system-randomizer", x, y, hash);
+	this.hash = ((rng.random() * 100000000000)|0).toString(16) + "sol";
 	var halfSize = (this.size * 0.5) | 0;
-	var simplex_neb = new SimplexNoise(new Alea('solar-system_neb', x, y));
-	var simplex_bgstars = new SimplexNoise(new Alea('solar-system_bgstars', x, y));
+	var simplex_neb = new SimplexNoise(new Alea('solar-system_neb', x, y, this.hash));
+	var simplex_bgstars = new SimplexNoise(new Alea('solar-system_bgstars', x, y, this.hash));
 	var tile = neighbours(0,0);
 	if (!tile.getChar().length || tile.getChar() === " " || tile.getChar() === "·")
 		throw "Nothing interesting there, just empty space.";
 	var nebColor = tile.getBackgroundJSON();
 
-	var rng = new Alea("solar-system-randomizer", x, y);
-	this.hash = ((rng.random() * 100000000000)|0).toString(16) + "sol";
 	var fullRandom = new Alea();
 	var starCount = starMultiples[rand(0, starMultiples.length-1, rng)];
 	var planetCount = planetMultiples[rand(0, planetMultiples.length-1, rng)];
@@ -181,17 +181,11 @@ function SolarSystem(x, y, neighbours) {
 		return tile;
 	};
 
-	this.getMovementEnergy = function(x, y) {
-		return 5;
-	};
+	this.getMovementEnergy = function(x, y) { return 5; };
 
-	this.getDescendEnergy = function() {
-		return 50;
-	};
+	this.getDescendEnergy = function() { return 50; };
 
-	this.getAscendEnergy = function() {
-		return 1000;
-	};
+	this.getAscendEnergy = function() { return 1000; };
 
 	this.getShortDescription = function() {
 		return "solar system";

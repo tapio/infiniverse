@@ -31,7 +31,7 @@ function addVariance(t, amount, rng) {
 	return t;
 }
 
-function PlanetAerial(x, y, neighbours) {
+function PlanetAerial(x, y, neighbours, hash) {
 	this.size = 128;
 	this.type = "aerial";
 	var self = this;
@@ -41,18 +41,17 @@ function PlanetAerial(x, y, neighbours) {
 		throw "Find a planet to land.";
 	var planetType = this.planet.type;
 
-	var simplex_height = new SimplexNoise(new Alea('planet_height', x, y));
-	var simplex_vegetation = new SimplexNoise(new Alea('planet_vegetation', x, y));
-	var simplex_temperature = new SimplexNoise(new Alea('planet_temperature', x, y));
-	var simplex_rainfall = new SimplexNoise(new Alea('planet_rainfall', x, y));
+	var rng = new Alea("texture-RNG", x, y, hash);
+	this.hash = ((rng.random() * 100000000000)|0).toString(16) + "pla";
+	var simplex_height = new SimplexNoise(new Alea('planet_height', x, y, this.hash));
+	var simplex_vegetation = new SimplexNoise(new Alea('planet_vegetation', x, y, this.hash));
+	var simplex_temperature = new SimplexNoise(new Alea('planet_temperature', x, y, this.hash));
+	var simplex_rainfall = new SimplexNoise(new Alea('planet_rainfall', x, y, this.hash));
 
-	var rng = new Alea("texture-RNG", x, y);
 	var c = function(lo,hi) { return rand(lo,hi,rng); };
 	this.heightTextures = [];
 	var vegeTextures = {};
 	var groundTextures = {};
-
-	this.hash = ((rng.random() * 100000000000)|0).toString(16) + "pla";
 
 	// Create collectables
 	var cnt;
@@ -253,11 +252,11 @@ function PlanetAerial(x, y, neighbours) {
 }
 
 
-function PlanetProxy(x, y, neighbours) {
+function PlanetProxy(x, y, neighbours, hash) {
 	try {
-		return new SpaceStation(x, y, neighbours);
+		return new SpaceStation(x, y, neighbours, hash);
 	} catch (e) {
 		if ("string" !== typeof e) throw e;
 	}
-	return new PlanetAerial(x, y, neighbours);
+	return new PlanetAerial(x, y, neighbours, hash);
 }

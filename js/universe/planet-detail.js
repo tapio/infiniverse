@@ -1,5 +1,5 @@
 
-function PlanetDetail(x, y, neighbours) {
+function PlanetDetail(x, y, neighbours, hash) {
 	this.size = 50;
 	this.type = "detail";
 
@@ -10,13 +10,12 @@ function PlanetDetail(x, y, neighbours) {
 		throw "Gas planet has no surface to land on.";
 
 	var i,j;
-	var simplex_bare = new SimplexNoise(new Alea('planet-detail-noise', x, y));
-	var rng = new Alea('planet-detail', x, y);
+	var rng = new Alea('planet-detail', x, y, hash);
+	this.hash = ((rng.random() * 100000000000)|0).toString(16) + "det";
+	var simplex_bare = new SimplexNoise(new Alea('planet-detail-noise', x, y, this.hash));
 	var buffer = new Array(this.size);
 	for (i = 0; i < this.size; ++i)
 		buffer[i] = new Array(this.size);
-
-	this.hash = ((rng.random() * 100000000000)|0).toString(16) + "det";
 
 	tiles = [
 		neighbours(-1,  1),

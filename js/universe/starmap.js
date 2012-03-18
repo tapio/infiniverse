@@ -1,15 +1,15 @@
 
-function Starmap(x, y, neighbours) {
+function Starmap(x, y, neighbours, hash) {
 	this.size = 256;
 	this.type = "starmap";
-	var simplex_exp = new SimplexNoise(new Alea('starmap_exp', x, y));
-	var simplex_r = new SimplexNoise(new Alea('starmap_r', x, y));
-	var simplex_g = new SimplexNoise(new Alea('starmap_g', x, y));
-	var simplex_b = new SimplexNoise(new Alea('starmap_b', x, y));
-	var simplex_star = new SimplexNoise(new Alea('starmap_star', x, y));
-	var simplex_startype = new SimplexNoise(new Alea('starmap_startype', x, y));
-	var rng = new Alea("starmap", x, y);
+	var rng = new Alea("starmap", x, y, hash);
 	this.hash = ((rng.random() * 100000000000)|0).toString(16) + "map";
+	var simplex_exp = new SimplexNoise(new Alea('starmap_exp', x, y, this.hash));
+	var simplex_r = new SimplexNoise(new Alea('starmap_r', x, y, this.hash));
+	var simplex_g = new SimplexNoise(new Alea('starmap_g', x, y, this.hash));
+	var simplex_b = new SimplexNoise(new Alea('starmap_b', x, y, this.hash));
+	var simplex_star = new SimplexNoise(new Alea('starmap_star', x, y, this.hash));
+	var simplex_startype = new SimplexNoise(new Alea('starmap_startype', x, y, this.hash));
 	var fullRandom = new Alea();
 	var STARS = [ "✦", "★", "☀", "✶", "✳", "✷", "✸" ]; // ·✧✦☼☀✳☆★✶✷✸
 	var self = this;
@@ -140,7 +140,7 @@ function Winverse(x, y, neighbours) {
 }
 
 
-function StarmapProxy(x, y, neighbours) {
-	if (neighbours(0,0).win) return new Winverse(x, y, neighbours);
-	else return new Starmap(x, y, neighbours);
+function StarmapProxy(x, y, neighbours, hash) {
+	if (neighbours(0,0).win) return new Winverse(x, y, neighbours, hash);
+	else return new Starmap(x, y, neighbours, hash);
 }

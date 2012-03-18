@@ -114,7 +114,7 @@ function createShop(buf, x, y, type, rng) {
 	}
 }
 
-function SpaceStation(x, y, neighbours) {
+function SpaceStation(x, y, neighbours, hash) {
 	this.size = 64;
 	this.type = "station";
 	this.name = "";
@@ -125,7 +125,7 @@ function SpaceStation(x, y, neighbours) {
 
 	var i,j,d;
 	var hsize = (this.size/2)|0;
-	var rng = new Alea("space-station", x, y);
+	var rng = new Alea("space-station", x, y, hash);
 	for (i = 0; i < 10; ++i) this.name += (~~(rng.random()*16)).toString(16);
 	this.hash = ((rng.random() * 100000000000)|0).toString(16) + "sta";
 
@@ -164,17 +164,11 @@ function SpaceStation(x, y, neighbours) {
 		return buffer[y][x];
 	};
 
-	this.getMovementEnergy = function(x, y) {
-		return 0;
-	};
+	this.getMovementEnergy = function(x, y) { return 0; };
 
-	this.getDescendEnergy = function() {
-		return -1;
-	};
+	this.getDescendEnergy = function() { return -1; };
 
-	this.getAscendEnergy = function() {
-		return 20;
-	};
+	this.getAscendEnergy = function() { return 20; };
 
 	this.getShortDescription = function() {
 		return "space station";
