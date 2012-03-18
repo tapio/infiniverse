@@ -145,19 +145,19 @@ var UniverseItems = {};
 UniverseItems.metals = new ut.Tile("M", 119, 119, 153);
 UniverseItems.metals.desc = "Metals";
 UniverseItems.metals.item = "metals";
-UniverseItems.metals.baseprice = 10;
+UniverseItems.metals.baseprice = 20;
 
 UniverseItems.hydrogen = new ut.Tile("H", 0, 119, 255);
 UniverseItems.hydrogen.desc = "Hydrogen";
 UniverseItems.hydrogen.item = "hydrogen";
-UniverseItems.hydrogen.energy = 100;
-UniverseItems.hydrogen.baseprice = 10;
+UniverseItems.hydrogen.energy = 500;
+UniverseItems.hydrogen.baseprice = 20;
 
 UniverseItems.radioactives = new ut.Tile("R", 0, 255, 0);
 UniverseItems.radioactives.desc = "Radioactives";
 UniverseItems.radioactives.item = "radioactives";
 UniverseItems.radioactives.energy = 2000;
-UniverseItems.radioactives.baseprice = 200;
+UniverseItems.radioactives.baseprice = 400;
 
 UniverseItems.antimatter = new ut.Tile("A", 255, 255, 255);
 UniverseItems.antimatter.desc = "Antimatter";

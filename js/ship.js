@@ -231,6 +231,7 @@ function Ship(x, y) {
 		}
 		this.cargo[matter] -= 1;
 		this.energy += protoitem.energy;
+		addMessage("Converted " + protoitem.desc.toLowerCase() + " to " + protoitem.energy + " energy.");
 	};
 
 	this.createMass = function(button) {
@@ -298,7 +299,7 @@ function Ship(x, y) {
 
 	this.useEnergy = function(amount) {
 		if (this.energy < amount) {
-			addMessage("Not enough energy.", "error");
+			addMessage("Not enough energy. Use energy converter to create more.", "error");
 			// TODO: Check if this means death
 			return false;
 		}
