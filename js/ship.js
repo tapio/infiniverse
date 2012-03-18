@@ -187,15 +187,19 @@ function Ship(x, y) {
 	};
 
 	this.createMass = function(button) {
-		switch (button) {
-			case 1:
-				if (this.hasCargoSpace() && this.useEnergy(this.energyCosts.createMissile))
-					this.cargo.missile++;
-				break;
-			case 2:
-				if (this.hasCargoSpace() && this.useEnergy(this.energyCosts.createBeacon))
-					this.cargo.navbeacon++;
-				break;
+		// Sanity checks
+		if (button < 1 || button > 2) return;
+		if (this.cargo.metals < 1) {
+			addMessage("Not enough metals.", "error");
+			return;
+		} else if (!this.hasCargoSpace()) return;
+		// What to produce?
+		if (button == 1 && this.useEnergy(this.energyCosts.createMissile)) {
+			this.cargo.metals--;
+			this.cargo.missile++;
+		} else if (button == 2 && this.useEnergy(this.energyCosts.createBeacon)) {
+			this.cargo.metals--;
+			this.cargo.navbeacon++;
 		}
 	};
 
