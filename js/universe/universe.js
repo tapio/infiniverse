@@ -165,7 +165,7 @@ UniverseItems.antimatter.item = "antimatter";
 UniverseItems.antimatter.energy = 100000;
 UniverseItems.antimatter.baseprice = 800;
 
-UniverseItems.missile = new ut.Tile("|", 136, 68, 34);
+UniverseItems.missile = new ut.Tile("⇑", 136, 68, 34);
 UniverseItems.missile.desc = "Missile";
 UniverseItems.missile.item = "missile";
 UniverseItems.missile.baseprice = 20;

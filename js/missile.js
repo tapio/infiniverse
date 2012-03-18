@@ -1,14 +1,14 @@
 
 var missileProto = new ut.Tile("|", 136, 68, 34);
 var missileTiles = [
-	new ut.Tile("-", missileProto.r, missileProto.g, missileProto.b),
-	new ut.Tile("/", missileProto.r, missileProto.g, missileProto.b),
-	new ut.Tile("|", missileProto.r, missileProto.g, missileProto.b),
-	new ut.Tile("\\", missileProto.r, missileProto.g, missileProto.b),
-	new ut.Tile("-", missileProto.r, missileProto.g, missileProto.b),
-	new ut.Tile("/", missileProto.r, missileProto.g, missileProto.b),
-	new ut.Tile("|", missileProto.r, missileProto.g, missileProto.b),
-	new ut.Tile("\\", missileProto.r, missileProto.g, missileProto.b)
+	new ut.Tile("⇒", missileProto.r, missileProto.g, missileProto.b),
+	new ut.Tile("⇗", missileProto.r, missileProto.g, missileProto.b),
+	new ut.Tile("⇑", missileProto.r, missileProto.g, missileProto.b),
+	new ut.Tile("⇖", missileProto.r, missileProto.g, missileProto.b),
+	new ut.Tile("⇐", missileProto.r, missileProto.g, missileProto.b),
+	new ut.Tile("⇙", missileProto.r, missileProto.g, missileProto.b),
+	new ut.Tile("⇓", missileProto.r, missileProto.g, missileProto.b),
+	new ut.Tile("⇘", missileProto.r, missileProto.g, missileProto.b)
 ];
 
 // target: { x, y, damage() }
