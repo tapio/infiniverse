@@ -8,17 +8,6 @@ stationTileProtos.wall.desc = "Wall";
 stationTileProtos.wall.blocks = true;
 stationTileProtos.floor.desc = "Floor";
 
-function pickRandomProperty(obj, rng) {
-	var result;
-	var count = 0;
-	for (var prop in obj) {
-		if (!obj.hasOwnProperty(prop)) continue;
-		if (rng.random() < 1/++count)
-			result = prop;
-	}
-	return result;
-}
-
 function createBox(buf, x, y, w, h, doorx, doory) {
 	for (var i = x; i <= x+w; ++i) {
 		buf[y][i] = stationTileProtos.wall;
@@ -40,7 +29,7 @@ function createShop(buf, x, y, type) {
 	var startx = x - Math.ceil(namelen/2), i;
 	buf[y-hh+1][startx] = replaceBackground(clone(type), stationTileProtos.floor);
 	for (i = 2; i < namelen; ++i)
-		buf[y-hh+1][startx+i] = new ut.Tile("Shop"[i-2], 255, 255, 255);
+		buf[y-hh+1][startx+i] = replaceBackground(new ut.Tile("Shop"[i-2], 255, 255, 255), stationTileProtos.floor);
 	for (i = x-hw; i <= x+hw; ++i)
 		buf[y-hh+2][i] = stationTileProtos.wall;
 }
