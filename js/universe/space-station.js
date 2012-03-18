@@ -18,9 +18,15 @@ var CustomShops = {};
 
 CustomShops.cargoUpgrade = new ut.Tile("C", 180, 130, 0, 20, 20, 20);
 CustomShops.cargoUpgrade.desc = "Cargo space upgrade";
-CustomShops.cargoUpgrade.shopTitle = "Cargo++";
+CustomShops.cargoUpgrade.shopTitle = "Cargo +1";
 CustomShops.cargoUpgrade.item = "cargoslot";
-CustomShops.cargoUpgrade.baseprice = 50;
+CustomShops.cargoUpgrade.baseprice = 200;
+
+CustomShops.hullUpgrade = new ut.Tile("H", 180, 130, 0, 20, 20, 20);
+CustomShops.hullUpgrade.desc = "Hull strength upgrade";
+CustomShops.hullUpgrade.shopTitle = "Hull +20";
+CustomShops.hullUpgrade.item = "hull";
+CustomShops.hullUpgrade.baseprice = 500;
 
 CustomShops.repair = new ut.Tile("R", 150, 0, 0, 20, 20, 20);
 CustomShops.repair.desc = "Repair damage";

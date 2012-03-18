@@ -5,7 +5,7 @@ function Ship(x, y) {
 	this.tile = new ut.Tile("@", 100, 100, 100);
 	this.desc = "Player";
 	this.type = "player";
-	this.energy = 1000000;
+	this.energy = 100000;
 	this.credits = 100;
 	this.maxHull = 100;
 	this.hull = this.maxHull;
@@ -13,7 +13,7 @@ function Ship(x, y) {
 	this.sensorSetting = 0;
 	this.contacts = [];
 	this.targets = [];
-	this.maxCargo = 30;
+	this.maxCargo = 20;
 	this.usedCargo = 0;
 	this.activeBeacons = [];
 	this.maxActiveBeacons = 8;
@@ -26,7 +26,7 @@ function Ship(x, y) {
 		gotoBeacon: 5000,
 		launchMissile: 200
 	};
-	this.cargo = { missile: 5, navbeacon: 2, metals: 2, hydrogen: 4, radioactives: 2, antimatter: 1 };
+	this.cargo = { missile: 5, navbeacon: 1, metals: 2, hydrogen: 4, radioactives: 0, antimatter: 0 };
 	this.scanSettings = [ "Closest", "Artificial", "Celestial" ];
 
 	this.sortContacts = function() {
@@ -148,6 +148,12 @@ function Ship(x, y) {
 				this.credits -= checktile.buy.price;
 				this.maxCargo++;
 				addMessage("Cargo space upgraded.");
+				return;
+			} else if (checktile.buy.item === "hull") {
+				this.credits -= checktile.buy.price;
+				this.maxHull += 20;
+				this.hull = this.maxHull;
+				addMessage("Hull strength upgraded.");
 				return;
 			} else if (checktile.buy.item === "repair") {
 				this.credits -= checktile.buy.price;
