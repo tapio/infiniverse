@@ -81,9 +81,12 @@ function SpaceStation(x, y, neighbours) {
 	var shopCount = rand(2, 4, rng);
 	var shopPos = [ {x:0,y:-1}, {x:-1,y:0}, {x:1,y:0}, {x:0,y:1} ];
 	shuffle(shopPos, rng);
+	var shopTypes = [];
+	for (i in UniverseItems)
+		if (UniverseItems.hasOwnProperty(i)) shopTypes.push(UniverseItems[i]);
+	shuffle(shopTypes, rng);
 	for (i = 0; i < shopCount; ++i) {
-		var shopType = UniverseItems[pickRandomProperty(UniverseItems, rng)];
-		createShop(buffer, shopPos[i].x*13+hsize, shopPos[i].y*13+hsize, shopType);
+		createShop(buffer, shopPos[i].x*13+hsize, shopPos[i].y*13+hsize, shopTypes[i]);
 	}
 
 	this.getTile = function(x, y) {
