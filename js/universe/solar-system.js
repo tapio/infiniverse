@@ -79,9 +79,10 @@ function SolarSystem(x, y, neighbours) {
 			if (starTypeChooser < starTypes[j].freq) { starProto = starTypes[j]; break; }
 		this.suns.push(clone(starProto));
 		ang += i * (360.0 / starCount);
-		var minDist = Math.min(starProto.radius*2, halfSize-5);
-		this.suns[i].x = ~~(halfSize + cosd(ang) * randf(minDist, halfSize, rng));
-		this.suns[i].y = ~~(halfSize - sind(ang) * randf(minDist, halfSize, rng));
+		var minDist = Math.min(starProto.radius+10, halfSize-5);
+		var maxDist = Math.min(starProto.radius+30, halfSize);
+		this.suns[i].x = ~~(halfSize + cosd(ang) * randf(minDist, maxDist, rng));
+		this.suns[i].y = ~~(halfSize - sind(ang) * randf(minDist, maxDist, rng));
 	}
 
 	// Planets
@@ -92,8 +93,8 @@ function SolarSystem(x, y, neighbours) {
 		if (this.planets[i].type === "gas")
 			this.planets[i].gasType = rand(0,5,rng);
 		ang = rng.random() * 360;
-		this.planets[i].x = ~~(halfSize + cosd(ang) * randf(30, halfSize*0.6, rng));
-		this.planets[i].y = ~~(halfSize - sind(ang) * randf(30, halfSize*0.6, rng));
+		this.planets[i].x = ~~(halfSize + cosd(ang) * randf(8, halfSize*0.4, rng));
+		this.planets[i].y = ~~(halfSize - sind(ang) * randf(8, halfSize*0.4, rng));
 	}
 
 	// Space stations
