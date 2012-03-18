@@ -17,9 +17,10 @@ function Ship(x, y) {
 	this.usedCargo = 0;
 	this.activeBeacons = [];
 	this.maxActiveBeacons = 8;
+	this.warpSpeed = 5;
 	this.energyCosts = {
 		createMissile: 200, createBeacon: 5000,
-		driveFactor: 1, warpFactor: 30,
+		driveFactor: 1, warpFactor: 3,
 		enterFactor: 1, exitFactor: 1,
 		sensors: 100,
 		gotoBeacon: 5000,
@@ -85,9 +86,9 @@ function Ship(x, y) {
 	this.move = function(dx, dy, warp) {
 		var cost = universe.current.getMovementEnergy(this.x, this.y);
 		if (warp && universe.current.type !== "station") {
-			dx *= 5;
-			dy *= 5;
-			cost *= this.energyCosts.warpFactor;
+			dx *= this.warpSpeed;
+			dy *= this.warpSpeed;
+			cost *= this.warpSpeed * this.energyCosts.warpFactor;
 		} else cost *= this.energyCosts.driveFactor;
 		var oldx = this.x, oldy = this.y;
 		if (this.useEnergy(cost)) {
@@ -292,6 +293,7 @@ function Ship(x, y) {
 	this.useEnergy = function(amount) {
 		if (this.energy < amount) {
 			addMessage("Not enough energy.", "error");
+			// TODO: Check if this means death
 			return false;
 		}
 		this.energy -= amount;

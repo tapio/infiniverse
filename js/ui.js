@@ -50,7 +50,7 @@ Ship.prototype.updateUI = function() {
 
 	if (ut.isKeyPressed(ut.KEY_SHIFT)) $("#warpdrives span").first().attr("class", "online");
 	else $("#warpdrives span").first().attr("class", "");
-	$("#warpdrives").children(".energy").html(echar + ec.warpFactor * movEne);
+	$("#warpdrives").children(".energy").html(echar + ec.warpFactor * this.warpSpeed * movEne);
 	if (u.getDescendEnergy() >= 0)
 		$("#enter").show().children(".energy").html(echar + ec.enterFactor * u.getDescendEnergy());
 	else $("#enter").hide();
