@@ -137,13 +137,27 @@ function Ship(x, y) {
 		// Check for shop first
 		var checktile = universe.current.getTile(this.x, this.y);
 		if (checktile.buy) {
-			if (!this.hasCargoSpace()) return;
 			if (this.credits < checktile.buy.price) {
 				addMessage("Not enough credits.", "error");
 				return;
 			}
+			// Special cases
+			if (checktile.buy.item === "cargoslot") {
+				this.credits -= checktile.buy.price;
+				this.maxCargo++;
+				addMessage("Cargo space upgraded.");
+				return;
+			} else if (checktile.buy.item === "repair") {
+				this.credits -= checktile.buy.price;
+				this.hull = this.maxHull;
+				addMessage("Ship hull repaired.");
+				return;
+			}
+			// Regular matter buying
+			if (!this.hasCargoSpace()) return;
 			this.credits -= checktile.buy.price;
 			this.cargo[checktile.buy.item]++;
+			addMessage("Bought " + checktile.buy.desc.toLowerCase() + ".");
 			return;
 		} else if (checktile.sell) {
 			if (this.cargo[checktile.sell.item] < 1) {

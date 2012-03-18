@@ -14,6 +14,21 @@ stationTileProtos.floor.desc = "Floor";
 stationTileProtos.buy.desc = "Buy goods";
 stationTileProtos.sell.desc = "Sell goods";
 
+var CustomShops = {};
+
+CustomShops.cargoUpgrade = new ut.Tile("C", 180, 130, 0, 20, 20, 20);
+CustomShops.cargoUpgrade.desc = "Cargo space upgrade";
+CustomShops.cargoUpgrade.shopTitle = "Cargo++";
+CustomShops.cargoUpgrade.item = "cargoslot";
+CustomShops.cargoUpgrade.baseprice = 50;
+
+CustomShops.repair = new ut.Tile("R", 150, 0, 0, 20, 20, 20);
+CustomShops.repair.desc = "Repair damage";
+CustomShops.repair.shopTitle = "Repair";
+CustomShops.repair.item = "repair";
+CustomShops.repair.baseprice = 50;
+
+
 function createBox(buf, x, y, w, h, doorx, doory) {
 	for (var i = x; i <= x+w; ++i) {
 		buf[y][i] = stationTileProtos.wall;
@@ -54,36 +69,43 @@ function createShop(buf, x, y, type) {
 	var hw = (shopw/2)|0, hh = (shoph/2)|0;
 	var startx, endx;
 	var i, row = y-hh;
+	var isSpecial = (type.shopTitle !== undefined);
 	// Outer wall
 	createBox(buf, x-hw, row, shopw, shoph, x, y + hh);
 	row++;
 	// Texts background
-	fillBox(buf, stationTileProtos.textbg, x-hw+1, row, shopw-2, shoph-5);
+	fillBox(buf, stationTileProtos.textbg, x-hw+1, row, shopw-2, shoph - (isSpecial?7:5));
 	// Title text
-	var namelen = 2 + "Shop".length;
-	startx = x - Math.ceil(namelen/2);
-	buf[row][startx] = replaceBackground(clone(type), stationTileProtos.floor);
-	putText(buf, "Shop", startx + 2, row);
-	row++;
-	// Divider walls
-	startx = x-hw+1; endx = x+hw-1;
-	for (i = startx; i <= endx; ++i) {
-		buf[row][i] = stationTileProtos.wall;
-		buf[row+5][i] = stationTileProtos.wall;
+	if (type.shopTitle) {
+		startx = x - Math.ceil(type.shopTitle.length/2);
+		putText(buf, type.shopTitle, startx, row, type);
+	} else {
+		startx = x - Math.ceil((2 + "Shop".length)/2);
+		buf[row][startx] = replaceBackground(clone(type), stationTileProtos.textbg);
+		putText(buf, "Shop", startx + 2, row);
 	}
+	row++;
+	startx = x-hw+1; endx = x+hw-1;
+	// Divider wall
+	for (i = startx; i <= endx; ++i) buf[row][i] = stationTileProtos.wall;
+	// Shopping stuff
 	var buyprice = (type.baseprice)|0;
 	var sellprice = (type.baseprice * 0.75)|0;
 	row++; putText(buf, "Buy", startx, row, stationTileProtos.buy);
 	row++; putText(buf, "$"+buyprice, endx, row, stationTileProtos.price, true);
-	row++; putText(buf, "Sell", startx, row, stationTileProtos.sell);
-	row++; putText(buf, "$"+sellprice, endx, row, stationTileProtos.price, true);
-	row++;
+	if (!isSpecial) {
+		row++; putText(buf, "Sell", startx, row, stationTileProtos.sell);
+		row++; putText(buf, "$"+sellprice, endx, row, stationTileProtos.price, true);
+	}
+	row++; for (i = startx; i <= endx; ++i) buf[row][i] = stationTileProtos.wall;
 	buf[++row][startx] = clone(stationTileProtos.buy);
 	buf[row][startx].buy = clone(type);
 	buf[row][startx].buy.price = buyprice;
-	buf[++row][startx] = clone(stationTileProtos.sell);
-	buf[row][startx].sell = clone(type);
-	buf[row][startx].sell.price = sellprice;
+	if (!isSpecial) {
+		buf[++row][startx] = clone(stationTileProtos.sell);
+		buf[row][startx].sell = clone(type);
+		buf[row][startx].sell.price = sellprice;
+	}
 }
 
 function SpaceStation(x, y, neighbours) {
@@ -125,6 +147,8 @@ function SpaceStation(x, y, neighbours) {
 	var shopTypes = [];
 	for (i in UniverseItems)
 		if (UniverseItems.hasOwnProperty(i)) shopTypes.push(UniverseItems[i]);
+	for (i in CustomShops)
+		if (CustomShops.hasOwnProperty(i)) shopTypes.push(CustomShops[i]);
 	shuffle(shopTypes, rng);
 	for (i = 0; i < shopCount; ++i) {
 		createShop(buffer, shopPos[i].x*13+hsize, shopPos[i].y*13+hsize, shopTypes[i]);
