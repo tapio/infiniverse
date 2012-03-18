@@ -285,7 +285,7 @@ function Ship(x, y) {
 		this.hull -= amount;
 		if (this.hull <= 0) {
 			this.dead = true;
-			addMessage("Ship destroyed!", "error");
+			addMessage("Ship destroyed! Game over. Press Ctrl+R to restart.", "error");
 		}
 	};
 

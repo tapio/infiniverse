@@ -94,6 +94,7 @@ function toggleMenu(menuid) {
 
 // Key press handler - movement & collision handling
 function onKeyDown(k) {
+	if (pl.dead) return;
 	var movedir = { x: 0, y: 0 }; // Movement vector
 	var doTick = false;
 	if (k === ut.KEY_LEFT || k === ut.KEY_H || k === ut.KEY_NUMPAD4) movedir.x = -1;
