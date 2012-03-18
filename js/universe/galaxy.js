@@ -84,7 +84,7 @@ function Galaxy() {
 	winTile.win = true;
 	winTile.desc = "A cluster of stars glowing with knowledge";
 	sx = (this.size/2)|0;
-	buffer[sy+2][sx-2] = winTile;
+	buffer[sy+2][sx-2] = replaceBackground(winTile, buffer[sy+2][sx-2]);
 
 	this.getTile = function(x, y) {
 		return buffer[y][x];
