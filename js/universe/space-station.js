@@ -70,7 +70,7 @@ function putText(buf, text, x, y, protoTile, right_justify) {
 	}
 }
 
-function createShop(buf, x, y, type) {
+function createShop(buf, x, y, type, rng) {
 	var shopw = 10, shoph = 10;
 	var hw = (shopw/2)|0, hh = (shoph/2)|0;
 	var startx, endx;
@@ -95,8 +95,8 @@ function createShop(buf, x, y, type) {
 	// Divider wall
 	for (i = startx; i <= endx; ++i) buf[row][i] = stationTileProtos.wall;
 	// Shopping stuff
-	var buyprice = (type.baseprice)|0;
-	var sellprice = (type.baseprice * 0.75)|0;
+	var buyprice = (type.baseprice * randf(0.9,1.3,rng))|0;
+	var sellprice = (buyprice * randf(0.4,0.8,rng))|0;
 	row++; putText(buf, "Buy", startx, row, stationTileProtos.buy);
 	row++; putText(buf, "$"+buyprice, endx, row, stationTileProtos.price, true);
 	if (!isSpecial) {
@@ -157,7 +157,7 @@ function SpaceStation(x, y, neighbours) {
 		if (CustomShops.hasOwnProperty(i)) shopTypes.push(CustomShops[i]);
 	shuffle(shopTypes, rng);
 	for (i = 0; i < shopCount; ++i) {
-		createShop(buffer, shopPos[i].x*13+hsize, shopPos[i].y*13+hsize, shopTypes[i]);
+		createShop(buffer, shopPos[i].x*13+hsize, shopPos[i].y*13+hsize, shopTypes[i], rng);
 	}
 
 	this.getTile = function(x, y) {
