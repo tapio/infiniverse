@@ -30,7 +30,7 @@ CustomShops.hullUpgrade.baseprice = 500;
 
 CustomShops.repair = new ut.Tile("R", 150, 0, 0, 20, 20, 20);
 CustomShops.repair.desc = "Repair damage";
-CustomShops.repair.shopTitle = "Repair";
+CustomShops.repair.shopTitle = "Repairs";
 CustomShops.repair.item = "repair";
 CustomShops.repair.baseprice = 50;
 
