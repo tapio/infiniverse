@@ -103,6 +103,11 @@ function prettyNumber(num) {
 
 function last(arr) { return arr[arr.length-1]; }
 
+function shuffle(arr, rng) {
+	var s = [];
+	while (arr.length) s.push(arr.splice((rng.random() * arr.length)|0, 1)[0]);
+	while (s.length) arr.push(s.pop());
+}
 
 // Object utils
 

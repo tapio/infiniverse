@@ -8,6 +8,17 @@ stationTileProtos.wall.desc = "Wall";
 stationTileProtos.wall.blocks = true;
 stationTileProtos.floor.desc = "Floor";
 
+function pickRandomProperty(obj, rng) {
+	var result;
+	var count = 0;
+	for (var prop in obj) {
+		if (!obj.hasOwnProperty(prop)) continue;
+		if (rng.random() < 1/++count)
+			result = prop;
+	}
+	return result;
+}
+
 function createBox(buf, x, y, w, h, doorx, doory) {
 	for (var i = x; i <= x+w; ++i) {
 		buf[y][i] = stationTileProtos.wall;
@@ -21,13 +32,15 @@ function createBox(buf, x, y, w, h, doorx, doory) {
 		buf[doory][doorx] = stationTileProtos.floor;
 }
 
-function createShop(buf, x, y, name, type) {
+function createShop(buf, x, y, type) {
 	var shopw = 10, shoph = 10;
 	var hw = (shopw/2)|0, hh = (shoph/2)|0;
 	createBox(buf, x-hw, y-hh, shopw, shoph, x, y + hh);
-	var startx = x - Math.ceil(name.length/2), i;
-	for (i = 0; i < name.length; ++i)
-		buf[y-hh+1][startx+i] = new ut.Tile(name[i], 255, 255, 255);
+	var namelen = 2 + "Shop".length;
+	var startx = x - Math.ceil(namelen/2), i;
+	buf[y-hh+1][startx] = replaceBackground(clone(type), stationTileProtos.floor);
+	for (i = 2; i < namelen; ++i)
+		buf[y-hh+1][startx+i] = new ut.Tile("Shop"[i-2], 255, 255, 255);
 	for (i = x-hw; i <= x+hw; ++i)
 		buf[y-hh+2][i] = stationTileProtos.wall;
 }
@@ -65,15 +78,12 @@ function SpaceStation(x, y, neighbours) {
 		}
 	}
 
-	var shopProtos = [
-		{ name: "Upgrades", type: "upgrade" },
-		{ name: "Laboratory", type: "laboratory" }
-	];
+	var shopCount = rand(2, 4, rng);
 	var shopPos = [ {x:0,y:-1}, {x:-1,y:0}, {x:1,y:0}, {x:0,y:1} ];
-	for (i = 0; i < shopPos.length; ++i) {
-		if (true || rand(0,2,rng) === 0) {
-			createShop(buffer, shopPos[i].x*13+hsize, shopPos[i].y*13+hsize, "Shop", "shop");
-		}
+	shuffle(shopPos, rng);
+	for (i = 0; i < shopCount; ++i) {
+		var shopType = UniverseItems[pickRandomProperty(UniverseItems, rng)];
+		createShop(buffer, shopPos[i].x*13+hsize, shopPos[i].y*13+hsize, shopType);
 	}
 
 	this.getTile = function(x, y) {
