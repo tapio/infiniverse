@@ -68,27 +68,20 @@ function Starmap(x, y, neighbours) {
 		return 100;
 	};
 
-	this.getDescendEnergy = function() {
-		return 300;
-	};
+	this.getDescendEnergy = function() { return 300; };
 
-	this.getAscendEnergy = function() {
-		return 10000;
-	};
+	this.getAscendEnergy = function() { return 10000; };
 
-	this.getShortDescription = function() {
-		return "star cluster";
-	};
+	this.getShortDescription = function() { return "star cluster"; };
 
-	this.getDescription = function() {
-		return "star cluster";
-	};
+	this.getDescription = function() { return "star cluster"; };
 }
 
 
 function Winverse(x, y, neighbours) {
 	this.size = 40;
 	this.type = "winverse";
+	var self = this;
 
 	var i,j,r,g,b,neb,tile;
 	var simplex_neb = new SimplexNoise(new Alea('win-noise', x, y));
@@ -103,40 +96,47 @@ function Winverse(x, y, neighbours) {
 	for (j = 0; j < this.size; ++j) {
 		for (i = 0; i < this.size; ++i) {
 			// Nebula
-			neb = convertNoise(simplex_neb.noise(i*0.05, j*0.05));
+			neb = Math.max(convertNoise(simplex_neb.noise(i*0.05, j*0.05)), 64);
 			r = blendMul(nebColor.r, neb);
 			g = blendMul(nebColor.g, neb);
 			b = blendMul(nebColor.b, neb);
 			// Blend sun and background
-			tile = new ut.Tile(" ", 0, 0, 0, r, g, b);
+			tile = new ut.Tile(" ", 0, 0, 20, r, g, b);
 			tile.desc = "Nebula of Knowledge";
 			buffer[j][i] = tile;
 		}
 	}
 
+	function putCenteredText(text, y) {
+		var startx = (self.size/2 - text.length/2)|0;
+		for (var i = 0; i < text.length; ++i)
+			buffer[y][startx+i].ch = text[i];
+	}
+
+	var row = ((this.size / 2)|0) - 5;
+	putCenteredText("You have reached the", row++);
+	putCenteredText("Ancient Alien Knowledge", row++);
+	putCenteredText("and ascended into a higher being.", row++);
+	++row;
+	putCenteredText("... Or something like that.", row++);
+	++row;
+	putCenteredText("In any case,", row++);
+	putCenteredText("G A M E   O V E R", row++);
+	putCenteredText("(You were victorious!)", row++);
+
 	this.getTile = function(x, y) {
 		return buffer[y][x];
 	};
 
-	this.getMovementEnergy = function(x, y) {
-		return 0;
-	};
+	this.getMovementEnergy = function(x, y) { return 0; };
 
-	this.getDescendEnergy = function() {
-		return -1;
-	};
+	this.getDescendEnergy = function() { return -1; };
 
-	this.getAscendEnergy = function() {
-		return -1;
-	};
+	this.getAscendEnergy = function() { return -1; };
 
-	this.getShortDescription = function() {
-		return "Parallel Universe";
-	};
+	this.getShortDescription = function() { return "Parallel Universe"; };
 
-	this.getDescription = function() {
-		return "Parallel Universe of Knowledge";
-	};
+	this.getDescription = function() { return "Parallel Universe of Knowledge"; };
 }
 
 
