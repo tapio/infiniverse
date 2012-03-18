@@ -19,7 +19,7 @@ function Ship(x, y) {
 	this.maxActiveBeacons = 8;
 	this.warpSpeed = 5;
 	this.energyCosts = {
-		createMissile: 200, createBeacon: 5000,
+		createMissile: 500, createBeacon: 5000,
 		driveFactor: 1, warpFactor: 3,
 		enterFactor: 1, exitFactor: 1,
 		sensors: 100,
