@@ -5,6 +5,7 @@ function Ship(x, y) {
 	this.tile = new ut.Tile("@", 100, 100, 100);
 	this.desc = "Player";
 	this.energy = 1000000;
+	this.credits = 100;
 	this.maxHull = 100;
 	this.hull = this.maxHull;
 	this.dead = false;

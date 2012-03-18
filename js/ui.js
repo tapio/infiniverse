@@ -1,10 +1,20 @@
 
 Ship.prototype.updateUI = function() {
-	var echar = "↯";
+	var echar = "↯", cchar = "$";
 	var i, str, len, statusclass, elem;
 	var ec = this.energyCosts;
 	var u = universe.current;
 	var self = this;
+
+	// Ship status
+	var cond = Math.floor(this.hull / this.maxHull * 100);
+	if (cond < 0) cond = 0;
+	statusclass = "good";
+	if (cond <= 25) statusclass = "bad";
+	else if (cond < 75) statusclass = "warn";
+	$("#hullcond").html(cond+"%").attr("class", statusclass);
+	$("#energy").html(echar + prettyNumber(this.energy));
+	$("#credits").html(cchar + prettyNumber(this.credits));
 
 	// Sensorsbox
 	var t = universe.current.getTile(this.x, this.y);
@@ -24,28 +34,6 @@ Ship.prototype.updateUI = function() {
 		$("#contactstitle").html(this.targets.length ? "Targeting..." : "No contacts.");
 		elem.html("").hide();
 	}
-
-	// Beacons
-	$("#beaconstatus").html(this.cargo.navbeacon);
-	len = this.activeBeacons.length;
-	$("#activebeacons").html(len + "/" + this.maxActiveBeacons);
-	if (len === 0) $("#beacon-menu").html("<li>No active beacons.</li>");
-	else {
-		str = "";
-		for (i = 0; i < len; ++i)
-			str += "<li>["+(i+1)+"] " + this.activeBeacons[i].title +
-				' <span class="energy">' + echar + ec.gotoBeacon + '</span>';
-		$("#beacon-menu").html(str);
-	}
-
-	// Ship status
-	var cond = Math.floor(this.hull / this.maxHull * 100);
-	if (cond < 0) cond = 0;
-	statusclass = "good";
-	if (cond <= 25) statusclass = "bad";
-	else if (cond < 75) statusclass = "warn";
-	$("#hullcond").html(cond+"%").attr("class", statusclass);
-	$("#energy").html(echar + prettyNumber(this.energy));
 
 	// Devices
 	$("#hydrogen-energy").html("+" + echar + UniverseItems.hydrogen.energy);
@@ -90,6 +78,19 @@ Ship.prototype.updateUI = function() {
 			str += "| ";
 		$("#missiles").html(str);
 	}*/
+
+	// Beacons
+	$("#beaconstatus").html(this.cargo.navbeacon);
+	len = this.activeBeacons.length;
+	$("#activebeacons").html(len + "/" + this.maxActiveBeacons);
+	if (len === 0) $("#beacon-menu").html("<li>No active beacons.</li>");
+	else {
+		str = "";
+		for (i = 0; i < len; ++i)
+			str += "<li>["+(i+1)+"] " + this.activeBeacons[i].title +
+				' <span class="energy">' + echar + ec.gotoBeacon + '</span>';
+		$("#beacon-menu").html(str);
+	}
 
 	// Cargo
 	function cargoTypeHTML(cargochar, cssclass, title, amount) {
