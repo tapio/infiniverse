@@ -2,11 +2,17 @@
 var stationTileProtos = {
 	space: new ut.Tile(),
 	wall: new ut.Tile("#", 100, 100, 100, 20, 20, 20),
-	floor: new ut.Tile(".", 140, 140, 140, 20, 20, 20)
+	floor: new ut.Tile(".", 140, 140, 140, 20, 20, 20),
+	buy: new ut.Tile("+", 0, 180, 0, 20, 20, 20),
+	sell: new ut.Tile("-", 187, 100, 0, 20, 20, 20),
+	price: new ut.Tile("$", 187, 187, 0, 20, 20, 20),
+	textbg: new ut.Tile(" ", 255, 255, 255, 20, 20, 20)
 };
 stationTileProtos.wall.desc = "Wall";
 stationTileProtos.wall.blocks = true;
 stationTileProtos.floor.desc = "Floor";
+stationTileProtos.buy.desc = "Buy goods";
+stationTileProtos.sell.desc = "Sell goods";
 
 function createBox(buf, x, y, w, h, doorx, doory) {
 	for (var i = x; i <= x+w; ++i) {
@@ -21,17 +27,59 @@ function createBox(buf, x, y, w, h, doorx, doory) {
 		buf[doory][doorx] = stationTileProtos.floor;
 }
 
+function fillBox(buf, tile, x, y, w, h) {
+	for (var j = y; j <= y+h; ++j)
+		for (var i = x; i <= x+w; ++i)
+			buf[j][i] = tile;
+}
+
+function putText(buf, text, x, y, protoTile, right_justify) {
+	protoTile = protoTile || stationTileProtos.floor;
+	var i;
+	if (!right_justify) {
+		for (i = 0; i < text.length; ++i) {
+			buf[y][x+i] = clone(protoTile);
+			buf[y][x+i].ch = text[i];
+		}
+	} else {
+		for (i = 0; i < text.length; ++i) {
+			buf[y][x-i] = clone(protoTile);
+			buf[y][x-i].ch = text[text.length - i - 1];
+		}
+	}
+}
+
 function createShop(buf, x, y, type) {
 	var shopw = 10, shoph = 10;
 	var hw = (shopw/2)|0, hh = (shoph/2)|0;
-	createBox(buf, x-hw, y-hh, shopw, shoph, x, y + hh);
+	var startx, endx;
+	var i, row = y-hh;
+	// Outer wall
+	createBox(buf, x-hw, row, shopw, shoph, x, y + hh);
+	row++;
+	// Texts background
+	fillBox(buf, stationTileProtos.textbg, x-hw+1, row, shopw-2, shoph-5);
+	// Title text
 	var namelen = 2 + "Shop".length;
-	var startx = x - Math.ceil(namelen/2), i;
-	buf[y-hh+1][startx] = replaceBackground(clone(type), stationTileProtos.floor);
-	for (i = 2; i < namelen; ++i)
-		buf[y-hh+1][startx+i] = replaceBackground(new ut.Tile("Shop"[i-2], 255, 255, 255), stationTileProtos.floor);
-	for (i = x-hw; i <= x+hw; ++i)
-		buf[y-hh+2][i] = stationTileProtos.wall;
+	startx = x - Math.ceil(namelen/2);
+	buf[row][startx] = replaceBackground(clone(type), stationTileProtos.floor);
+	putText(buf, "Shop", startx + 2, row);
+	row++;
+	// Divider walls
+	startx = x-hw+1; endx = x+hw-1;
+	for (i = startx; i <= endx; ++i) {
+		buf[row][i] = stationTileProtos.wall;
+		buf[row+5][i] = stationTileProtos.wall;
+	}
+	row++; putText(buf, "Buy", startx, row, stationTileProtos.buy);
+	row++; putText(buf, "$100", endx, row, stationTileProtos.price, true);
+	row++; putText(buf, "Sell", startx, row, stationTileProtos.sell);
+	row++; putText(buf, "$50", endx, row, stationTileProtos.price, true);
+	row++;
+	buf[++row][startx] = clone(stationTileProtos.buy);
+	buf[row][startx].buy = type;
+	buf[++row][startx] = clone(stationTileProtos.sell);
+	buf[row][startx].sell = type;
 }
 
 function SpaceStation(x, y, neighbours) {
