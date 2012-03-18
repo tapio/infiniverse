@@ -140,8 +140,9 @@ function init() {
 	universe.enter(pl);
 	ut.initInput(onKeyDown, onKeyUp);
 	tick();
-	addMessage("Press F1 for help.");
+	addMessage("");
 	addMessage("Locate the ancient alien knowledge.");
-	addMessage("Welcome to Infiniverse.");
+	addMessage("Welcome to Infiniverse. Press F1 for help.");
 	$("#wrap").fadeIn(500);
+	$("#starthelp").fadeOut(5000);
 }
