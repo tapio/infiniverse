@@ -257,7 +257,7 @@ function PlanetProxy(x, y, neighbours) {
 	try {
 		return new SpaceStation(x, y, neighbours);
 	} catch (e) {
-		if ("string" !== typeof e) console.log(e);
+		if ("string" !== typeof e) throw e;
 	}
 	return new PlanetAerial(x, y, neighbours);
 }

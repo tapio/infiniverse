@@ -40,8 +40,10 @@ function Universe(engine) {
 			}
 			if (!newPlace) return false;
 		} catch (err) {
-			addMessage(err, "error");
-			return false;
+			if ("string" === typeof err) {
+				addMessage(err, "error");
+				return false;
+			} else throw err;
 		}
 		viewLevelStack.push(newPlace);
 		locationStack.push({ x: actor.x, y: actor.y });
