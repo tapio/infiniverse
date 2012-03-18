@@ -12,7 +12,7 @@ function Galaxy() {
 	var ARMWIDTH = 60; // 15.0 // Arm width in degrees (Not affected by number of arms or rotations)
 	var FUZZ     = 25; // 25.0 // Maximum outlier distance from arms (Example: 25.0)
 
-	var rnd = new Alea('galaxy');
+	var rnd = new Alea();
 	this.hash = ((rnd.random() * 100000000000)|0).toString(16) + "gal";
 
 	var i, j, sx, sy;
@@ -84,7 +84,7 @@ function Galaxy() {
 	winTile.win = true;
 	winTile.desc = "A cluster of stars glowing with knowledge";
 	sx = (this.size/2)|0;
-	buffer[sy+2][sx-2] = replaceBackground(winTile, buffer[sy+2][sx-2]);
+	buffer[sx][sx] = replaceBackground(winTile, buffer[sx][sx]);
 
 	this.getTile = function(x, y) {
 		return buffer[y][x];
