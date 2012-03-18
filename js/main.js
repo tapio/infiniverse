@@ -125,7 +125,7 @@ function onKeyDown(k) {
 		else if (activeMenu === "#energyconverter-menu") { pl.createEnergy(k - ut.KEY_1 + 1); doTick = true; }
 		else if (activeMenu === "#massfabricator-menu") { pl.createMass(k - ut.KEY_1 + 1); doTick = true; }
 	}
-	if (k === ut.KEY_R) term.setRenderer(term.getRendererString() === "dom" ? "canvas" : "dom");
+	if (k === ut.KEY_R) { term.setRenderer(term.getRendererString() === "dom" ? "canvas" : "dom"); doTick = true; }
 	if (movedir.x !== 0 || movedir.y !== 0) {
 		pl.move(movedir.x, movedir.y, ut.isKeyPressed(ut.KEY_SHIFT));
 		doTick = true;
