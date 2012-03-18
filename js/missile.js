@@ -22,6 +22,7 @@ function Missile(x, y, target, owner) {
 	this.targetable = true;
 	this.tile = missileTiles[getAngledCharIndex(x, y, target.x, target.y)];
 	this.desc = "Missile";
+	this.type = "missile";
 }
 
 Missile.prototype.damage = function(amount) {
