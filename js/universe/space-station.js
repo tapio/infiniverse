@@ -71,15 +71,19 @@ function createShop(buf, x, y, type) {
 		buf[row][i] = stationTileProtos.wall;
 		buf[row+5][i] = stationTileProtos.wall;
 	}
+	var buyprice = (type.baseprice)|0;
+	var sellprice = (type.baseprice * 0.75)|0;
 	row++; putText(buf, "Buy", startx, row, stationTileProtos.buy);
-	row++; putText(buf, "$100", endx, row, stationTileProtos.price, true);
+	row++; putText(buf, "$"+buyprice, endx, row, stationTileProtos.price, true);
 	row++; putText(buf, "Sell", startx, row, stationTileProtos.sell);
-	row++; putText(buf, "$50", endx, row, stationTileProtos.price, true);
+	row++; putText(buf, "$"+sellprice, endx, row, stationTileProtos.price, true);
 	row++;
 	buf[++row][startx] = clone(stationTileProtos.buy);
-	buf[row][startx].buy = type;
+	buf[row][startx].buy = clone(type);
+	buf[row][startx].buy.price = buyprice;
 	buf[++row][startx] = clone(stationTileProtos.sell);
-	buf[row][startx].sell = type;
+	buf[row][startx].sell = clone(type);
+	buf[row][startx].sell.price = sellprice;
 }
 
 function SpaceStation(x, y, neighbours) {
@@ -115,7 +119,7 @@ function SpaceStation(x, y, neighbours) {
 		}
 	}
 
-	var shopCount = rand(2, 4, rng);
+	var shopCount = rand(3, 4, rng);
 	var shopPos = [ {x:0,y:-1}, {x:-1,y:0}, {x:1,y:0}, {x:0,y:1} ];
 	shuffle(shopPos, rng);
 	var shopTypes = [];

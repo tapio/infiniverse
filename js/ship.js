@@ -104,6 +104,10 @@ function Ship(x, y) {
 		var checktile = universe.current.getTile(this.x, this.y);
 		if (checktile.blocks) {
 			this.x = oldx; this.y = oldy;
+		} else if (checktile.buy) {
+			addMessage("Buy " + checktile.buy.desc.toLowerCase() + " by pressing [Space].", "action");
+		} else if (checktile.sell) {
+			addMessage("Sell " + checktile.sell.desc.toLowerCase() + " by pressing [Space].", "action");
 		}
 	};
 
@@ -130,6 +134,27 @@ function Ship(x, y) {
 	};
 
 	this.collect = function() {
+		// Check for shop first
+		var checktile = universe.current.getTile(this.x, this.y);
+		if (checktile.buy) {
+			if (!this.hasCargoSpace()) return;
+			if (this.credits < checktile.buy.price) {
+				addMessage("Not enough credits.", "error");
+				return;
+			}
+			this.credits -= checktile.buy.price;
+			this.cargo[checktile.buy.item]++;
+			return;
+		} else if (checktile.sell) {
+			if (this.cargo[checktile.sell.item] < 1) {
+				addMessage("Not enough " + checktile.sell.desc.toLowerCase() + ".", "error");
+				return;
+			}
+			this.credits += checktile.sell.price;
+			this.cargo[checktile.sell.item]--;
+			return;
+		}
+		// Try to collect an item
 		if (!this.hasCargoSpace()) return;
 		var item = universe.removeItem(this.x, this.y);
 		if (!item || !item.length) return;

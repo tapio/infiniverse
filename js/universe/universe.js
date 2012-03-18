@@ -151,26 +151,26 @@ UniverseItems.hydrogen = new ut.Tile("H", 0, 119, 255);
 UniverseItems.hydrogen.desc = "Hydrogen";
 UniverseItems.hydrogen.item = "hydrogen";
 UniverseItems.hydrogen.energy = 100;
-UniverseItems.metals.baseprice = 3;
+UniverseItems.hydrogen.baseprice = 3;
 
 UniverseItems.radioactives = new ut.Tile("R", 0, 255, 0);
 UniverseItems.radioactives.desc = "Radioactives";
 UniverseItems.radioactives.item = "radioactives";
 UniverseItems.radioactives.energy = 2000;
-UniverseItems.metals.baseprice = 30;
+UniverseItems.radioactives.baseprice = 30;
 
 UniverseItems.antimatter = new ut.Tile("A", 255, 255, 255);
 UniverseItems.antimatter.desc = "Antimatter";
 UniverseItems.antimatter.item = "antimatter";
 UniverseItems.antimatter.energy = 100000;
-UniverseItems.metals.baseprice = 800;
+UniverseItems.antimatter.baseprice = 800;
 
 UniverseItems.missile = new ut.Tile("|", 136, 68, 34);
 UniverseItems.missile.desc = "Missile";
 UniverseItems.missile.item = "missile";
-UniverseItems.metals.baseprice = 20;
+UniverseItems.missile.baseprice = 20;
 
 UniverseItems.navbeacon = new ut.Tile("b", 170, 0, 221);
 UniverseItems.navbeacon.desc = "Navbeacon";
 UniverseItems.navbeacon.item = "navbeacon";
-UniverseItems.metals.baseprice = 20;
+UniverseItems.navbeacon.baseprice = 20;
