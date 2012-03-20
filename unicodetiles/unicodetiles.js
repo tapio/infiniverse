@@ -409,7 +409,6 @@ ut.Engine = function(vp, func, w, h) {
 	this.transitionTimer = null;
 	this.transitionDuration = 0;
 	this.transition = null;
-	this.oldTileFunc = null;
 	this.cachex = 0;
 	this.cachey = 0;
 	this.tileCache = new Array(vp.h);
@@ -431,24 +430,42 @@ ut.Engine = function(vp, func, w, h) {
 		if (effect) {
 			this.transition = undefined;
 			if (typeof effect === "string") {
-				if (effect === "zoomin") this.transition = function(x, y, w, h, new_t, old_t, factor) {
+				if (effect === "boxin") this.transition = function(x, y, w, h, new_t, old_t, factor) {
 					var halfw = w * 0.5, halfh = h * 0.5;
 					x -= halfw; y -= halfh;
 					if (Math.abs(x) < halfw * factor && Math.abs(y) < halfh * factor) return new_t;
 					else return old_t;
 				};
-				else if (effect === "zoomout") this.transition = function(x, y, w, h, new_t, old_t, factor) {
+				else if (effect === "boxout") this.transition = function(x, y, w, h, new_t, old_t, factor) {
 					var halfw = w * 0.5, halfh = h * 0.5;
 					x -= halfw; y -= halfh;
 					factor = 1.0 - factor;
 					if (Math.abs(x) < halfw * factor && Math.abs(y) < halfh * factor) return old_t;
 					else return new_t;
 				};
+				else if (effect === "circlein") this.transition = function(x, y, w, h, new_t, old_t, factor) {
+					var halfw = w * 0.5, halfh = h * 0.5;
+					x -= halfw; y -= halfh;
+					var dx = x - halfw, dy = y - halfh;
+					if (x*x + y*y < (halfw*halfw + halfh*halfh) * factor) return new_t;
+					else return old_t;
+				};
+				else if (effect === "circleout") this.transition = function(x, y, w, h, new_t, old_t, factor) {
+					var halfw = w * 0.5, halfh = h * 0.5;
+					x -= halfw; y -= halfh;
+					var dx = x - halfw, dy = y - halfh;
+					factor = 1.0 - factor;
+					if (x*x + y*y > (halfw*halfw + halfh*halfh) * factor) return new_t;
+					else return old_t;
+				};
+				else if (effect === "random") this.transition = function(x, y, w, h, new_t, old_t, factor) {
+					if (Math.random() > factor) return old_t;
+					else return new_t;
+				};
 			}
 			if (this.transition) {
 				this.transitionTimer = (new Date()).getTime();
 				this.transitionDuration = duration || 500;
-				this.oldTileFunc = this.tileFunc;
 			}
 		}
 		this.tileFunc = func;
@@ -513,6 +530,9 @@ ut.Engine = function(vp, func, w, h) {
 		var xx = x - this.viewport.cx;
 		var yy = y - this.viewport.cy;
 		var timeNow = (new Date()).getTime(); // For passing to shaderFunc
+		var transTime;
+		if (this.transition) transTime = (timeNow - this.transitionTimer) / this.transitionDuration;
+		if (transTime >= 1.0) this.transition = undefined;
 		var tile;
 		// For each tile in viewport...
 		for (var j = 0; j < this.viewport.h; ++j) {
@@ -528,14 +548,9 @@ ut.Engine = function(vp, func, w, h) {
 				} else if (this.maskFunc && !this.maskFunc(ixx, jyy)) {
 					tile = ut.NULLTILE;
 				// Check transition effect
-				} else if (this.transition) {
-					var transTime = (timeNow - this.transitionTimer) / this.transitionDuration;
-					if (transTime >= 1.0) {
-						this.transition = this.oldTileFunc = undefined;
-					} else {
-						tile = this.transition(i, j, this.viewport.w, this.viewport.h,
-							this.tileFunc(ixx, jyy), this.oldTileFunc(ixx, jyy), transTime);
-					}
+				} else if (this.transition && !this.refreshCache) {
+					tile = this.transition(i, j, this.viewport.w, this.viewport.h,
+						this.tileFunc(ixx, jyy), this.tileCache[j][i], transTime);
 				// Check cache
 				} else if (this.cacheEnabled && !this.refreshCache) {
 					var lookupx = ixx - this.cachex;
@@ -547,8 +562,8 @@ ut.Engine = function(vp, func, w, h) {
 						tile = this.tileFunc(ixx, jyy);
 				// If all else fails, call tileFunc
 				} else tile = this.tileFunc(ixx, jyy);
-				// Save the tile to cache
-				if (this.cacheEnabled) this.tileCache2[j][i] = tile;
+				// Save the tile to cache (always due to transition effects)
+				this.tileCache2[j][i] = tile;
 				// Apply shader function
 				if (this.shaderFunc && tile !== ut.NULLTILE)
 					tile = this.shaderFunc(tile, ixx, jyy, timeNow);
@@ -556,14 +571,13 @@ ut.Engine = function(vp, func, w, h) {
 				this.viewport.unsafePut(tile, i, j);
 			}
 		}
-		if (this.cacheEnabled) {
-			// Save the new cache origin
-			this.cachex = xx;
-			this.cachey = yy;
-			// Swap cache buffers
-			var tempCache = this.tileCache;
-			this.tileCache = this.tileCache2;
-			this.tileCache2 = tempCache;
-			this.refreshCache = false;
-		}
+		// Cache stuff is enabled always, because it is also required by transitions
+		// Save the new cache origin
+		this.cachex = xx;
+		this.cachey = yy;
+		// Swap cache buffers
+		var tempCache = this.tileCache;
+		this.tileCache = this.tileCache2;
+		this.tileCache2 = tempCache;
+		this.refreshCache = false;
 	};
