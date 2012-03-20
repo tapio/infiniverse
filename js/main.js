@@ -32,11 +32,8 @@ function addMessage(msg, msgtype) {
 	$("#messages").html(msgs);
 }
 
-// "Main loop"
-function tick() {
+function render(tick) {
 	var i, a, item, len, fg, bg, tilex, tiley;
-	universe.updateActors();
-	pl.updateUI();
 	var camx = clamp(pl.x - term.cx, 0, universe.current.size - term.w);
 	var camy = clamp(pl.y - term.cy, 0, universe.current.size - term.h);
 	eng.update(camx + term.cx, camy + term.cy); // Update tiles
@@ -50,7 +47,7 @@ function tick() {
 		fg = item.tile;
 		bg = term.get(tilex, tiley).getBackgroundJSON(); // Background color
 		term.put(new ut.Tile(fg.ch, fg.r, fg.g, fg.b, bg.r, bg.g, bg.b), tilex, tiley);
-		if (item.x === pl.x && item.y === pl.y) {
+		if (tick && item.x === pl.x && item.y === pl.y) {
 			addMessage("Collect " + item.tile.desc.toLowerCase() + " with [Space].");
 		}
 	}
@@ -66,6 +63,13 @@ function tick() {
 		term.put(new ut.Tile(fg.ch, fg.r, fg.g, fg.b, bg.r, bg.g, bg.b), tilex, tiley);
 	}
 	term.render(); // Render
+}
+
+// "Main loop"
+function tick() {
+	universe.updateActors();
+	pl.updateUI();
+	render(true);
 }
 
 function toggleMenu(menuid) {
@@ -151,4 +155,5 @@ function init() {
 	addMessage("Welcome to Infiniverse. Press F1 for help.");
 	$("#wrap").fadeIn(500);
 	$("#starthelp").fadeOut(5000);
+	setInterval(render, 50);
 }

@@ -9,11 +9,14 @@ function Universe(engine) {
 	this.persistentStore = {};
 	this.items = {};
 
-	this.postViewChange = function() {
+	this.postViewChange = function(dir) {
 		this.current = viewLevelStack[viewLevelStack.length-1];
 		if (this.current.type == "aerial") this.eng.setWorldSize();
 		else this.eng.setWorldSize(this.current.size, this.current.size);
-		this.eng.setTileFunc(this.current.getTile);
+		var effect = "random";
+		if (dir == 1) effect = "circlein";
+		else if (dir == -1) effect = "circleout";
+		this.eng.setTileFunc(this.current.getTile, effect);
 		this.actors = this.current.actors ? this.current.actors : [];
 		var i;
 		for (i = 0; i < this.actors.length; ++i)
@@ -47,7 +50,7 @@ function Universe(engine) {
 		}
 		viewLevelStack.push(newPlace);
 		locationStack.push({ x: actor.x, y: actor.y });
-		this.postViewChange();
+		this.postViewChange(1);
 		this.current.x = actor.x;
 		this.current.y = actor.y;
 		actor.x = Math.floor(this.current.size / 2);
@@ -66,7 +69,7 @@ function Universe(engine) {
 		actor.y = this.current.y;
 		viewLevelStack.pop();
 		locationStack.pop();
-		this.postViewChange();
+		this.postViewChange(-1);
 		if (actor.clearSensors) actor.clearSensors();
 		addMessage("Exited " + placename + ".");
 	};
@@ -133,7 +136,7 @@ function Universe(engine) {
 		while (viewLevelStack.length > 1) {
 			viewLevelStack.pop();
 		}
-		this.postViewChange();
+		this.postViewChange(0);
 		for (var i = 0; i < state.length; ++i) {
 			this.enter(clone(state[i]));
 		}
