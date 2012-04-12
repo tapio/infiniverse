@@ -12,8 +12,13 @@ function Animal(x, y, tile, name) {
 }
 
 Animal.prototype.damage = function(amount) {
+	if (this.dead) return;
 	this.hp -= amount;
-	if (this.hp <= 0) this.dead = true;
+	if (this.hp <= 0) {
+		var loot = { tile: clone(UniverseItems.biomass), x: this.x, y: this.y };
+		universe.addItem(loot);
+		this.dead = true;
+	}
 };
 
 Animal.prototype.update = function() {
