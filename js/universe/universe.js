@@ -150,6 +150,12 @@ UniverseItems.metals.desc = "Metals";
 UniverseItems.metals.item = "metals";
 UniverseItems.metals.baseprice = 20;
 
+UniverseItems.biomass = new ut.Tile("B", 0, 255, 196);
+UniverseItems.biomass.desc = "Biomass";
+UniverseItems.biomass.item = "biomass";
+UniverseItems.biomass.energy = 10;
+UniverseItems.biomass.baseprice = 20;
+
 UniverseItems.hydrogen = new ut.Tile("H", 0, 119, 255);
 UniverseItems.hydrogen.desc = "Hydrogen";
 UniverseItems.hydrogen.item = "hydrogen";
