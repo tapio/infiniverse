@@ -64,10 +64,9 @@ function PlanetAerial(x, y, neighbours, hash) {
 				y: rand(0, this.size-1, rng)
 			}, this.hash);
 		}
-		cnt = rand(0,3,rng);
-		for (i = 0; i < cnt; ++i) {
+		if (rand(0,3,rng) === 0) {
 			universe.addItem({
-				tile: clone(UniverseItems.radioactives),
+				tile: clone(UniverseItems.antimatter),
 				x: rand(0, this.size-1, rng),
 				y: rand(0, this.size-1, rng)
 			}, this.hash);

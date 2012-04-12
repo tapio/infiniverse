@@ -57,6 +57,7 @@ function PlanetDetail(x, y, neighbours, hash) {
 		addVariance(buffer[y][x], 5, rng);
 	}
 
+	// NE quadrant
 	freqs = [ {t:tiles[4]}, {t:tiles[7]}, {t:tiles[3]}, {t:tiles[6]} ];
 	for (j = 0; j < hs; ++j) {
 		for (i = 0; i < hs; ++i) {
@@ -70,6 +71,7 @@ function PlanetDetail(x, y, neighbours, hash) {
 			addRoughness(i,j);
 		}
 	}
+	// NW quadrant
 	freqs = [ {t:tiles[4]}, {t:tiles[7]}, {t:tiles[5]}, {t:tiles[8]} ];
 	for (j = 0; j < hs; ++j) {
 		for (i = hs; i < this.size; ++i) {
@@ -83,6 +85,7 @@ function PlanetDetail(x, y, neighbours, hash) {
 			addRoughness(i,j);
 		}
 	}
+	// SW quadrant
 	freqs = [ {t:tiles[4]}, {t:tiles[1]}, {t:tiles[3]}, {t:tiles[0]} ];
 	for (j = hs; j < this.size; ++j) {
 		for (i = 0; i < hs; ++i) {
@@ -96,6 +99,7 @@ function PlanetDetail(x, y, neighbours, hash) {
 			addRoughness(i,j);
 		}
 	}
+	// SE quadrant
 	freqs = [ {t:tiles[4]}, {t:tiles[1]}, {t:tiles[5]}, {t:tiles[2]} ];
 	for (j = hs; j < this.size; ++j) {
 		for (i = hs; i < this.size; ++i) {
