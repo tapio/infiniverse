@@ -1,5 +1,6 @@
 // http://baagoe.org/en/wiki/Better_random_numbers_for_javascript
-// CC-BY-SA
+// Copyright (C) 2010 by Johannes Baagøe <baagoe@baagoe.org>
+// MIT License - http://en.wikipedia.org/wiki/MIT_License
 // Modified
 
 /*jshint boss:true */
