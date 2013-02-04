@@ -49,6 +49,7 @@ function Ship(x, y) {
 	};
 
 	this.scanSensors = function() {
+		// TODO: Scanner energy cost per view level?
 		if (!this.useEnergy(this.energyCosts.sensors)) return;
 		this.contacts = [];
 		if (universe.current.type === "solarsystem") {
@@ -242,6 +243,7 @@ function Ship(x, y) {
 			return;
 		} else if (!this.hasCargoSpace()) return;
 		// What to produce?
+		// TODO: Add ship repair entry
 		if (button == 1 && this.useEnergy(this.energyCosts.createMissile)) {
 			this.cargo.metals--;
 			this.cargo.missile++;

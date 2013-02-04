@@ -73,6 +73,8 @@ function PlanetAerial(x, y, neighbours, hash) {
 		}
 	}
 
+	// TODO: Create cities (probably 1-tile for starters)
+
 	this.generateGroundTextures = function() {
 		var r,g,b;
 		do {

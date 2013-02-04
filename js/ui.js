@@ -1,4 +1,4 @@
-
+// TODO: Should cache DOM references here for performance
 Ship.prototype.updateUI = function() {
 	var echar = "↯", cchar = "$";
 	var i, str, len, statusclass, elem;

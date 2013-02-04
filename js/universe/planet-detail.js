@@ -9,6 +9,8 @@ function PlanetDetail(x, y, neighbours, hash) {
 	if (tile.ch === "▒")
 		throw "Gas planet has no surface to land on.";
 
+	// TODO: Check for city tile (when implemented on aerial level)
+
 	var i,j;
 	var rng = new Alea('planet-detail', x, y, hash);
 	this.hash = ((rng.random() * 100000000000)|0).toString(16) + "det";
@@ -135,6 +137,8 @@ function PlanetDetail(x, y, neighbours, hash) {
 			}
 		}
 	}
+
+	// TODO: Create animals and other actors
 
 	this.getTile = function(x, y) {
 		return buffer[y][x];
